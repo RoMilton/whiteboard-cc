@@ -1,6 +1,7 @@
 import React from 'react';
 import Toolbar from './Toolbar.jsx';
 import Board from './Board.jsx';
+import Nav from './Nav.jsx';
 
 /**
  * Whiteboard App
@@ -17,6 +18,7 @@ export default class App extends React.Component {
 				/>
 				<main className="main">
 					<Board />
+					<Nav />
 				</main>
 			</div>
 		)

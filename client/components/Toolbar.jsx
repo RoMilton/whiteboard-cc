@@ -10,13 +10,19 @@ export default class Toolbar extends React.Component {
 
 	render(){
 		return (
-			<header className="toolbar"></header>
+			<header className="toolbar">
+				<ul className="mode-list">
+					<li className="mode-list__item mode-list__item--pen"></li>
+					<li className="mode-list__item mode-list__item--line"></li>
+					<li className="mode-list__item mode-list__item--rect"></li>
+					<li className="mode-list__item mode-list__item--text"></li>
+				</ul>
+			</header>
 		)
 	}
 }
 
 Toolbar.propTypes = {
-	// dfasda
 	mode : React.PropTypes.string
 };
 

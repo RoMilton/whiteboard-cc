@@ -4,17 +4,38 @@ Author: Rohan Milton
 
 Stylesheet: Laptop & Desktop Screen stylesheet
 
-Styles applied only to screens 768px and above
+These Styles should be applied to screens 768px and above only
 
 ******************************************************************/
 
 $toolbar-height : 50px;
 
 .toolbar{
+	position:fixed;
+	top:0;
+	left:0;
+	right:0;
+	display:block;
+	text-align: center;
 	height: $toolbar-height;
 	background-color: $spring-wood;
+	@include box-shadow(2);
 }
 
 .main{
+	margin-top:$toolbar-height;
 	height: calc(100% - #{$toolbar-height});
+}
+
+.mode-list{
+	height:100%;
+	display:inline-block;
+	margin:0;
+	&__item{
+		display:inline-block;
+		width:80px;
+		background-color:#FAF8F7;
+		height:100%;
+		@include button;
+	}
 }
