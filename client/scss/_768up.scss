@@ -1,0 +1,20 @@
+/******************************************************************
+Site Name: Whiteboard-cc
+Author: Rohan Milton
+
+Stylesheet: Laptop & Desktop Screen stylesheet
+
+Styles applied only to screens 768px and above
+
+******************************************************************/
+
+$toolbar-height : 50px;
+
+.toolbar{
+	height: $toolbar-height;
+	background-color: $spring-wood;
+}
+
+.main{
+	height: calc(100% - #{$toolbar-height});
+}

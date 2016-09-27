@@ -1,0 +1,13 @@
+{
+  "name": "whiteboard-cc",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "meteor run"
+  },
+  "dependencies": {
+    "meteor-node-stubs": "~0.2.0",
+    "react": "^15.3.2",
+    "react-dom": "^15.3.2"
+  }
+}

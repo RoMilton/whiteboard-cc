@@ -1,0 +1,45 @@
+
+/******************************************************************
+Site Name: Whiteboard-cc
+Author: Rohan Milton
+
+Stylesheet: Main Stylesheet
+
+******************************************************************/
+
+/*********************
+PARTIALS
+*********************/
+
+// normalize: http://necolas.github.io/normalize.css/
+@import "normalize";
+
+// Sass variables
+@import "variables";
+
+// import mixins
+@import "mixins";
+
+// // Sass functions
+// @import "partials/functions";
+
+/*********************
+BASE (MOBILE) SIZE
+This are the mobile styles, also the foundation of the app.
+*********************/
+
+// styles in base.scss
+@import "base";
+
+/*********************
+TABLET, LAPTOPS & DESKTOPS
+This is the average viewing window. So Desktops, Laptops, and
+in general anyone not viewing on a mobile device.
+*********************/
+@media only screen and (min-width: 768px) {
+
+	// styles in 768up.scss
+	@import "768up";
+
+} // end of media query
+
