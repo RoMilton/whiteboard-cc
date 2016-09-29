@@ -27,7 +27,7 @@ export default class Toolbar extends React.Component {
 				<div className="toolbar__share">
 					<div className="toolbar__item toolbar__item--url-change">Change URL</div>
 					<div className="toolbar__item toolbar__item--name">Rohan</div>
-					<div className="toolbar__item toolbar__item--share">Invite/Share</div>
+					<div className="toolbar__item toolbar__item--share">Invite / Share</div>
 				</div>
 			</header>
 		)

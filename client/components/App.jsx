@@ -13,12 +13,14 @@ export default class App extends React.Component {
 	render(){
 		return (
 			<div id="container">
-				<Toolbar 
-					
+				<Toolbar
+
 				/>
 				<main className="main">
-					<Board />
-					<Nav />
+					<div className="wrap">
+						<Board />
+						<Nav />
+					</div>
 				</main>
 			</div>
 		)

@@ -48,7 +48,7 @@ $toolbar-height : 50px;
 		padding: 8px 9px 9px 35px;
 		position:relative;
 		text-transform:uppercase;
-		font-size:13px;
+		font-size:12px;
 		color: $grey;
 		@include button;
 		@include border-radius;
@@ -116,18 +116,18 @@ $toolbar-height : 50px;
 	// Full height toolbar item. 
 	&__item{
 		color:$grey;
-		padding:14px 15px 0 40px;
-		font-size:15px;
+		padding:15px 15px 0 40px;
+		font-size:14px;
 		display:inline-block;
 		@include button;
 		height:100%;
 		position:relative;
 
 		&:hover{
-			background-color: darken($spring-wood,10%);
-			color:darken($grey,10%);
+			//background-color: darken($spring-wood,2%);
+			color:darken($grey,15%);
 			&:before{
-				opacity:0.7;
+				opacity:0.9;
 			}
 		}
 
@@ -157,12 +157,13 @@ $toolbar-height : 50px;
 
 		// invite/share toolbar item
 		&--share{
-			background-color: darken($spring-wood,5%);
+			//background-color: #EBE8E8;
+			// color:$bright;
 			&:before{
 				background-image: url('images/icon-share.png');
 			}
 			// &:hover{
-			// 	background-color:  darken($spring-wood,5%);
+			// 	background-color:  darken($ebb,7%);
 			// }
 		}
 	}
@@ -178,13 +179,12 @@ $toolbar-height : 50px;
 	height:100%;
 	display:inline-block;
 	margin:0;
-
+	background-color:#FAF8F7;
 	// mode button
 	&__item{
 		@include button;
 		display:inline-block;
 		width:70px;
-		background-color:#FAF8F7;
 		height:100%;
 		background-repeat:no-repeat;
 		background-position:50% 0px;
@@ -204,7 +204,7 @@ $toolbar-height : 50px;
 		}
 
 		&:hover:not(.is-active){
-			opacity:0.8
+			opacity:0.8;
 		}
 
 		// Since each icon contains both the unhilighted and highlighted stacked on top
@@ -212,7 +212,49 @@ $toolbar-height : 50px;
 		&.is-active{
 			background-position:50% -50px;
 			opacity:1;
-			border-bottom: 2px solid $green-pea;
+			border-bottom: 2px solid lighten($green-pea,30%);
+			//background-color:#e5e5e5;
 		}
 	}
 }
+
+// whiteboard navigation
+.nav-list{
+	margin-top:15px;
+	counter-reset: section;
+    list-style-type: none;
+	li{
+		position:relative;
+		display:inline-block;
+		width:174px;
+		height:111px;
+		background-color:#fff;
+		margin-right:7px;
+		border: 2px solid transparent;
+		vertical-align: top;
+		@include button;
+		&:before{
+			counter-increment: section;
+    		content: counters(section,".") " ";
+    		font-size:42px;
+    		line-height:111px;
+    		text-align:center;
+    		position:absolute;
+    		left:0;top:0;right:0;bottom:0;
+    		color:$grey;
+    		//color:#667080;
+		}
+		&:last-child:before{
+			content:"+";
+			font-size:52px;
+		}
+		&.is-active{
+			border-color:$bright;
+		}
+	}
+
+	&__whiteboard{
+		width:100%;
+	}
+}
+

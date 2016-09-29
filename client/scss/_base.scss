@@ -23,3 +23,16 @@ body{
 .toolbar{
 	display:none;
 }
+
+.wrap{
+	width:1095px;
+	margin: 0 auto;
+	padding-top:25px;
+}
+
+.whiteboard{
+	background-color: #fff;
+	height:688px;
+	width:100%;
+	@include border-radius;
+}

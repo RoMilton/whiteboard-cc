@@ -11,10 +11,10 @@ import React from 'react';
 export default class Nav extends React.Component {
 	render(){
 		return (
-			<nav className="nav">
-				<ol className="nav__list">
-					<li></li>
-					<li></li>
+			<nav>
+				<ol className="nav-list">
+					<li className="is-active"><canvas className="nav-list__whiteboard"></canvas></li>
+					<li><canvas class="nav-list__whiteboard"></canvas></li>
 				</ol>
 			</nav>
 		)
