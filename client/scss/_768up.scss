@@ -10,6 +10,7 @@ These Styles should be applied to screens 768px and above only
 
 $toolbar-height : 50px;
 
+// Toolbar Header
 .toolbar{
 	position:fixed;
 	top:0;
@@ -19,7 +20,17 @@ $toolbar-height : 50px;
 	text-align: center;
 	height: $toolbar-height;
 	background-color: $spring-wood;
-	@include box-shadow(2);
+	@include box-shadow(1);
+
+	// container for Color & Undo buttons
+	&__controls{
+		float:left;
+	}
+
+	// container for Share, Username and change URL buttons
+	&__share{
+		float:right;
+	}
 }
 
 .main{
@@ -27,15 +38,46 @@ $toolbar-height : 50px;
 	height: calc(100% - #{$toolbar-height});
 }
 
+// list of modes (pen, line, rectangle etc)
 .mode-list{
 	height:100%;
 	display:inline-block;
 	margin:0;
+
+	// mode button
 	&__item{
+		@include button;
 		display:inline-block;
-		width:80px;
+		width:70px;
 		background-color:#FAF8F7;
 		height:100%;
-		@include button;
+		background-repeat:no-repeat;
+		background-position:50% 0px;
+		opacity:0.5;
+
+		&--pen{
+			background-image: url('/images/icon-pen.svg');
+		}
+		&--line{
+			background-image: url('/images/icon-line.svg');
+		}
+		&--rect{
+			background-image: url('/images/icon-rect.svg');
+		}
+		&--text{
+			background-image: url('/images/icon-text.svg');
+		}
+
+		&:hover:not(.is-active){
+			opacity:0.9
+		}
+
+		// Since each icon contains both the unhilighted and highlighted stacked on top
+		// of each other, we can highlight a button simply by changing background position
+		&.is-active{
+			background-position:50% -50px;
+			opacity:1;
+			border-bottom: 2px solid $green-pea;
+		}
 	}
 }

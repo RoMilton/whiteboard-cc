@@ -13,16 +13,16 @@ Sass mixins intended to be used by CSS classes via @include functionality
 }
 
 /**
- * A mixin which helps you to add depth to elements according to the Google Material Design spec:
+ * Adds shadow to elements according to the Google Material Design spec:
  * http://www.google.com/design/spec/layout/layout-principles.html#layout-principles-dimensionality
  *
- * Provide a level from 1-6. Higher level elements will have a larger shadow to give the impression they
+ * Provide a level from 1-5 (5 being the highest element with the largest shadow).
  * are elevated.
  *
  */
 @mixin box_shadow ($level) {
     @if $level == 1 {
-        box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.18);
+        box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.09);
     } @else if $level == 2 {
         box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.26);
     } @else if $level == 3 {
