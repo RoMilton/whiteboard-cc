@@ -25,9 +25,9 @@ export default class Toolbar extends React.Component {
 					<li className="mode-list__item mode-list__item--text"></li>
 				</ul>
 				<div className="toolbar__share">
-					<div className="toolbar__item toolbar__item--url">Change URL</div>
+					<div className="toolbar__item toolbar__item--url-change">Change URL</div>
 					<div className="toolbar__item toolbar__item--name">Rohan</div>
-					<div className="toolbar__item-full toolbar__item--share">Invite/Share</div>
+					<div className="toolbar__item toolbar__item--share">Invite/Share</div>
 				</div>
 			</header>
 		)

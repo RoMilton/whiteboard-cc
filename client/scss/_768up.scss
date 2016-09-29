@@ -32,10 +32,11 @@ $toolbar-height : 50px;
 	&__share{
 		position:absolute;
 		right:0;
+		top:0;
 		height:100%;
 	}
 
-	// traditional-looking button. Does not take up full height of toolbar
+	// traditional-looking toolbar button. Does not take up full height of toolbar
 	$button-height: $toolbar-height - 14px;
 	&__button{
 		display:inline-block;
@@ -65,6 +66,7 @@ $toolbar-height : 50px;
 			left:9px;
 			opacity:0.34;
 		}
+
 		&--undo:before{
 			background-image: url('images/icon-arrow-round.png');
 		}
@@ -100,12 +102,68 @@ $toolbar-height : 50px;
 			}
 		}
 		
+		// when hover on toolbar button
 		&:hover{
 			border-color: darken($ebb,10%);
 			color: darken($grey,25%);
 			&:before {
 				opacity:0.7;
 			}
+		}
+
+	}
+
+	// Full height toolbar item. 
+	&__item{
+		color:$grey;
+		padding:14px 15px 0 40px;
+		font-size:15px;
+		display:inline-block;
+		@include button;
+		height:100%;
+		position:relative;
+
+		&:hover{
+			background-color: darken($spring-wood,10%);
+			color:darken($grey,10%);
+			&:before{
+				opacity:0.7;
+			}
+		}
+
+		// background image is assigned to pseudo element to its opacity can be controlled
+		&:before{
+			background-position:0px 50%;
+			background-repeat:no-repeat;
+			background-size:20px;
+			content:"";
+			width:20px;
+			height:100%;
+			position:absolute;
+			left:14px;
+			top:0;
+			opacity:0.35;
+		}
+
+		// change url toolbaritem
+		&--url-change:before{
+			background-image: url('images/icon-chain.png');
+		}
+
+		// change name toolbar item
+		&--name:before{
+			background-image: url('images/icon-person.png');
+		}
+
+		// invite/share toolbar item
+		&--share{
+			background-color: darken($spring-wood,5%);
+			&:before{
+				background-image: url('images/icon-share.png');
+			}
+			// &:hover{
+			// 	background-color:  darken($spring-wood,5%);
+			// }
 		}
 	}
 }
