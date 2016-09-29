@@ -24,12 +24,89 @@ $toolbar-height : 50px;
 
 	// container for Color & Undo buttons
 	&__controls{
-		float:left;
+		position:absolute;
+		left:0
 	}
 
 	// container for Share, Username and change URL buttons
 	&__share{
-		float:right;
+		position:absolute;
+		right:0;
+		height:100%;
+	}
+
+	// traditional-looking button. Does not take up full height of toolbar
+	$button-height: $toolbar-height - 14px;
+	&__button{
+		display:inline-block;
+		height: $button-height;
+		border: 1px solid $ebb;
+		vertical-align: top;
+		margin-top: ($toolbar-height - $button-height) / 2;
+		margin-left: 10px;
+		padding: 8px 9px 9px 35px;
+		position:relative;
+		text-transform:uppercase;
+		font-size:13px;
+		color: $grey;
+		@include button;
+		@include border-radius;
+		box-sizing: border-box;
+
+		// background image is assigned to pseudo element to its opacity can be controlled
+		&:before{
+			background-position: 50% 50%;
+			background-repeat:no-repeat;
+			background-size:100%;
+			width: 18px;
+			height:18px;
+			content:"";
+			position:absolute;
+			left:9px;
+			opacity:0.34;
+		}
+		&--undo:before{
+			background-image: url('images/icon-arrow-round.png');
+		}
+		&--clear:before{
+			background-image: url('images/icon-cross.png');
+		}
+
+		// button with no icon - just solid color;
+		&--filled{
+			width: 58px;
+			background-color:green;
+		}
+
+		// button with dropdown menu
+		&--dropdown{
+			padding-right:28px;
+
+			//arrow to toggle dropdown menu
+			&__toggle{
+				position:absolute;
+				right:0px;
+				top:50%;
+				transform: translate(0,-50%);
+				width:25px;
+				height:100%;
+				display:inline-block;
+				opacity:0.63;
+				background: url('images/icon-arrow-down.png') 50% 50% no-repeat;
+				&:hover{
+					background-color:$ebb;
+					opacity:1;
+				}
+			}
+		}
+		
+		&:hover{
+			border-color: darken($ebb,10%);
+			color: darken($grey,25%);
+			&:before {
+				opacity:0.7;
+			}
+		}
 	}
 }
 
@@ -54,22 +131,22 @@ $toolbar-height : 50px;
 		background-repeat:no-repeat;
 		background-position:50% 0px;
 		opacity:0.5;
-
+		background-size:33px;
 		&--pen{
-			background-image: url('/images/icon-pen.svg');
+			background-image: url('/images/icon-pen.png');
 		}
 		&--line{
-			background-image: url('/images/icon-line.svg');
+			background-image: url('/images/icon-line.png');
 		}
 		&--rect{
-			background-image: url('/images/icon-rect.svg');
+			background-image: url('/images/icon-rect.png');
 		}
 		&--text{
-			background-image: url('/images/icon-text.svg');
+			background-image: url('/images/icon-text.png');
 		}
 
 		&:hover:not(.is-active){
-			opacity:0.9
+			opacity:0.8
 		}
 
 		// Since each icon contains both the unhilighted and highlighted stacked on top

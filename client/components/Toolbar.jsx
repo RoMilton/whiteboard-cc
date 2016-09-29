@@ -12,9 +12,10 @@ export default class Toolbar extends React.Component {
 		return (
 			<header className="toolbar">
 				<div className="toolbar__controls">
-					<div class="toolbar__button toolbar__button--filled"></div>
-					<div class="toolbar__button toolbar-button--undo">Undo</div>
-					<div class="toolbar__button toolbar-button--clear">Undo All
+					<div className="toolbar__button toolbar__button--filled"></div>
+					<div className="toolbar__button toolbar__button--undo">Undo</div>
+					<div className="toolbar__button toolbar__button--clear toolbar__button--dropdown">Clear My Sketches
+					<span className="toolbar__button--dropdown__toggle"></span>
 					</div>
 				</div>
 				<ul className="mode-list">

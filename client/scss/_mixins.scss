@@ -12,6 +12,10 @@ Sass mixins intended to be used by CSS classes via @include functionality
     cursor: pointer;
 }
 
+@mixin border-radius{
+    border-radius:5px;
+}
+
 /**
  * Adds shadow to elements according to the Google Material Design spec:
  * http://www.google.com/design/spec/layout/layout-principles.html#layout-principles-dimensionality
