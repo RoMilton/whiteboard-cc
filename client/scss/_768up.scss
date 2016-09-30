@@ -20,7 +20,7 @@ $toolbar-height : 50px;
 	text-align: center;
 	height: $toolbar-height;
 	background-color: $spring-wood;
-	@include box-shadow(1);
+	@include box-shadow(2);
 
 	// container for Color & Undo buttons
 	&__controls{
@@ -219,42 +219,61 @@ $toolbar-height : 50px;
 }
 
 // whiteboard navigation
-.nav-list{
-	margin-top:15px;
+$nav-item-margin: 10px;
+.nav{
+	margin:15px 0 20px;
 	counter-reset: section;
     list-style-type: none;
-	li{
+    &__list{
+    	margin:0;
+    	display:inline-block;
+    	vertical-align: top;
+    }
+	&__item{
 		position:relative;
 		display:inline-block;
 		width:174px;
 		height:111px;
 		background-color:#fff;
-		margin-right:7px;
+		margin-right:$nav-item-margin;
 		border: 2px solid transparent;
+		box-sizing: border-box;
 		vertical-align: top;
 		@include button;
 		&:before{
 			counter-increment: section;
     		content: counters(section,".") " ";
-    		font-size:42px;
-    		line-height:111px;
+    		font-size:34px;
+    		line-height:109px;
     		text-align:center;
     		position:absolute;
     		left:0;top:0;right:0;bottom:0;
     		color:$grey;
     		//color:#667080;
 		}
-		&:last-child:before{
-			content:"+";
-			font-size:52px;
-		}
 		&.is-active{
 			border-color:$bright;
 		}
-	}
+		&--add {
+			margin-left:$nav-item-margin;
+			border:2px dashed lighten($grey,15%);
+			background-color:rgba(255,255,255,0.6);
+			@include border-radius;
+			&:before{
+				content:"+";
+				font-size:52px;
+				line-height:106px;
+			}
+		}
 
+		&:last-child{
+			margin-right:0;
+		}
+	}
 	&__whiteboard{
 		width:100%;
 	}
+
+
 }
 
