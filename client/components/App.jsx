@@ -6,7 +6,8 @@ import Nav from './Nav.jsx';
 const TOOLS = [
 	{
 		name : 'pen',
-		description : 'Pen Tool'
+		description : 'Pen Tool',
+		isDefault : true,
 	},
 	{
 		name : 'line',
@@ -14,8 +15,7 @@ const TOOLS = [
 	},
 	{
 		name : 'rect',
-		description : 'Rectangle Tool',
-		isDefault : true
+		description : 'Rectangle Tool'
 	},
 	{
 		name : 'text',
@@ -23,6 +23,12 @@ const TOOLS = [
 	}
 ];
 
+const COLORS = [
+	'#1ABC9C',
+	'#ae2be1',
+	'#1846ec',
+	'#93Cba4'
+];
 
 /**
  * Whiteboard App Component
@@ -35,7 +41,8 @@ export default class App extends React.Component {
 	constructor(){
 		super();
 		this.state = {
-			selectedTool : this.getDefaultTool()
+			selectedTool : this._getDefaultTool(),
+			selectedColor : COLORS[2]
 		};
 	}
 
@@ -47,7 +54,7 @@ export default class App extends React.Component {
 	 *
 	 * @method getDefaultTool
 	 */
-	getDefaultTool(){
+	_getDefaultTool(){
 		//for each tool
 		for (let key in TOOLS){
 			if (TOOLS[key].isDefault) {return TOOLS[key].name;}
@@ -61,7 +68,7 @@ export default class App extends React.Component {
 	 * @method handleToolChange
 	 * @param {String} toolName - String to represent new tool. Must be property in TOOLS
 	 */
-	handleToolChange(toolName){
+	_handleToolChange(toolName){
 		this.setState({
 			selectedTool : toolName
 		});
@@ -74,11 +81,12 @@ export default class App extends React.Component {
 				<Toolbar
 					tools = {TOOLS}
 					selectedTool = {this.state.selectedTool}
-					handleToolChange = {this.handleToolChange.bind(this)}
+					selectedColor = {this.state.selectedColor}
+					handleToolChange = {this._handleToolChange.bind(this)}
 				/>
 				<main className="main">
 					<div className="wrap">
-						<Board />
+						<Board selectedColor= {this.state.selectedColor} />
 						<Nav />
 					</div>
 				</main>

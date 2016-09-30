@@ -9,12 +9,14 @@ import ToolPalette from './ToolPalette.jsx';
  * @extends React.Component
  */
 export default class Toolbar extends React.Component {
-
 	render(){
+		let colorStyles = {
+			backgroundColor : this.props.selectedColor
+		};
 		return (
 			<header className="toolbar">
 				<div className="toolbar__controls">
-					<div className="button button--filled"></div>
+					<div className="button button--filled" style={colorStyles}></div>
 					<div className="button button--undo">Undo</div>
 					<div className="button button--clear button--dropdown">Clear My Sketches
 						<span className="button--dropdown__toggle"></span>
@@ -37,6 +39,7 @@ export default class Toolbar extends React.Component {
 
 Toolbar.propTypes = {
 	selectedTool : React.PropTypes.string.isRequired,
+	selectedColor : React.PropTypes.string.isRequired,
 	tools : React.PropTypes.array.isRequired,
 	handleToolChange : React.PropTypes.func
 };
