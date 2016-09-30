@@ -1,9 +1,11 @@
 import React from 'react';
+import ToolPalette from './ToolPalette.jsx';
 
 /**
- * My component, just for me, u no touchy.
+ * Toolbar allows users to perform actions (undo, share, change color) on the
+ * main whiteboard.
  *
- * @class App
+ * @class Toolbar
  * @extends React.Component
  */
 export default class Toolbar extends React.Component {
@@ -12,22 +14,21 @@ export default class Toolbar extends React.Component {
 		return (
 			<header className="toolbar">
 				<div className="toolbar__controls">
-					<div className="toolbar__button toolbar__button--filled"></div>
-					<div className="toolbar__button toolbar__button--undo">Undo</div>
-					<div className="toolbar__button toolbar__button--clear toolbar__button--dropdown">Clear My Sketches
-					<span className="toolbar__button--dropdown__toggle"></span>
+					<div className="button button--filled"></div>
+					<div className="button button--undo">Undo</div>
+					<div className="button button--clear button--dropdown">Clear My Sketches
+						<span className="button--dropdown__toggle"></span>
 					</div>
 				</div>
-				<ul className="mode-list">
-					<li className="mode-list__item mode-list__item--pen is-active"></li>
-					<li className="mode-list__item mode-list__item--line"></li>
-					<li className="mode-list__item mode-list__item--rect"></li>
-					<li className="mode-list__item mode-list__item--text"></li>
-				</ul>
+				<ToolPalette
+					tools={this.props.tools}
+					selectedTool = {this.props.selectedTool}
+					handleToolChange = {this.props.handleToolChange}
+				/>
 				<div className="toolbar__share">
-					<div className="toolbar__item toolbar__item--url-change">Change URL</div>
-					<div className="toolbar__item toolbar__item--name">Rohan</div>
-					<div className="toolbar__item toolbar__item--share">Invite / Share</div>
+					<div className="item item--url-change">Change URL</div>
+					<div className="item item--name">Rohan</div>
+					<div className="item item--share">Invite / Share</div>
 				</div>
 			</header>
 		)
@@ -35,7 +36,9 @@ export default class Toolbar extends React.Component {
 }
 
 Toolbar.propTypes = {
-	mode : React.PropTypes.string
+	selectedTool : React.PropTypes.string.isRequired,
+	tools : React.PropTypes.array.isRequired,
+	handleToolChange : React.PropTypes.func
 };
 
 Toolbar.defaultProps = {

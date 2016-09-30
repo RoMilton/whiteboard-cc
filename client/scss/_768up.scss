@@ -25,7 +25,8 @@ $toolbar-height : 50px;
 	// container for Color & Undo buttons
 	&__controls{
 		position:absolute;
-		left:0
+		left:0;
+		padding:7px 0 0 7px;
 	}
 
 	// container for Share, Username and change URL buttons
@@ -36,136 +37,135 @@ $toolbar-height : 50px;
 		height:100%;
 	}
 
-	// traditional-looking toolbar button. Does not take up full height of toolbar
-	$button-height: $toolbar-height - 14px;
-	&__button{
-		display:inline-block;
-		height: $button-height;
-		border: 1px solid $ebb;
-		vertical-align: top;
-		margin-top: ($toolbar-height - $button-height) / 2;
-		margin-left: 10px;
-		padding: 8px 9px 9px 35px;
-		position:relative;
-		text-transform:uppercase;
-		font-size:12px;
-		color: $grey;
-		@include button;
-		@include border-radius;
-		box-sizing: border-box;
+}
 
-		// background image is assigned to pseudo element to its opacity can be controlled
-		&:before{
-			background-position: 50% 50%;
-			background-repeat:no-repeat;
-			background-size:100%;
-			width: 18px;
-			height:18px;
-			content:"";
-			position:absolute;
-			left:9px;
-			opacity:0.34;
-		}
+// traditional button for use anywhere on page
+.button{
+	display:inline-block;
+	height: 36px;
+	border: 1px solid $ebb;
+	vertical-align: top;
+	margin-left: 10px;
+	padding: 8px 9px 9px 35px;
+	position:relative;
+	text-transform:uppercase;
+	font-size:12px;
+	color: $grey;
+	@include button;
+	@include border-radius;
+	box-sizing: border-box;
 
-		&--undo:before{
-			background-image: url('images/icon-arrow-round.png');
-		}
-		&--clear:before{
-			background-image: url('images/icon-cross.png');
-		}
-
-		// button with no icon - just solid color;
-		&--filled{
-			width: 58px;
-			background-color:green;
-		}
-
-		// button with dropdown menu
-		&--dropdown{
-			padding-right:28px;
-
-			//arrow to toggle dropdown menu
-			&__toggle{
-				position:absolute;
-				right:0px;
-				top:50%;
-				transform: translate(0,-50%);
-				width:25px;
-				height:100%;
-				display:inline-block;
-				opacity:0.63;
-				background: url('images/icon-arrow-down.png') 50% 50% no-repeat;
-				&:hover{
-					background-color:$ebb;
-					opacity:1;
-				}
-			}
-		}
-		
-		// when hover on toolbar button
-		&:hover{
-			border-color: darken($ebb,10%);
-			color: darken($grey,25%);
-			&:before {
-				opacity:0.7;
-			}
-		}
-
+	// background image is assigned to pseudo element to its opacity can be controlled
+	&:before{
+		background-position: 50% 50%;
+		background-repeat:no-repeat;
+		background-size:100%;
+		width: 18px;
+		height:18px;
+		content:"";
+		position:absolute;
+		left:9px;
+		opacity:0.34;
 	}
 
-	// Full height toolbar item. 
-	&__item{
-		color:$grey;
-		padding:15px 15px 0 40px;
-		font-size:14px;
-		display:inline-block;
-		@include button;
-		height:100%;
-		position:relative;
+	&--undo:before{
+		background-image: url('images/icon-arrow-round.png');
+	}
+	&--clear:before{
+		background-image: url('images/icon-cross.png');
+	}
 
-		&:hover{
-			//background-color: darken($spring-wood,2%);
-			color:darken($grey,15%);
-			&:before{
-				opacity:0.9;
-			}
-		}
+	// button with no icon - just solid color;
+	&--filled{
+		width: 58px;
+		background-color:green;
+	}
 
-		// background image is assigned to pseudo element to its opacity can be controlled
-		&:before{
-			background-position:0px 50%;
-			background-repeat:no-repeat;
-			background-size:20px;
-			content:"";
-			width:20px;
-			height:100%;
+	// button with dropdown menu
+	&--dropdown{
+		padding-right:28px;
+
+		//arrow to toggle dropdown menu
+		&__toggle{
 			position:absolute;
-			left:14px;
-			top:0;
-			opacity:0.35;
-		}
-
-		// change url toolbaritem
-		&--url-change:before{
-			background-image: url('images/icon-chain.png');
-		}
-
-		// change name toolbar item
-		&--name:before{
-			background-image: url('images/icon-person.png');
-		}
-
-		// invite/share toolbar item
-		&--share{
-			//background-color: #EBE8E8;
-			// color:$bright;
-			&:before{
-				background-image: url('images/icon-share.png');
+			right:0px;
+			top:50%;
+			transform: translate(0,-50%);
+			width:25px;
+			height:100%;
+			display:inline-block;
+			opacity:0.63;
+			background: url('images/icon-arrow-down.png') 50% 50% no-repeat;
+			&:hover{
+				background-color:$ebb;
+				opacity:1;
 			}
-			// &:hover{
-			// 	background-color:  darken($ebb,7%);
-			// }
 		}
+	}
+	
+	// when hover on toolbar button
+	&:hover{
+		border-color: darken($ebb,10%);
+		color: darken($grey,25%);
+		&:before {
+			opacity:0.7;
+		}
+	}
+
+}
+
+// 100% height item
+.item{
+	color:$grey;
+	padding:15px 15px 0 40px;
+	font-size:14px;
+	display:inline-block;
+	@include button;
+	height:100%;
+	position:relative;
+
+	&:hover{
+		//background-color: darken($spring-wood,2%);
+		color:darken($grey,15%);
+		&:before{
+			opacity:0.9;
+		}
+	}
+
+	// background image is assigned to pseudo element to its opacity can be controlled
+	&:before{
+		background-position:0px 50%;
+		background-repeat:no-repeat;
+		background-size:20px;
+		content:"";
+		width:20px;
+		height:100%;
+		position:absolute;
+		left:14px;
+		top:0;
+		opacity:0.35;
+	}
+
+	// change url toolbaritem
+	&--url-change:before{
+		background-image: url('images/icon-chain.png');
+	}
+
+	// change name toolbar item
+	&--name:before{
+		background-image: url('images/icon-person.png');
+	}
+
+	// invite/share toolbar item
+	&--share{
+		//background-color: #EBE8E8;
+		// color:$bright;
+		&:before{
+			background-image: url('images/icon-share.png');
+		}
+		// &:hover{
+		// 	background-color:  darken($ebb,7%);
+		// }
 	}
 }
 
@@ -175,7 +175,7 @@ $toolbar-height : 50px;
 }
 
 // list of modes (pen, line, rectangle etc)
-.mode-list{
+.tool-list{
 	height:100%;
 	display:inline-block;
 	margin:0;
@@ -239,6 +239,9 @@ $nav-item-margin: 10px;
 		border: 2px solid transparent;
 		box-sizing: border-box;
 		vertical-align: top;
+		&:hover{
+			border-color:lighten($grey,20%);
+		}
 		@include button;
 		&:before{
 			counter-increment: section;
@@ -265,7 +268,6 @@ $nav-item-margin: 10px;
 				line-height:106px;
 			}
 		}
-
 		&:last-child{
 			margin-right:0;
 		}
