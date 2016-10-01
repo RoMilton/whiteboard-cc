@@ -11,7 +11,14 @@ class Shape {
 		this.ctx = this.canvas.getContext('2d');
 	}
 
+	initialise(obj){
+
+	}
+
 	mouseDown(pos){
+		//store image data 
+		this.imgData = this.ctx.getImageData(0,0,this.canvas.width,this.canvas.height);		
+		
 		this.status = STATUS.start;
 		this.addPoint(pos)
 		this.draw();
@@ -44,17 +51,14 @@ class Shape {
 		}
 	}
 
-	// update(){
-	// 	this.draw();
-	// 	this.imgData = this.ctx.getImageData(0,0,this.canvas.width,this.canvas.height);
-	// }
-
-	// undoLastPoint(){
-	// 	if (this.imgData){
-	// 		this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height); // Clears the canvas
-	// 		this.ctx.putImageData(this.imgData,this.canvas.width,this.canvas.height);
-	// 	}
-	// }
+	removeShape(){
+		if (this.imgData){
+			// Clears the canvas
+			this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height); 
+			// restore original images
+			this.ctx.putImageData(this.imgData,0,0);
+		}
+	}
 
 	draw(){
 
@@ -104,20 +108,15 @@ Shape.StraightLine = class extends Shape{
 	draw(){
 		if (this.status === STATUS.idle){ return; }
 		let ctx = this.ctx;
-		let clickPos = this.clickPos;
-		let prevClickPos = this.prevClickPos;
 		ctx.strokeStyle = this.color;
 		ctx.lineJoin = "round";
 		ctx.lineWidth = 5;
 		ctx.beginPath();
-		//if(this.status === STATUS.middle){
-		//this.undoLastPoint();
+		if(this.status === STATUS.middle){
+			this.removeShape();
+		}
 		ctx.moveTo(this.startPos[0], this.startPos[1]);
-		ctx.lineTo(clickPos[0], clickPos[1]);
-		//}else{
-			
-		//}
-		
+		ctx.lineTo(this.clickPos[0], this.clickPos[1]);
 		ctx.closePath();
 		ctx.stroke();
 	}
@@ -125,11 +124,41 @@ Shape.StraightLine = class extends Shape{
 }
 
 
+Shape.FillRect = class extends Shape{
+
+	draw(){
+		if (this.status === STATUS.idle){ return; }
+		let ctx = this.ctx;
+		
+		//ctx.strokeStyle = this.color;
+		//ctx.lineJoin = "round";
+		//ctx.lineWidth = 5;
+		//ctx.beginPath();
+		if(this.status === STATUS.middle){
+			this.removeShape();
+		}
+		ctx.fillStyle = this.color;
+
+		if(this.status !== STATUS.start){
+			let width = this.clickPos[0] - this.startPos[0];
+			let height = this.clickPos[1] - this.startPos[1];
+			ctx.fillRect(this.startPos[0],this.startPos[1],width,height);
+		}
+		
+		// ctx.moveTo(this.startPos[0], this.startPos[1]);
+		// ctx.lineTo(clickPos[0], clickPos[1]);
+		//ctx.closePath();
+		//ctx.stroke();
+	}
+
+}
+
 
 
 const TOOLS = {
 	'pen' : Shape.Line,
-	'line' : Shape.StraightLine
+	'line' : Shape.StraightLine,
+	'rect' : Shape.FillRect
 }
 
 /**
@@ -191,7 +220,7 @@ export default class Board extends React.Component {
 	}
 
 	_handleMouseOut(e){
-		this._currShape.mouseOut();
+		if (this._currShape){ this._currShape.mouseOut(); }
 		this._paint = false
 	}
 
