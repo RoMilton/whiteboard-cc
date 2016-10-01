@@ -86,7 +86,10 @@ export default class App extends React.Component {
 				/>
 				<main className="main">
 					<div className="wrap">
-						<Board selectedColor= {this.state.selectedColor} />
+						<Board 
+							color = {this.state.selectedColor}
+							tool = {this.state.selectedTool}
+						/>
 						<Nav />
 					</div>
 				</main>

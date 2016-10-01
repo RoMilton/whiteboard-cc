@@ -2,7 +2,8 @@ import React from 'react';
 import classNames from 'classnames';
 
 /**
- * My component, just for me, u no touchy.
+ * List of Tool Options, presented side by side. When clicked on, fires 
+ * a callback provided by prop handleToolChange.
  *
  * @class App
  * @extends React.Component
