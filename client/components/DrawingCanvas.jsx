@@ -238,23 +238,25 @@ export default class DrawingCanvas extends React.Component {
 	_handleMouseUp(e){
 		if (this._currShape){
 			this._currShape.mouseUp(this._getMouseCoords(e));
-			this._insertNewShape();
+			this._finish();
 		}
 	}
 
-	_insertNewShape(){
+	_finish(){
 		if (this._currShape){
 			let canvas = this.refs.canvas;
-			this.props.insertNewShape(canvas.toDataURL());
-			this._ctx.clearRect(0, 0, canvas.width, canvas.height); 
-			this._currShape = null;
+			this.props.onShapeFinish(canvas.toDataURL("image/png")).then(()=>{
+				// console.log('clearing the drawing canvas');
+				this._ctx.clearRect(0, 0, canvas.width, canvas.height);
+				this._currShape = null;
+			});
 		}
 	}
 
 	_handleMouseOut(e){
 		if (this._currShape){
 			this._currShape.mouseOut();
-			this._insertNewShape();
+			this._finish();
 		}
 	}
 
