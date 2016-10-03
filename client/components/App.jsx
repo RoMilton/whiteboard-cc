@@ -1,7 +1,7 @@
 import React from 'react';
 import Toolbar from './Toolbar.jsx';
 import DrawingCanvas from './DrawingCanvas.jsx';
-import DisplayCanvas from './DisplayCanvas.jsx';
+import DisplayBoard from './DisplayBoard.jsx';
 import Nav from './Nav.jsx';
 import Utils from '../utils/Utils.js';
 
@@ -32,6 +32,8 @@ const COLORS = [
 	'#93Cba4'
 ];
 
+const MAX_BOARD_COUNT = 6;
+
 /**
  * Whiteboard App Component
  *
@@ -45,7 +47,7 @@ export default class App extends React.Component {
 		this.state = {
 			selectedTool : this._getDefaultTool(),
 			selectedColor : COLORS[2],
-			boards : [],
+			boards : ['data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='],
 			iSelectedBoard : 0,
 			history : []
 		};
@@ -56,6 +58,11 @@ export default class App extends React.Component {
 		// let styles = window.getComputedStyle(canvas);
 		// canvas.setAttribute('width',parseInt(styles.width));
 		// canvas.setAttribute('height',parseInt(styles.height));
+	}
+
+	
+	get maxBoardCount() {
+		return MAX_BOARD_COUNT;
 	}
 
 
@@ -83,6 +90,25 @@ export default class App extends React.Component {
 	_changeTool(toolName){
 		this.setState({
 			selectedTool : toolName
+		});
+	}
+
+	_getNewBoard(){
+		return 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
+	}
+
+	_addBoard(){
+		let boards = this.state.boards.slice();
+		boards.push(this._getNewBoard());
+		this.setState({
+			boards : boards,
+			iSelectedBoard : boards.length - 1
+		});
+	}
+
+	_changeBoard(iSelectedBoard){
+		this.setState({
+			iSelectedBoard : iSelectedBoard
 		});
 	}
 
@@ -151,22 +177,23 @@ export default class App extends React.Component {
 				<main className="main">
 					<div className="wrap">
 						<div className="main-board">
-							<ul className="main-board__list">
-								<li>
-									<img 
-										src= {this.state.boards[0]}
-										className = 'main-board__image'
-									/>
-								</li>
-							</ul>
+							<DisplayBoard
+								boards = {this.state.boards}
+								iSelectedBoard = {this.state.iSelectedBoard}
+							/>
 							<DrawingCanvas 
 								color = {this.state.selectedColor}
 								tool = {this.state.selectedTool}
 								onShapeFinish = {this._insertShape.bind(this)}
 							/>
 						</div>
-						<Nav>
-						</Nav>
+						<Nav
+							boards = {this.state.boards}
+							iSelectedBoard = {this.state.iSelectedBoard}
+							onItemChange = {this._changeBoard.bind(this)}
+							onItemAdd = {this._addBoard.bind(this)}
+							maxBoardCount = {this.maxBoardCount}
+						/>
 					</div>
 				</main>
 			</div>
