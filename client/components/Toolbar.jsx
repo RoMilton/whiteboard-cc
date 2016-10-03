@@ -17,7 +17,7 @@ export default class Toolbar extends React.Component {
 			<header className="toolbar">
 				<div className="toolbar__controls">
 					<div className="button button--filled" style={colorStyles}></div>
-					<div className="button button--undo">Undo</div>
+					<div className="button button--undo" onClick={this.props.handleUndoClick} >Undo</div>
 					<div className="button button--clear button--dropdown">Clear My Sketches
 						<span className="button--dropdown__toggle"></span>
 					</div>
@@ -41,7 +41,8 @@ Toolbar.propTypes = {
 	selectedTool : React.PropTypes.string.isRequired,
 	selectedColor : React.PropTypes.string.isRequired,
 	tools : React.PropTypes.array.isRequired,
-	handleToolChange : React.PropTypes.func
+	handleToolChange : React.PropTypes.func,
+	handleUndoClick : React.PropTypes.func
 };
 
 Toolbar.defaultProps = {

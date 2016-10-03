@@ -17,8 +17,7 @@ class Shape {
 
 	mouseDown(pos){
 		//store image data 
-		this.imgData = this.ctx.getImageData(0,0,this.canvas.width,this.canvas.height);		
-		
+		this.imgData = this.ctx.getImageData(0,0,this.canvas.width,this.canvas.height);
 		this.status = STATUS.start;
 		this.addPoint(pos)
 		this.draw();
@@ -26,7 +25,7 @@ class Shape {
 
 	mouseUp(pos){
 		this.status = STATUS.end;
-		this.addPoint(pos)
+		this.addPoint(pos);
 		this.draw();
 		this.status = STATUS.idle;
 	}
@@ -34,13 +33,14 @@ class Shape {
 	mouseMove(pos){
 		if (this.status === STATUS.idle){ return; }
 		this.status = STATUS.middle;
-		this.addPoint(pos)
+		this.addPoint(pos);
 		this.draw();
 	}
 
-	mouseOut(pos){
+	mouseOut(){
+		this.status = STATUS.end;
+		this.draw();
 		this.status = STATUS.idle;
-		//this.addPoint(pos)
 	}
 
 	addPoint(pos){
@@ -55,9 +55,13 @@ class Shape {
 		if (this.imgData){
 			// Clears the canvas
 			this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height); 
-			// restore original images
+			// restore original image
 			this.ctx.putImageData(this.imgData,0,0);
 		}
+	}
+
+	getImageData(){
+		return this.ctx.getImageData(0,0,this.ctx.canvas.width,this.ctx.canvas.height);
 	}
 
 	draw(){
@@ -162,15 +166,17 @@ const TOOLS = {
 }
 
 /**
- * Main Whiteboard Component
+ * The Whiteboard Canvas has one purpose - to allow the drawing of new shapes.
+ * After the new shape is created, the insertNewShape() callback is fired and 
+ * the canvas is cleared
  *
- * @class Board
+ * @class Canvas
  * @extends React.Component
  */
-export default class Board extends React.Component {
+export default class DrawingCanvas extends React.Component {
 
 	componentDidMount(){
-		let canvas = this.refs.board;
+		let canvas = this.refs.canvas;
 		this._width = canvas.width;
 		this._height = canvas.height;
 		this._ctx = canvas.getContext("2d");
@@ -179,25 +185,40 @@ export default class Board extends React.Component {
 		this._clickPos = [];
 		this._prevClickPos = [];
 
-		//this._clickDrag = new Array();
-		this._paint;
-
 		// canvas needs height and width attributes to be set. Let's retrieve them from the CSS 
 		let styles = window.getComputedStyle(canvas);
 		canvas.setAttribute('width',parseInt(styles.width));
 		canvas.setAttribute('height',parseInt(styles.height));
 	}
 
+	_getMouseCoords(e){
+		let canvas = this.refs.canvas;
+		let rect = canvas.getBoundingClientRect();
+		//([e.pageX - canvas.offsetLeft, e.pageY - canvas.offsetTop]);
+		return [
+			e.clientX - rect.left,
+			e.clientY - rect.top
+    	];
+	}
+
 	_handleMouseMove(e){
-		if(this._paint && this._currShape){
-			let canvas = this.refs.board;
-			this._currShape.mouseMove([e.pageX - canvas.offsetLeft, e.pageY - canvas.offsetTop]);
+		if(this._currShape){
+			// console.log('mousemoving');
+			// this._currShape.mouseMove(this._getMouseCoords(e));
+			// console.log('e',e.pageX);
+			// console.log('canvas',canvas.offsetLeft);
+			this._currShape.mouseMove(this._getMouseCoords(e));
 		}
 	}
 
+	_handleMouseEnter(e){
+		// if(this._currShape){
+		// 	this._currShape.mouseMove(this._getMouseCoords(e));
+		// }
+	}
+
 	_handleMouseDown(e){
-		let canvas = this.refs.board;
-		this._paint = true;
+		let canvas = this.refs.canvas;
 
 		// create a new shape
 		this._currShape = new TOOLS[this.props.tool]({
@@ -205,7 +226,7 @@ export default class Board extends React.Component {
 			color : this.props.color
 		});
 
-		this._currShape.mouseDown([e.pageX - canvas.offsetLeft, e.pageY - canvas.offsetTop]);
+		this._currShape.mouseDown(this._getMouseCoords(e));
 	}
 
 	componentwillReceiveNewProps(nextProps){
@@ -215,30 +236,44 @@ export default class Board extends React.Component {
 	}
 
 	_handleMouseUp(e){
-		let canvas = this.refs.board;
-		this._currShape.mouseUp([e.pageX - canvas.offsetLeft, e.pageY - canvas.offsetTop]);
+		if (this._currShape){
+			this._currShape.mouseUp(this._getMouseCoords(e));
+			this._insertNewShape();
+		}
+	}
+
+	_insertNewShape(){
+		if (this._currShape){
+			let canvas = this.refs.canvas;
+			this.props.insertNewShape(canvas.toDataURL());
+			this._ctx.clearRect(0, 0, canvas.width, canvas.height); 
+			this._currShape = null;
+		}
 	}
 
 	_handleMouseOut(e){
-		if (this._currShape){ this._currShape.mouseOut(); }
-		this._paint = false
+		if (this._currShape){
+			this._currShape.mouseOut();
+			this._insertNewShape();
+		}
 	}
 
 	render(){
 		return (
 			<canvas
-				className="whiteboard"
+				className="main-board__canvas"
 				onMouseMove = {this._handleMouseMove.bind(this)}
 				onMouseDown = {this._handleMouseDown.bind(this)}
 				onMouseUp = {this._handleMouseUp.bind(this)}
 				onMouseOut = {this._handleMouseOut.bind(this)}
-				ref = "board"
+				onMouseEnter = {this._handleMouseEnter.bind(this)}
+				ref = "canvas"
 			/>
 		)
 	}
 }
 
-Board.propTypes = {
+DrawingCanvas.propTypes = {
 	color : React.PropTypes.string.isRequired,
 	tool : React.PropTypes.string.isRequired,
 };

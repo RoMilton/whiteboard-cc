@@ -1,6 +1,6 @@
 import React from 'react';
 import Toolbar from './Toolbar.jsx';
-import Board from './Board.jsx';
+import DrawingCanvas from './DrawingCanvas.jsx';
 import Nav from './Nav.jsx';
 
 const TOOLS = [
@@ -42,7 +42,9 @@ export default class App extends React.Component {
 		super();
 		this.state = {
 			selectedTool : this._getDefaultTool(),
-			selectedColor : COLORS[2]
+			selectedColor : COLORS[2],
+			boards : [],
+			iSelectedBoard : 0
 		};
 	}
 
@@ -74,6 +76,24 @@ export default class App extends React.Component {
 		});
 	}
 
+	_handleUndo(){
+		// this.setState({
+
+		// })
+	}
+
+	_insertNewShape(imageDataURL){
+		//console.log('imageData',imageDataURL);
+		var boards = this.state.boards.slice();
+		boards[this.state.iSelectedBoard] = imageDataURL;
+		this.setState({
+			boards : boards
+		});
+	}
+
+	// componentDidUpdate(prevProps,prevState){
+
+	// }
 
 	render(){
 		return (
@@ -83,14 +103,27 @@ export default class App extends React.Component {
 					selectedTool = {this.state.selectedTool}
 					selectedColor = {this.state.selectedColor}
 					handleToolChange = {this._handleToolChange.bind(this)}
+					handleUndoClick = {this._handleUndo.bind(this)}
 				/>
 				<main className="main">
 					<div className="wrap">
-						<Board 
-							color = {this.state.selectedColor}
-							tool = {this.state.selectedTool}
-						/>
-						<Nav />
+						<div className="main-board">
+							<ul className="main-board__list">
+								<li>
+									<div className="main-board__images">
+										<img src={this.state.boards[this.state.iSelectedBoard]}
+										/>
+									</div>
+								</li>
+							</ul>
+							<DrawingCanvas 
+								color = {this.state.selectedColor}
+								tool = {this.state.selectedTool}
+								insertNewShape = {this._insertNewShape.bind(this)}
+							/>
+						</div>
+						<nav>
+						</nav>
 					</div>
 				</main>
 			</div>
