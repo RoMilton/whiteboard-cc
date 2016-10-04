@@ -1,5 +1,8 @@
 import React from 'react';
-import ToolPalette from './ToolPalette.jsx';
+import ShapePalette from './ShapePalette.jsx';
+import ColorSelect from './ColorSelect.jsx';
+import ToolButton from './ToolButton.jsx';
+
 
 /**
  * Toolbar allows users to perform actions (undo, share, change color) on the
@@ -9,6 +12,39 @@ import ToolPalette from './ToolPalette.jsx';
  * @extends React.Component
  */
 export default class Toolbar extends React.Component {
+	constructor(){
+		super();
+		
+		let showDropdown = {
+			colorSelect : false,
+			undoList : false,
+			changeURL : false,
+			changeName : false,
+			Share : false
+		}
+
+		this.state={
+			showDropdown : showDropdown
+		}
+	}
+
+	toggleSubmenu(dropdownName){
+		this.setSubmenuVisibility(dropdownName,!this.state.showDropdown[dropdownName]);
+	}
+
+	setSubmenuVisibility(dropdownName,visible){
+		var showDropdown = this.state.showDropdown;
+		showDropdown[dropdownName] = visible;
+		this.setState({
+			dropdown : showDropdown
+		});
+	}
+
+	handleColorClick(newCol){
+		this.setSubmenuVisibility('colorSelect',false);
+		this.props.handleColorClick(newCol);
+	}
+
 	render(){
 		let colorStyles = {
 			backgroundColor : this.props.selectedColor
@@ -16,13 +52,34 @@ export default class Toolbar extends React.Component {
 		return (
 			<header className="toolbar">
 				<div className="toolbar__controls">
-					<div className="button button--filled" style={colorStyles}></div>
-					<div className="button button--undo" onClick={this.props.handleUndoClick} >Undo</div>
-					<div className="button button--clear button--dropdown">Clear My Sketches
-						<span className="button--dropdown__toggle"></span>
+					<div className="dropdown">
+						<ToolButton
+							className="button button--filled" 
+							style={colorStyles}
+							handleClick={this.toggleSubmenu.bind(this,'colorSelect')}
+						>
+						</ToolButton>
+						<ColorSelect
+							colors={this.props.colors} 
+							selectedColor = {this.props.selectedColor}
+							handleColorClick = {this.handleColorClick.bind(this)}
+							visible = {this.state.showDropdown.colorSelect}
+						/>
 					</div>
+					<ToolButton 
+						className="button button--undo" 
+						handleClick={this.props.handleUndoClick}
+					>
+						Undo
+					</ToolButton>
+					<ToolButton 
+						className="button button--clear button--dropdown"
+					>
+						Clear My Sketches
+						<span className="button--dropdown__toggle"></span>
+					</ToolButton>
 				</div>
-				<ToolPalette
+				<ShapePalette
 					tools={this.props.tools}
 					selectedTool = {this.props.selectedTool}
 					handleToolChange = {this.props.handleToolChange}
@@ -38,11 +95,13 @@ export default class Toolbar extends React.Component {
 }
 
 Toolbar.propTypes = {
+	colors : React.PropTypes.array.isRequired,
 	selectedTool : React.PropTypes.string.isRequired,
 	selectedColor : React.PropTypes.string.isRequired,
 	tools : React.PropTypes.array.isRequired,
 	handleToolChange : React.PropTypes.func,
-	handleUndoClick : React.PropTypes.func
+	handleUndoClick : React.PropTypes.func,
+	handleColorClick: React.PropTypes.func
 };
 
 Toolbar.defaultProps = {

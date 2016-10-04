@@ -9,6 +9,7 @@ These Styles should be applied to screens 768px and above only
 ******************************************************************/
 
 $toolbar-height : 50px;
+$button-height: 36px;
 
 // Toolbar Header
 .toolbar{
@@ -43,7 +44,7 @@ $toolbar-height : 50px;
 // traditional button for use anywhere on page
 .button{
 	display:inline-block;
-	height: 36px;
+	height: $button-height;
 	border: 1px solid $ebb;
 	vertical-align: top;
 	margin-left: 10px;
@@ -278,6 +279,39 @@ $nav-item-margin: 10px;
 		height:100%;
 	}
 
+}
 
+.dropdown{
+	display:inline-block;
+	position:relative;
+	&__card{
+		position: absolute;
+		background-color: #F7F2F0;
+		@include box_shadow(3);
+		&--color{
+			top: $button-height + 12px;
+			width: 254px;
+			left: 0px;
+		}
+	}
+}
+
+.color-palette{
+	text-align: left;
+	padding: 7px;
+	display:flex;
+	flex-wrap:wrap;
+	li{
+		height: 30px;
+		border: 1px solid rgba(0, 0, 0, 0.19);
+		border-radius: 2px;
+		width: 32px;
+		display: block;
+		margin: 4px;
+		@include button;
+		&.is-active{
+			@include highlight_shadow;
+		}
+	}
 }
 

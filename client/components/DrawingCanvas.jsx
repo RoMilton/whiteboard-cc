@@ -2,6 +2,15 @@ import React from 'react';
 
 
 class Shape {
+
+	static get STATUS(){
+		return {
+			idle : 0, // not currently drawing
+			start: 1, // drawing the first point of a shape
+			middle: 2, // drawing but neither the first nor last point of a shape
+			end: 3 // drawing last point of a shape
+		};
+	}
 	
 	constructor(obj){
 		//console.log('Shape.Line()',obj);
@@ -18,35 +27,35 @@ class Shape {
 	mouseDown(pos){
 		//store image data 
 		this.imgData = this.ctx.getImageData(0,0,this.canvas.width,this.canvas.height);
-		this.status = STATUS.start;
+		this.status = Shape.STATUS.start;
 		this.addPoint(pos)
 		this.draw();
 	}
 
 	mouseUp(pos){
-		this.status = STATUS.end;
+		this.status = Shape.STATUS.end;
 		this.addPoint(pos);
 		this.draw();
-		this.status = STATUS.idle;
+		this.status = Shape.STATUS.idle;
 	}
 
 	mouseMove(pos){
-		if (this.status === STATUS.idle){ return; }
-		this.status = STATUS.middle;
+		if (this.status === Shape.STATUS.idle){ return; }
+		this.status = Shape.STATUS.middle;
 		this.addPoint(pos);
 		this.draw();
 	}
 
 	mouseOut(){
-		this.status = STATUS.end;
+		this.status = Shape.STATUS.end;
 		this.draw();
-		this.status = STATUS.idle;
+		this.status = Shape.STATUS.idle;
 	}
 
 	addPoint(pos){
 		this.prevClickPos = this.clickPos;
 		this.clickPos = pos;
-		if (this.status === STATUS.start){
+		if (this.status === Shape.STATUS.start){
 			this.startPos = this.clickPos;
 		}
 	}
@@ -70,18 +79,10 @@ class Shape {
 
 }
 
-
-const STATUS = {
-	idle : 0, // not currently drawing
-	start: 1, // drawing the first point of a shape
-	middle: 2, // drawing but neither the first nor last point of a shape
-	end: 3 // drawing last point of a shape
-}
-
 Shape.Line = class extends Shape{
 
 	draw(){
-		if (this.status === STATUS.idle){ return; }
+		if (this.status === Shape.STATUS.idle){ return; }
 		let ctx = this.ctx;
 		let clickPos = this.clickPos;
 		let prevClickPos = this.prevClickPos;
@@ -92,7 +93,7 @@ Shape.Line = class extends Shape{
 		ctx.lineWidth = 5;
 		//if (this.props.tool === 'pen'){
 		ctx.beginPath();
-		if(this.status === STATUS.middle){
+		if(this.status === Shape.STATUS.middle){
 			ctx.moveTo(prevClickPos[0], prevClickPos[1]);
 			ctx.lineTo(clickPos[0], clickPos[1]);
 		}else{
@@ -110,13 +111,13 @@ Shape.Line = class extends Shape{
 Shape.StraightLine = class extends Shape{
 
 	draw(){
-		if (this.status === STATUS.idle){ return; }
+		if (this.status === Shape.STATUS.idle){ return; }
 		let ctx = this.ctx;
 		ctx.strokeStyle = this.color;
 		ctx.lineJoin = "round";
 		ctx.lineWidth = 5;
 		ctx.beginPath();
-		if(this.status === STATUS.middle){
+		if(this.status === Shape.STATUS.middle){
 			this.removeShape();
 		}
 		ctx.moveTo(this.startPos[0], this.startPos[1]);
@@ -131,19 +132,19 @@ Shape.StraightLine = class extends Shape{
 Shape.FillRect = class extends Shape{
 
 	draw(){
-		if (this.status === STATUS.idle){ return; }
+		if (this.status === Shape.STATUS.idle){ return; }
 		let ctx = this.ctx;
 		
 		//ctx.strokeStyle = this.color;
 		//ctx.lineJoin = "round";
 		//ctx.lineWidth = 5;
 		//ctx.beginPath();
-		if(this.status === STATUS.middle){
+		if(this.status === Shape.STATUS.middle){
 			this.removeShape();
 		}
 		ctx.fillStyle = this.color;
 
-		if(this.status !== STATUS.start){
+		if(this.status !== Shape.STATUS.start){
 			let width = this.clickPos[0] - this.startPos[0];
 			let height = this.clickPos[1] - this.startPos[1];
 			ctx.fillRect(this.startPos[0],this.startPos[1],width,height);
@@ -211,7 +212,7 @@ export default class DrawingCanvas extends React.Component {
 		}
 	}
 
-	_handleMouseEnter(e){
+	_Ahs(e){
 		// if(this._currShape){
 		// 	this._currShape.mouseMove(this._getMouseCoords(e));
 		// }
@@ -268,7 +269,6 @@ export default class DrawingCanvas extends React.Component {
 				onMouseDown = {this._handleMouseDown.bind(this)}
 				onMouseUp = {this._handleMouseUp.bind(this)}
 				onMouseOut = {this._handleMouseOut.bind(this)}
-				onMouseEnter = {this._handleMouseEnter.bind(this)}
 				ref = "canvas"
 			/>
 		)

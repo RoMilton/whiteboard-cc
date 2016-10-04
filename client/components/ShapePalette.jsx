@@ -8,7 +8,7 @@ import classNames from 'classnames';
  * @class App
  * @extends React.Component
  */
-export default ToolPalette = class extends React.Component {
+export default ShapePalette = class extends React.Component {
 	render(){
 		// returns CSS class string
 		let getCSSClass = (tool) => {
@@ -24,7 +24,8 @@ export default ToolPalette = class extends React.Component {
 					this.props.tools.map((tool)=>{
 						return <li 
 							key = {tool.name}
-							className={getCSSClass(tool)}
+							className = {getCSSClass(tool)}
+							data-tip = {tool.description}
 							onClick = {()=>{this.props.handleToolChange(tool.name)}}
 						/ >
 					})
@@ -34,7 +35,7 @@ export default ToolPalette = class extends React.Component {
 	}
 }
 
-ToolPalette.propTypes = {
+ShapePalette.propTypes = {
 	selectedTool : React.PropTypes.string.isRequired,
 	tools : React.PropTypes.array.isRequired,
 	handleToolChange : React.PropTypes.func

@@ -34,7 +34,14 @@ Sass mixins intended to be used by CSS classes via @include functionality
     } @else if $level == 4 {
         box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.67);
     } @else if $level == 5 {
-        box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.67);
+        box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.67);
     }
+}
 
+/**
+ * Shadow used to give an element emphasis. Not intended to give the illusion of height, as per the box_shadow mixin. 
+ *
+ */
+@mixin highlight_shadow () {
+    box-shadow: 0 0 3px 3px lighten($bright,7%);
 }
