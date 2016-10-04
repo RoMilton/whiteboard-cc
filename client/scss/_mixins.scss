@@ -17,12 +17,11 @@ Sass mixins intended to be used by CSS classes via @include functionality
 }
 
 /**
- * Adds shadow to elements according to the Google Material Design spec:
+ * Adds shadow to gives an element perceived elevation according to the Google Material Design spec:
  * http://www.google.com/design/spec/layout/layout-principles.html#layout-principles-dimensionality
  *
  * Provide a level from 1-5 (5 being the highest element with the largest shadow).
  * are elevated.
- *
  */
 @mixin box_shadow ($level) {
     @if $level == 1 {
@@ -39,8 +38,7 @@ Sass mixins intended to be used by CSS classes via @include functionality
 }
 
 /**
- * Shadow used to give an element emphasis. Not intended to give the illusion of height, as per the box_shadow mixin. 
- *
+ * Gives element a coloured shadow for emphasis.
  */
 @mixin highlight_shadow () {
     box-shadow: 0 0 3px 3px lighten($bright,7%);

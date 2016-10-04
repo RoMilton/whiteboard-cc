@@ -9,6 +9,29 @@ import classNames from 'classnames';
  * @extends React.Component
  */
 export default class ColorSelect extends React.Component {
+	
+	constructor(props){
+		super(props);
+		this.handleDocumentClick = this.handleDocumentClick.bind(this);
+	}
+
+	componentDidMount(){
+ 		document.addEventListener('click', this.handleDocumentClick);
+	}
+
+	componentWillUnmount(){
+		document.removeEventListener('click', this.handleDocumentClick);
+	}
+
+	handleDocumentClick(e){
+		e.stopPropagation();
+		if (!this.props.visible || !this.props.handleClickOutside){return;}
+		let area = this.refs.dropdownCard;
+		if (!area.contains(e.target)) {
+			this.props.handleClickOutside(e)
+		}
+	}
+
 	render(){
 		let getItemCSSClass = (col)=>{
 			return classNames({
@@ -17,6 +40,7 @@ export default class ColorSelect extends React.Component {
 		}
 		return(
 			<div 
+				ref='dropdownCard'
 				className='dropdown__card dropdown__card--color'
 				style = {{display:this.props.visible ? 'block' : 'none'}}
 			>
@@ -42,6 +66,7 @@ ColorSelect.propTypes = {
 	colors : PropTypes.array.isRequired,
 	selectedColor : PropTypes.string.isRequired,
 	handleColorClick : PropTypes.func,
+	handleClickOutside : PropTypes.func,
 	visible : PropTypes.bool
 }
 

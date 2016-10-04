@@ -26,6 +26,10 @@ export default class Toolbar extends React.Component {
 		this.state={
 			showDropdown : showDropdown
 		}
+
+		this.toggleSubmenu = this.toggleSubmenu.bind(this);
+		this.setSubmenuVisibility = this.setSubmenuVisibility.bind(this);
+		this.handleColorClick = this.handleColorClick.bind(this);
 	}
 
 	toggleSubmenu(dropdownName){
@@ -45,6 +49,12 @@ export default class Toolbar extends React.Component {
 		this.props.handleColorClick(newCol);
 	}
 
+	handleDropdownParentClick(e,dropdownName){
+		e.stopPropagation();
+		e.nativeEvent.stopImmediatePropagation();
+		this.toggleSubmenu(dropdownName)
+	}
+
 	render(){
 		let colorStyles = {
 			backgroundColor : this.props.selectedColor
@@ -56,13 +66,14 @@ export default class Toolbar extends React.Component {
 						<ToolButton
 							className="button button--filled" 
 							style={colorStyles}
-							handleClick={this.toggleSubmenu.bind(this,'colorSelect')}
+							handleClick={(e)=>{this.handleDropdownParentClick(e,'colorSelect');}}
 						>
 						</ToolButton>
 						<ColorSelect
 							colors={this.props.colors} 
 							selectedColor = {this.props.selectedColor}
-							handleColorClick = {this.handleColorClick.bind(this)}
+							handleColorClick = {this.handleColorClick}
+							handleClickOutside = {()=>{this.setSubmenuVisibility('colorSelect',false)}}
 							visible = {this.state.showDropdown.colorSelect}
 						/>
 					</div>
