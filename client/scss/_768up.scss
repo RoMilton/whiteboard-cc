@@ -103,6 +103,14 @@ $button-height: 36px;
 				opacity:1;
 			}
 		}
+
+		//dropdown menu
+		.dropdown{
+			position: absolute;
+			right: 0;
+			top: 0;
+			width: 25px;
+		}
 	}
 	
 	// when hover on toolbar button
@@ -297,7 +305,7 @@ $nav-item-margin: 10px;
 		width: 174px;
 		padding: 7px;
 		box-sizing: border-box;
-		top: $toolbar-height + 16px;
+		top: $toolbar-height + 8px;
 		@include box_shadow(3);
 	}
 	&.is-active{
@@ -308,7 +316,7 @@ $nav-item-margin: 10px;
 			left:50%;
 			width:10px;
 			height:10px;
-			top: $toolbar-height + 8px;
+			top: $toolbar-height;
 			transform: translate(-5px,0);
 			@include triangle(top,$spring-wood,8px);
 		}
@@ -338,5 +346,18 @@ $nav-item-margin: 10px;
 		width: 100%;
 		padding:4px 8px;
 		text-align:center;
+	}
+}
+
+.options-list{
+	li{
+		font-size: 13px;
+		padding: 10px 0;
+		text-align: center;
+		@include button
+		&:hover{
+			background-color:$grey;
+			color:#fff;
+		}
 	}
 }

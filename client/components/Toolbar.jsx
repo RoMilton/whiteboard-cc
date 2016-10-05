@@ -55,7 +55,14 @@ export default class Toolbar extends React.Component {
 						className="button button--clear button--dropdown"
 					>
 						Clear My Sketches
-						<span className="button--dropdown__toggle"></span>
+						<DropDown>
+							<span className="button--dropdown__toggle" />
+							<ul className="options-list">
+								<li onClick={this.props.handleClearMyClick} >Clear My Sketches</li>
+								<li onClick={this.props.handleClearAllClick} > Clear Everything</li>
+							</ul>
+						</DropDown>
+						
 					</ToolButton>
 				</div>
 				<ShapePalette

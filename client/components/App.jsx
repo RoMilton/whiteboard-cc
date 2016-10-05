@@ -142,6 +142,24 @@ export default class App extends React.Component {
 		});
 	}
 
+	clearMy(){
+		let boards = this.state.boards.map(()=>{
+			return this.getNewBoard();
+		});
+		this.setState({
+			boards : boards,
+		});
+	}
+
+	clearAll(){
+		let newBoards = [];
+		newBoards.push(this.getNewBoard());
+		this.setState({
+			boards : newBoards,
+			iSelectedBoard : newBoards.length - 1
+		});
+	}
+
 	changeBoard(iSelectedBoard){
 		this.setState({
 			iSelectedBoard : iSelectedBoard
@@ -199,6 +217,8 @@ export default class App extends React.Component {
 					handleToolChange = {this.changeTool.bind(this)}
 					handleUndoClick = {this.undoLast.bind(this)}
 					handleColorClick = {this.changeColor.bind(this)}
+					handleClearMyClick = {this.clearMy.bind(this)}
+					handleClearAllClick = {this.clearAll.bind(this)}
 				/>
 				<main className="main">
 					<div className="wrap">
