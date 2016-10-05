@@ -39,25 +39,19 @@ export default class ColorSelect extends React.Component {
 			});
 		}
 		return(
-			<div 
-				ref='dropdownCard'
-				className='dropdown__card dropdown__card--color'
-				style = {{display:this.props.visible ? 'block' : 'none'}}
-			>
-				<ul className="color-palette">
-					{this.props.colors.map((col,index)=>{
-						return <li
-							className={getItemCSSClass(col)}
-							key={index}
-							onClick={()=>{
-								console.log('this',this);
-								this.props.handleColorClick(col)
-							}}
-							style={{backgroundColor:col}}
-						/>
-					})}
-				</ul>
-			</div>
+			<ul className="color-palette">
+				{this.props.colors.map((col,index)=>{
+					return <li
+						className={getItemCSSClass(col)}
+						key={index}
+						onClick={()=>{
+							console.log('this',this);
+							this.props.handleColorClick(col)
+						}}
+						style={{backgroundColor:col}}
+					/>
+				})}
+			</ul>
 		)
 	}
 }

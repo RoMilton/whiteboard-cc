@@ -284,15 +284,19 @@ $nav-item-margin: 10px;
 .dropdown{
 	display:inline-block;
 	position:relative;
+	&:focus{
+		outline: none;
+	}
+	&__content{
+
+	}
 	&__card{
 		position: absolute;
 		background-color: #F7F2F0;
+		width: 254px;
+		left: 0px;
+		top: $button-height + 12px;
 		@include box_shadow(3);
-		&--color{
-			top: $button-height + 12px;
-			width: 254px;
-			left: 0px;
-		}
 	}
 }
 

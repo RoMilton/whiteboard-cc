@@ -21,7 +21,6 @@ export default class ToolButton extends React.Component {
 		return (
 			<div 
 				data-tip={this.props.description}
-				data-place="bottom"
 				className={this.props.className || 'button'} 
 				onClick={this.props.handleClick}
 				style = {this.props.style || null}
