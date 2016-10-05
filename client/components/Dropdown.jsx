@@ -20,8 +20,6 @@ export default class DropDown extends React.Component {
 		};
 
 		this.hideDropdown = this.hideDropdown.bind(this);
-		this.handleFocus = this.handleFocus.bind(this);
-		this.handleBlur = this.handleBlur.bind(this);
 		this.toggleDropdown = this.toggleDropdown.bind(this);
 	}
 
@@ -38,38 +36,32 @@ export default class DropDown extends React.Component {
 	}
 
 
-	toggleDropdown() {
-		const { isVisible } = this.state;
+	clickedContent(e){
+		let content = this.refs.content;
+		return (content && content.contains(e.target));
+	}
 
+	clickedOnToggle(e){
+		let toggle = this.refs.toggle;
+		return (toggle && toggle.contains(e.target));	
+	}
+
+	toggleDropdown(e) {
+		let { isVisible } = this.state;
 		// Toggle dropdown block visibility
 		this.setState({ isVisible: !isVisible });
 	}
 
-
-	hideDropdown() {
-		let { isActive } = this.state;
-		// Hide dropdown block if it's not active
-		if (!isActive) {
-			this.setState({ isVisible: false });
-		}
+	hideDropdown(e) {
+		if ((!this.state.isVisible)
+		|| (this.clickedContent(e) && !this.props.closeOnContentClick)
+		|| this.clickedOnToggle(e)){
+			// dont hide
+			return;
+		}	
+		// hide
+		this.setState({ isVisible: false });
 	}
-
-
-	handleFocus() {
-		// Make active on focus
-		this.setState({ isActive: true });
-	}
-
-
-	handleBlur() {
-
-		// Clean up everything on blur
-		this.setState({
-			isVisible: false,
-			isActive: false,
-		});
-	}
-
 
 	render() {
 		let getCardStyles=()=>{
@@ -77,13 +69,6 @@ export default class DropDown extends React.Component {
 			styles[this.props.anchor] = '0px';
 			return styles;
 		};
-		// let getArrowStyles=()=>{
-		// 	//get width of toggle button
-		// 	//let toggleButtonWidth = parseInt(window.getComputedStyle(this.refs.toggleButton).width);
-		// 	let styles = {};
-		// 	styles[this.props.anchor] = '25px';
-		// 	return styles;
-		// };
 		let getDropDownCSSClass=()=>{
 			return classNames({
 				dropdown : true,
@@ -94,21 +79,21 @@ export default class DropDown extends React.Component {
 				<div
 					className={getDropDownCSSClass()}
 					tabIndex="1"
-					onFocus={this.handleFocus}
-					onBlur={this.handleBlur}
-					onClick={this.toggleDropdown}
 				>
-					<div 
-						ref="toggleButton"
+					<div
+						ref="toggle"
+						onClick={this.toggleDropdown} 
 						className="dropdown__toggle"
 					>
 						{this.props.children[0]}
+
 					</div>
 					{
 						this.state.isVisible && 
 						<div 
 							style={ getCardStyles() }
 							className="dropdown__card"
+							ref="content"
 						>
 							{this.props.children[1]}
 						</div>
@@ -120,9 +105,11 @@ export default class DropDown extends React.Component {
 }
 
 DropDown.propTypes = {
-	anchor : PropTypes.oneOf(['left','right'])
+	anchor : PropTypes.oneOf(['left','right']),
+	closeOnContentClick : PropTypes.bool
 }
 
 DropDown.defaultProps = {
-	anchor : 'right'
+	anchor : 'right',
+	closeOnContentClick : false
 }

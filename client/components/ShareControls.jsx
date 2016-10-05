@@ -1,6 +1,6 @@
 import React, {PropTypes} from 'react';
 import DropDown from './DropDown.jsx';
-
+import TextField from './TextField.jsx';
 
 /**
  * Toolbar allows users to perform actions (undo, share, change color) on the
@@ -16,11 +16,16 @@ export default class ShareBar extends React.Component {
 			<div className="toolbar__share">
 				<DropDown anchor="right">
 					<div className="item item--url-change">Change URL</div>
-					<div>
-						efiawe
-					</div>
+					<TextField 
+						handleSubmit="" 
+					/>
 				</DropDown>
-				<div className="item item--name">Rohan</div>
+				<DropDown anchor="right">
+					<div className="item item--name">Rohan</div>
+					<TextField 
+						handleSubmit="" 
+					/>
+				</DropDown>
 				<div className="item item--share">Invite / Share</div>
 			</div>
 		);

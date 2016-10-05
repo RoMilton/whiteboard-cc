@@ -30,7 +30,10 @@ export default class Toolbar extends React.Component {
 		return (
 			<header className="toolbar">
 				<div className="toolbar__controls">
-					<DropDown anchor="left">
+					<DropDown 
+						anchor="left"
+						closeOnContentClick={true}
+					>
 						<ToolButton
 							className="button button--filled" 
 							style={colorStyles}
@@ -60,8 +63,7 @@ export default class Toolbar extends React.Component {
 					selectedTool = {this.props.selectedTool}
 					handleToolChange = {this.props.handleToolChange}
 				/>
-				<ShareControls 
-				/>
+				<ShareControls />
 			</header>
 		)
 	}
