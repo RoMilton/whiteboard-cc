@@ -9,7 +9,7 @@ import TextField from './TextField.jsx';
  * @class Toolbar
  * @extends React.Component
  */
-export default class ShareBar extends React.Component {
+export default class ShareControls extends React.Component {
 
 	render(){
 		return (
@@ -17,13 +17,13 @@ export default class ShareBar extends React.Component {
 				<DropDown anchor="right">
 					<div className="item item--url-change">Change URL</div>
 					<TextField 
-						handleSubmit="" 
+						
 					/>
 				</DropDown>
 				<DropDown anchor="right">
 					<div className="item item--name">Rohan</div>
 					<TextField 
-						handleSubmit="" 
+						
 					/>
 				</DropDown>
 				<div className="item item--share">Invite / Share</div>

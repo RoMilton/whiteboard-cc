@@ -294,7 +294,7 @@ $nav-item-margin: 10px;
 	&__card{
 		position: absolute;
 		background-color: $spring-wood;
-		width: 214px;
+		width: 174px;
 		padding: 7px;
 		box-sizing: border-box;
 		top: $toolbar-height + 16px;
@@ -336,5 +336,7 @@ $nav-item-margin: 10px;
 .text{
 	&__input{
 		width: 100%;
+		padding:4px 8px;
+		text-align:center;
 	}
 }
