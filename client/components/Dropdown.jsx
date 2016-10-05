@@ -1,4 +1,5 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
+import classNames from 'classnames';
 
 /**
  *
@@ -14,85 +15,114 @@ export default class DropDown extends React.Component {
 
 		// Dropdown block is inactive & hidden by default
 		this.state = {
-			dropdownIsActive: false,
-			dropdownIsVisible: false,
+			isActive: false,
+			isVisible: false,
 		};
 
-		// We should bind `this` to click event handler right here
-		this._hideDropdown = this._hideDropdown.bind(this);
-
-		this._handleFocus = this._handleFocus.bind(this);
-		this._handleBlur = this._handleBlur.bind(this);
-		this._toggleDropdown = this._toggleDropdown.bind(this);
+		this.hideDropdown = this.hideDropdown.bind(this);
+		this.handleFocus = this.handleFocus.bind(this);
+		this.handleBlur = this.handleBlur.bind(this);
+		this.toggleDropdown = this.toggleDropdown.bind(this);
 	}
 
 
 	componentDidMount() {
 		// Hide dropdown block on click outside the block
-		document.addEventListener('click', this._hideDropdown, false);
+		document.addEventListener('click', this.hideDropdown, false);
 	}
 
 
 	componentWillUnmount() {
 		// Remove click event listener on component unmount
-		document.removeEventListener('click', this._hideDropdown, false);
+		document.removeEventListener('click', this.hideDropdown, false);
 	}
 
 
-	_toggleDropdown() {
-		const { dropdownIsVisible } = this.state;
+	toggleDropdown() {
+		const { isVisible } = this.state;
 
 		// Toggle dropdown block visibility
-		this.setState({ dropdownIsVisible: !dropdownIsVisible });
+		this.setState({ isVisible: !isVisible });
 	}
 
 
-	_hideDropdown() {
-		const { dropdownIsActive } = this.state;
+	hideDropdown() {
+		let { isActive } = this.state;
 		// Hide dropdown block if it's not active
-		if (!dropdownIsActive) {
-			this.setState({ dropdownIsVisible: false });
+		if (!isActive) {
+			this.setState({ isVisible: false });
 		}
 	}
 
 
-	_handleFocus() {
+	handleFocus() {
 		// Make active on focus
-		this.setState({ dropdownIsActive: true });
+		this.setState({ isActive: true });
 	}
 
 
-	_handleBlur() {
+	handleBlur() {
 
 		// Clean up everything on blur
 		this.setState({
-			dropdownIsVisible: false,
-			dropdownIsActive: false,
+			isVisible: false,
+			isActive: false,
 		});
 	}
 
 
 	render() {
-
+		let getCardStyles=()=>{
+			let styles = {};
+			styles[this.props.anchor] = '0px';
+			return styles;
+		};
+		// let getArrowStyles=()=>{
+		// 	//get width of toggle button
+		// 	//let toggleButtonWidth = parseInt(window.getComputedStyle(this.refs.toggleButton).width);
+		// 	let styles = {};
+		// 	styles[this.props.anchor] = '25px';
+		// 	return styles;
+		// };
+		let getDropDownCSSClass=()=>{
+			return classNames({
+				dropdown : true,
+				'is-active' : this.state.isVisible
+			});
+		}
 		return (
 				<div
-					className="dropdown"
+					className={getDropDownCSSClass()}
 					tabIndex="1"
-					onFocus={this._handleFocus}
-					onBlur={this._handleBlur}
-					onClick={this._toggleDropdown}
+					onFocus={this.handleFocus}
+					onBlur={this.handleBlur}
+					onClick={this.toggleDropdown}
 				>
-					<div className="dropdown__toggle">
+					<div 
+						ref="toggleButton"
+						className="dropdown__toggle"
+					>
 						{this.props.children[0]}
 					</div>
 					{
-						this.state.dropdownIsVisible &&
-						<div className="dropdown__card">
+						this.state.isVisible && 
+						<div 
+							style={ getCardStyles() }
+							className="dropdown__card"
+						>
 							{this.props.children[1]}
 						</div>
 					}
 				</div>
 		);
 	}
-				
- }
+
+}
+
+DropDown.propTypes = {
+	anchor : PropTypes.oneOf(['left','right'])
+}
+
+DropDown.defaultProps = {
+	anchor : 'right'
+}

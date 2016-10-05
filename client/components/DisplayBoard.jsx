@@ -18,19 +18,13 @@ export default class DisplayBoard extends React.Component {
 		return (
 			<ul className="main-board__list">
 				{
-					this.props.boards.map((board,index)=>{
-						return <li 
-							key={index}
-							style = { {display : ((index === this.props.iSelectedBoard) ? 'block' : 'none')} }
-							>
-								<img 
-									src= {board}
-									className = 'main-board__image'
-								/>
-						</li>
-					})
+					<li>
+						<img 
+							src= {this.props.boards[this.props.iSelectedBoard]}
+							className = 'main-board__image'
+						/>
+					</li>
 				}
-				
 			</ul>
 		)
 	}

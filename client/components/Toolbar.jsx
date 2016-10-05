@@ -2,7 +2,7 @@ import React from 'react';
 import ShapePalette from './ShapePalette.jsx';
 import ColorSelect from './ColorSelect.jsx';
 import ToolButton from './ToolButton.jsx';
-import DropDown from './Dropdown.jsx';
+import DropDown from './DropDown.jsx';
 import ShareControls from './ShareControls.jsx';
 
 
@@ -59,6 +59,8 @@ export default class Toolbar extends React.Component {
 					tools={this.props.tools}
 					selectedTool = {this.props.selectedTool}
 					handleToolChange = {this.props.handleToolChange}
+				/>
+				<ShareControls 
 				/>
 			</header>
 		)

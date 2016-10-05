@@ -33,11 +33,13 @@ export default class NavBoards extends React.Component {
 							})
 					}
 				</ol>
-				<div 
-					style={{display: (this.props.boards.length >= this.props.maxBoardCount ? 'none' : '') }}
-					className="nav__item nav__item--add"
-					onClick={()=>{this.props.onItemAdd()}}
-				/>
+				{
+					(this.props.boards.length < this.props.maxBoardCount) &&
+					<div 
+						className="nav__item nav__item--add"
+						onClick={()=>{this.props.onItemAdd()}}
+					/>
+				}
 			</nav>
 		)
 	}

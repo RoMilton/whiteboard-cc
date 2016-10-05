@@ -20,8 +20,7 @@ Sass mixins intended to be used by CSS classes via @include functionality
  * Adds shadow to gives an element perceived elevation according to the Google Material Design spec:
  * http://www.google.com/design/spec/layout/layout-principles.html#layout-principles-dimensionality
  *
- * Provide a level from 1-5 (5 being the highest element with the largest shadow).
- * are elevated.
+ * @param {Level} $level - Number from 1 to 5 (5 being the most elevated and 1 being least elevated)
  */
 @mixin box_shadow ($level) {
     @if $level == 1 {
@@ -42,4 +41,66 @@ Sass mixins intended to be used by CSS classes via @include functionality
  */
 @mixin highlight_shadow () {
     box-shadow: 0 0 3px 3px lighten($bright,7%);
+}
+
+/**
+* Triangle helper mixin
+*
+* @param {Direction} $direction - Triangle direction, either `top`, `right`, `bottom` or `left`
+* @param {Color} $color - Triangle color 
+* @param {Length} $size [1em] - Triangle size
+*/
+@mixin triangle($direction, $color, $size: 5px) {
+    @if not index(top right bottom left, $direction) {
+        @error "Direction must be either `top`, `right`, `bottom` or `left`.";
+    }
+
+    width: 0;
+    height: 0;
+    content: '';
+    z-index: 2;
+    border-#{opposite-direction($direction)}: ($size * 1.5) solid $color;
+
+    $perpendicular-borders: $size solid transparent;
+
+    @if $direction == top or $direction == bottom {
+        border-left:   $perpendicular-borders;
+        border-right:  $perpendicular-borders;
+    } @else if $direction == right or $direction == left {
+        border-bottom: $perpendicular-borders;
+        border-top:    $perpendicular-borders;
+    }
+}
+
+/**
+* Returns the opposite direction of each direction in a list
+* Source: https://css-tricks.com/snippets/sass/opposite-direction-function/
+*
+* @author Hugo Giraudel
+* @param {List} $directions - List of initial directions
+* @return {List} - List of opposite directions
+*/
+@function opposite-direction($directions) {
+  $opposite-directions: ();
+  $direction-map: (
+    'top':    'bottom',
+    'right':  'left',
+    'bottom': 'top',
+    'left':   'right',
+    'center': 'center',
+    'ltr':    'rtl',
+    'rtl':    'ltr'
+  );
+ 
+  @each $direction in $directions {
+    $direction: to-lower-case($direction);
+    
+    @if map-has-key($direction-map, $direction) { 
+      $opposite-directions: append($opposite-directions, unquote(map-get($direction-map, $direction)));
+    } @else {
+      @warn "No opposite direction can be found for `#{$direction}`. Direction omitted.";
+    }
+  }
+ 
+  @return $opposite-directions;
 }
