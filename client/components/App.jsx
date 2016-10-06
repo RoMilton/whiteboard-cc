@@ -5,8 +5,10 @@ import DisplayBoard from './DisplayBoard.jsx';
 import Nav from './Nav.jsx';
 import Utils from '../utils/Utils.js';
 import ReactTooltip from 'react-tooltip';
+import TrackerReact from 'meteor/ultimatejs:tracker-react';
+import { Tracker } from 'meteor/tracker';
 
-Sessions = new Mongo.Collection("sessions");
+Session = new Mongo.Collection("sessions");
 
 /**
  * Whiteboard App Component
@@ -14,7 +16,7 @@ Sessions = new Mongo.Collection("sessions");
  * @class App
  * @extends React.Component
  */
-export default class App extends React.Component {
+export default class App extends TrackerReact(React.Component) {
 
 	/**
 	 * COLORS used by whiteboard App
@@ -57,7 +59,7 @@ export default class App extends React.Component {
 
 
 	/**
-	 * TOOLS used by whiteboard App
+	 * tools used by whiteboard App
 	 *
 	 * @property COLORS
 	 * @static
@@ -84,16 +86,33 @@ export default class App extends React.Component {
 		];
 	}
 
-
-	constructor(){
-		super();
+	constructor(props){
+		super(props);
 		this.state = {
 			selectedTool : this.getDefaultTool(),
 			selectedColor : App.COLORS[0],
 			boards : [null],
 			iSelectedBoard : 0,
-			history : []
+			history : [],
+			subscription: {
+				session: Meteor.subscribe('session',[props.session.link])
+			}
 		};
+		
+		Tracker.autorun(()=> {
+		  let session = this.session();
+		  console.log('new sess',session);
+		  if (session){
+			  this.setState({
+			  	boards : session.boards
+			  });
+		  }
+		});
+
+	}
+
+	session(){
+		return Session.find().fetch()[0];
 	}
 
 	setURL(link){
@@ -104,10 +123,23 @@ export default class App extends React.Component {
 		this.setURL(this.props.session.link);
 	}
 
-	componentDidUpdate(prevProps,prevState){
-		if (this.props.session.link !== prevProps.session.link) {
-			this.setURL(this.props.session.link)
+	componentWillUnmount() {
+		this.state.session.stop();     
+	}
+
+	componentWillUpdate(nextProps,nextState){
+		if (this.props.session.link !== nextProps.session.link) {
+			this.setURL(nextProps.session.link)
 		};
+		// console.log(this.session()[0]);
+		Meteor.call('updateBoards',{
+			_id : this.session()._id,
+			boards : nextState.boards
+		});
+	}
+
+	componentDidUpdate(){
+		let session = this.session();
 	}
 
 	/**
@@ -144,7 +176,6 @@ export default class App extends React.Component {
 	}
 
 	getNewBoard(){
-		console.log('afafaf');
 		return null;
 	}
 

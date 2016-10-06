@@ -13,12 +13,18 @@ Meteor.startup(function(){
 	};
 
 	Router.route('/:sessionName?', function(){
-		$.ajax({
-			type: "GET",
-			url: 'board-session/' + (this.params.sessionName || ''),
-			contentType: "application/json",
-			dataType: "json",
-		}).done(load).fail(noData);
+		let sessionLink = this.params.sessionName;
+		if (sessionLink){
+			load({link : sessionLink});
+		}
+		else{
+			$.ajax({
+				type: "GET",
+				url: 'create-session/',
+				contentType: "application/json",
+				dataType: "json",
+			}).done(load).fail(noData);
+		}
 	});
 	
 });
