@@ -6,6 +6,7 @@ import Nav from './Nav.jsx';
 import Utils from '../utils/Utils.js';
 import ReactTooltip from 'react-tooltip';
 
+Sessions = new Mongo.Collection("sessions");
 
 /**
  * Whiteboard App Component
@@ -89,12 +90,25 @@ export default class App extends React.Component {
 		this.state = {
 			selectedTool : this.getDefaultTool(),
 			selectedColor : App.COLORS[0],
-			boards : ['data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='],
+			boards : [null],
 			iSelectedBoard : 0,
 			history : []
 		};
 	}
 
+	setURL(link){
+		if (link) { history.pushState(null, null,link); }
+	}
+
+	componentDidMount(){
+		this.setURL(this.props.session.link);
+	}
+
+	componentDidUpdate(prevProps,prevState){
+		if (this.props.session.link !== prevProps.session.link) {
+			this.setURL(this.props.session.link)
+		};
+	}
 
 	/**
 	 * Gets name of default tool (eg 'pen') that the user should start with.
@@ -130,7 +144,8 @@ export default class App extends React.Component {
 	}
 
 	getNewBoard(){
-		return 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
+		console.log('afafaf');
+		return null;
 	}
 
 	addBoard(){
