@@ -1,13 +1,13 @@
 import { Meteor } from 'meteor/meteor';
 
-Sessions = new Mongo.Collection("sessions");
+Galleries = new Mongo.Collection("galleries");
 
 let RESERVED=[
-	'create-session',
+	'create-gallery',
 	'images'
 ];
 
-let makeSessionName=(alphabeticLength = 5, numSuffixLength = 2)=>{
+let makeGalleryName=(alphabeticLength = 5, numSuffixLength = 2)=>{
     let text = "";
     let possibleV = "aeiou";
     let possibleC = "bcdfghkmnpqrsty";
@@ -25,48 +25,52 @@ let makeSessionName=(alphabeticLength = 5, numSuffixLength = 2)=>{
     return text;
 }
 
-let createSession = (sessionLink) => {
-	sessionLink = sessionLink || makeSessionName();
+let createGallery = (galleryName) => {
+	galleryName = galleryName || makeGalleryName();
 	return new Promise((resolve,reject)=>{
 		let newSession = {
-			link : sessionLink,
+			galleryName : galleryName,
 			boards : [[null]], // 1 empty board
 			iSelectedBoard : 0 // first board selected by default
 		};
-		Sessions.insert(newSession,(err,result)=>{
+		Galleries.insert(newSession,(err,result)=>{
 			if (err){
 				reject(err)
 			}else{
-				resolve(sessionLink);
+				resolve(galleryName);
 			}
 		});
 	});
 };
 
-Router.route('/create-session/', function () {
+Router.route('/create-gallery/', function () {
 	let req = this.request;
 	let res = this.response;
 	res.setHeader('Content-Type', 'application/json');
 	
-	createSession().then((linkName)=>{
-		res.end(JSON.stringify({link:linkName}));
+	createGallery().then((galleryName)=>{
+		res.end(JSON.stringify({galleryName:galleryName}));
 	});
 
 }, {where: 'server'});
 
-Meteor.publish("session",function(sessionLink){
-	let list = Sessions.find({link: sessionLink[0]});
-	return list;
+Meteor.publish('galleries',function([galleryName]){
+	console.log('cient connected');
+	return Galleries.find({galleryName: galleryName});
+	this._session.socket.on("close", function() {
+		console.log('client disconnected');
+	});
 });
 
 Meteor.methods({
-	updateBoards(session){
-		let test = Sessions.update(
-			{ _id : session._id },
-			{$set: 
+	updateGallery(gallery){
+		Galleries.update(
+			{ _id : gallery._id },
+			{ $set:
 				{
-					boards: session.boards,
-					iSelectedBoard: session.iSelectedBoard
+					boards: gallery.boards,
+					iSelectedBoard: gallery.iSelectedBoard,
+					lastUpdatedBy: gallery.lastUpdatedBy
 				}
 			}
 		);
@@ -76,3 +80,4 @@ Meteor.methods({
 Meteor.startup(() => {
   // code to run on server at startup
 });
+

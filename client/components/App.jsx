@@ -8,7 +8,7 @@ import ReactTooltip from 'react-tooltip';
 import TrackerReact from 'meteor/ultimatejs:tracker-react';
 import { Tracker } from 'meteor/tracker';
 
-Session = new Mongo.Collection("sessions");
+Galleries = new Mongo.Collection("galleries");
 
 /**
  * Whiteboard App Component
@@ -48,7 +48,7 @@ export default class App extends TrackerReact(React.Component) {
 	}
 
 	/**
-	 * The maximum number of boards in a session
+	 * The maximum number of boards in a gallery
 	 *
 	 * @property MAX_BOARD_COUNT
 	 * @static
@@ -95,70 +95,69 @@ export default class App extends TrackerReact(React.Component) {
 			boards : [this.getNewBoard()],
 			iSelectedBoard : 0,
 			history : [],
-			link : props.source
+			galleryName : props.source
 		};
 
 		if (props.source){
 			state.subscription = {
-				session: this.getNewSubscription(this.props.source)
+				gallery: this.getNewSubscription(this.props.source)
 			};
 		}
 
 		this.state = state;
+
 	}
 
-	session(){
-		return Session.find().fetch()[0];
+	gallery(){
+		return Galleries.find().fetch()[0];
 	}
 
-	setURL(link){
-		if (link) { history.pushState(null, null,link); }
+	setURL(galleryName){
+		if (galleryName) { history.pushState(null, null,galleryName); }
 	}
 
-	setUpTracker(link){
+	setUpTracker(){
 
 		Tracker.autorun(()=> {
-			let session = this.session();
-			if (session){
-				if (this.selfUpdate){
-					this.selfUpdate = false;
-					//console.log('skipping');
-				}else{
-					// console.log('updating');
-					let userIndex = (this.state.userIndex === undefined) ? session.boards.length - 1 : this.state.userIndex;
-					this.setState({
-						boards : session.boards,
-						iSelectedBoard : session.iSelectedBoard,
-						userIndex : userIndex
-					});
-				}
+			let gallery = this.gallery();
+			if (gallery && (gallery.lastUpdatedBy !== Meteor.default_connection._lastSessionId)){
+				console.log('gallery',gallery);
+				let userIndex = (this.state.userIndex === undefined) ? gallery.boards.length - 1 : this.state.userIndex;
+				this.sendDataToServer = false;
+				this.setState({
+					boards : gallery.boards,
+					iSelectedBoard : gallery.iSelectedBoard,
+					userIndex : userIndex
+				});
+			}else{
+				console.log('not updating',gallery);
 			}
 		});
 	}
 
-	getNewSubscription(link){
-		return Meteor.subscribe('session',[link])
+	getNewSubscription(galleryName){
+		return Meteor.subscribe('galleries',[galleryName,Meteor.default_connection._lastSessionId])
 	}
 
 	componentDidMount(){
-		console.log('componentDidMount()',this.state.link);
-		// if no session provided, create a new one
-		if (!this.state.link){
+		console.log('componentDidMount()',this.state.galleryName);
+		// if no gallery provided, create a new one
+		if (!this.state.galleryName){
 			$.ajax({
 				type: "GET",
-				url: 'create-session/',
+				url: 'create-gallery/',
 				contentType: "application/json",
 				dataType: "json",
 			}).done((response)=>{
 				this.setUpTracker();
 				this.setState({
-					link : response.link,
+					galleryName : response.galleryName,
 					subscription : {
-						session: this.getNewSubscription(response.link)
+						gallery: this.getNewSubscription(response.galleryName)
 					}
 				});
 			}).fail(()=>{
-				console.log('Could not create new session');
+				console.log('Could not create new gallery');
 			});
 		}
 
@@ -166,28 +165,28 @@ export default class App extends TrackerReact(React.Component) {
 	}
 
 	componentWillUnmount() {
-		this.state.session.stop();     
-	}
-
-	componentWillUnmount() {
-		this.state.session.stop();     
+		this.state.subscription.gallery.stop();     
 	}
 
 	componentWillUpdate(nextProps,nextState){
-		let session = this.session();
-		if (session){
-			session.boards = nextState.boards;
-			session.iSelectedBoard = nextState.iSelectedBoard;
-			Meteor.call('updateBoards',session);
+		if (this.sendDataToServer){
+			let gallery = this.gallery();
+			if (gallery){
+				gallery.boards = nextState.boards;
+				gallery.iSelectedBoard = nextState.iSelectedBoard;
+				gallery.lastUpdatedBy = Meteor.default_connection._lastSessionId;
+				Meteor.call('updateGallery',gallery);
+			}
+		}else{
+			this.sendDataToServer = true;
 		}
-		if (nextState.link !== this.state.link){
-			this.setURL(nextState.link);
+		console.log("1",nextState.galleryName);
+		console.log("2",this.state.galleryName);
+		if (nextState.galleryName !== this.state.galleryName){
+			this.setURL(nextState.galleryName);
 		}
 	}
 
-	componentDidUpdate(){
-		//let session = this.session();
-	}
 
 	/**
 	 * Gets name of default tool (eg 'pen') that the user should start with.
