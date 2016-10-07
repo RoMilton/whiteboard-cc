@@ -88,27 +88,23 @@ export default class App extends TrackerReact(React.Component) {
 
 	constructor(props){
 		super(props);
-		this.state = {
+
+		let state = {
 			selectedTool : this.getDefaultTool(),
 			selectedColor : App.COLORS[0],
-			boards : [null],
+			boards : [this.getNewBoard()],
 			iSelectedBoard : 0,
 			history : [],
-			subscription: {
-				session: Meteor.subscribe('session',[props.session.link])
-			}
+			link : props.source
 		};
-		
-		Tracker.autorun(()=> {
-		  let session = this.session();
-		  console.log('new sess',session);
-		  if (session){
-			  this.setState({
-			  	boards : session.boards
-			  });
-		  }
-		});
 
+		if (props.source){
+			state.subscription ={
+				session: Meteor.subscribe('session',[props.source])
+			};
+		}
+
+		this.state = state;
 	}
 
 	session(){
@@ -119,8 +115,50 @@ export default class App extends TrackerReact(React.Component) {
 		if (link) { history.pushState(null, null,link); }
 	}
 
+	setUpTracker(link){
+
+		Tracker.autorun(()=> {
+			let session = this.session();
+			if (session){
+				if (this.selfUpdate){
+					this.selfUpdate = false;
+					//console.log('skipping');
+				}else{
+					// console.log('updating');
+					let userIndex = (this.state.userIndex === undefined) ? session.boards.length - 1 : this.state.userIndex;
+					this.setState({
+						boards : session.boards,
+						iSelectedBoard : session.iSelectedBoard,
+						userIndex : userIndex
+					});
+				}
+			}
+		});
+	}
+
 	componentDidMount(){
-		this.setURL(this.props.session.link);
+		console.log('componentDidMount()',this.state.link);
+		// if no session provided, create a new one
+		if (!this.state.link){
+			$.ajax({
+				type: "GET",
+				url: 'create-session/',
+				contentType: "application/json",
+				dataType: "json",
+			}).done((response)=>{
+				this.setUpTracker();
+				this.setState({
+					link : response.link,
+					subscription : {
+						session: Meteor.subscribe('session',[response.link])
+					}
+				});
+			}).fail(()=>{
+				console.log('Could not create new session');
+			});
+		}
+
+		this.setUpTracker();
 	}
 
 	componentWillUnmount() {
@@ -128,18 +166,19 @@ export default class App extends TrackerReact(React.Component) {
 	}
 
 	componentWillUpdate(nextProps,nextState){
-		if (this.props.session.link !== nextProps.session.link) {
-			this.setURL(nextProps.session.link)
-		};
-		// console.log(this.session()[0]);
-		Meteor.call('updateBoards',{
-			_id : this.session()._id,
-			boards : nextState.boards
-		});
+		let session = this.session();
+		if (session){
+			session.boards = nextState.boards;
+			session.iSelectedBoard = nextState.iSelectedBoard;
+			Meteor.call('updateBoards',session);
+		}
+		if (nextState.link !== this.state.link){
+			this.setURL(nextState.link);
+		}
 	}
 
 	componentDidUpdate(){
-		let session = this.session();
+		//let session = this.session();
 	}
 
 	/**
@@ -176,12 +215,14 @@ export default class App extends TrackerReact(React.Component) {
 	}
 
 	getNewBoard(){
-		return null;
+		return [null];
 	}
 
 	addBoard(){
 		let boards = this.state.boards.slice();
+		console.log('old boards',boards);
 		boards.push(this.getNewBoard());
+		console.log('new boards',boards);
 		this.setState({
 			boards : boards,
 			iSelectedBoard : boards.length - 1
@@ -190,7 +231,7 @@ export default class App extends TrackerReact(React.Component) {
 
 	clearMy(){
 		let boards = this.state.boards.map(()=>{
-			return this.getNewBoard();
+			return [this.getNewBoard()];
 		});
 		this.setState({
 			boards : boards,
@@ -199,7 +240,7 @@ export default class App extends TrackerReact(React.Component) {
 
 	clearAll(){
 		let newBoards = [];
-		newBoards.push(this.getNewBoard());
+		newBoards.push([this.getNewBoard()]);
 		this.setState({
 			boards : newBoards,
 			iSelectedBoard : newBoards.length - 1
@@ -216,7 +257,7 @@ export default class App extends TrackerReact(React.Component) {
 		if (!this.state.history.length){return;}
 		let boards = this.state.boards.slice();
 		let historyItem = this.state.history[this.state.history.length-1];
-		boards[historyItem.iBoard] = historyItem.imageDataURL;
+		boards[historyItem.iBoard][historyItem.userIndex] = historyItem.imageDataURL;
 		this.setState({
 			boards : boards
 		});
@@ -226,17 +267,21 @@ export default class App extends TrackerReact(React.Component) {
 
 	insertShape(imageDataURL){
 		return new Promise((resolve,reject)=>{
-			let boards = this.state.boards.slice();
-			let iSelectedBoard = this.state.iSelectedBoard;
+			let { iSelectedBoard , userIndex } = this.state;
+			let currentImage = this.state.boards[iSelectedBoard][userIndex];
 			let newHistoryItem = {
 				iBoard : iSelectedBoard,
-				imageDataURL : boards[iSelectedBoard]
+				userIndex : userIndex,
+				imageDataURL : currentImage
 			}
+
 			this.state.history.push(newHistoryItem);
 
 			let updateState = (newImageDataUrl)=>{
 				Utils.preloadImage(newImageDataUrl).then(()=>{
-					boards[iSelectedBoard] = newImageDataUrl;
+					let boards = this.state.boards.slice();
+					boards[iSelectedBoard][userIndex] = newImageDataUrl;
+					self.selfUpdate = true;
 					this.setState({
 						boards: boards
 					});
@@ -244,8 +289,8 @@ export default class App extends TrackerReact(React.Component) {
 				});
 			}
 
-			if (boards[iSelectedBoard]){
-				Utils.mergeImages(boards[iSelectedBoard],imageDataURL).then(updateState,reject);
+			if (currentImage){
+				Utils.mergeImages(currentImage,imageDataURL).then(updateState,reject);
 			}else{
 				updateState(imageDataURL)
 			}
@@ -269,10 +314,7 @@ export default class App extends TrackerReact(React.Component) {
 				<main className="main">
 					<div className="wrap">
 						<div className="main-board">
-							<DisplayBoard
-								boards = {this.state.boards}
-								iSelectedBoard = {this.state.iSelectedBoard}
-							/>
+							<DisplayBoard images = {this.state.boards[this.state.iSelectedBoard]}/>
 							<DrawingCanvas 
 								color = {this.state.selectedColor}
 								tool = {this.state.selectedTool}
@@ -288,10 +330,10 @@ export default class App extends TrackerReact(React.Component) {
 						/>
 					</div>
 				</main>
-			<ReactTooltip 
-				place="bottom"
-				effect="solid"
-			/>
+				<ReactTooltip 
+					place="bottom"
+					effect="solid"
+				/>
 			</div>
 		)
 	}

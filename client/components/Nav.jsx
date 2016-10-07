@@ -1,5 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
+import DisplayBoard from './DisplayBoard.jsx';
 
 /**
  * Board Navigation. Since Whiteboard app uses multiple boards, this component allows users
@@ -21,15 +22,16 @@ export default class NavBoards extends React.Component {
 			<nav className="nav">
 				<ol className="nav__list">
 					{
-						this.props.boards.map(
-							(board,index) => { 
-								return <li 
-									key={index}
-									className={getCSSClass(index)}
-									onClick={()=>{this.props.onItemChange(index)}} 
-								>
-									<img className="nav__image" src={board} />
-								</li>
+						this.props.boards.map((board,index) => { 
+								return (
+									<li 
+										key={index}
+										className={getCSSClass(index)}
+										onClick={()=>this.props.onItemChange(index)}
+									>
+										<DisplayBoard images={board} />
+									</li>
+								);
 							})
 					}
 				</ol>

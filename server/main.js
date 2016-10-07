@@ -8,17 +8,17 @@ let RESERVED=[
 ];
 
 let makeSessionName=(alphabeticLength = 5, numSuffixLength = 2)=>{
-    var text = "";
-    var possibleV = "aeiou";
-    var possibleC = "bcdfghkmnpqrsty";
-    var possibleN = "0123456789";
+    let text = "";
+    let possibleV = "aeiou";
+    let possibleC = "bcdfghkmnpqrsty";
+    let possibleN = "0123456789";
 
-    for( var i=0; i < alphabeticLength; i++ ){
+    for( let i=0; i < alphabeticLength; i++ ){
     	let poss = (i % 2) == 1 ? possibleV : possibleC;
         text += poss.charAt(Math.floor(Math.random() * poss.length));
     }
 
-    for( var i=0; i < numSuffixLength; i++ ){
+    for( let i=0; i < numSuffixLength; i++ ){
     	text += possibleN.charAt(Math.floor(Math.random() * possibleN.length));
     }
 
@@ -30,7 +30,8 @@ let createSession = (sessionLink) => {
 	return new Promise((resolve,reject)=>{
 		let newSession = {
 			link : sessionLink,
-			boards : [null], //empty board
+			boards : [[null]], // 1 empty board
+			iSelectedBoard : 0 // first board selected by default
 		};
 		Sessions.insert(newSession,(err,result)=>{
 			if (err){
@@ -43,8 +44,8 @@ let createSession = (sessionLink) => {
 };
 
 Router.route('/create-session/', function () {
-	var req = this.request;
-	var res = this.response;
+	let req = this.request;
+	let res = this.response;
 	res.setHeader('Content-Type', 'application/json');
 	
 	createSession().then((linkName)=>{
@@ -62,7 +63,12 @@ Meteor.methods({
 	updateBoards(session){
 		let test = Sessions.update(
 			{ _id : session._id },
-			{$set: {boards: session.boards}}
+			{$set: 
+				{
+					boards: session.boards,
+					iSelectedBoard: session.iSelectedBoard
+				}
+			}
 		);
 	}
 });

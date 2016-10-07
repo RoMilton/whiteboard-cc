@@ -16,21 +16,22 @@ export default class DisplayBoard extends React.Component {
 
 	render(){
 		return (
-			<ul className="main-board__list">
-				{
-					<li>
-						<img 
-							src= {this.props.boards[this.props.iSelectedBoard]}
-							className = 'main-board__image'
-						/>
-					</li>
+			<div className="image-collection">
+				{this.props.images.map((image,index)=>{
+						if (image){
+							return <img 
+								className="image-collection__image"
+								key={index}
+								src={image}
+							/>;
+						}
+					})
 				}
-			</ul>
+			</div>
 		)
 	}
 }
 
 DisplayBoard.propTypes = {
-	iSelectedBoard : React.PropTypes.number.isRequired,
-	boards : React.PropTypes.array.isRequired
+	images : React.PropTypes.array.isRequired
 }
