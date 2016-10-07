@@ -99,8 +99,8 @@ export default class App extends TrackerReact(React.Component) {
 		};
 
 		if (props.source){
-			state.subscription ={
-				session: Meteor.subscribe('session',[props.source])
+			state.subscription = {
+				session: this.getNewSubscription(this.props.source)
 			};
 		}
 
@@ -136,6 +136,10 @@ export default class App extends TrackerReact(React.Component) {
 		});
 	}
 
+	getNewSubscription(link){
+		return Meteor.subscribe('session',[link])
+	}
+
 	componentDidMount(){
 		console.log('componentDidMount()',this.state.link);
 		// if no session provided, create a new one
@@ -150,7 +154,7 @@ export default class App extends TrackerReact(React.Component) {
 				this.setState({
 					link : response.link,
 					subscription : {
-						session: Meteor.subscribe('session',[response.link])
+						session: this.getNewSubscription(response.link)
 					}
 				});
 			}).fail(()=>{
@@ -159,6 +163,10 @@ export default class App extends TrackerReact(React.Component) {
 		}
 
 		this.setUpTracker();
+	}
+
+	componentWillUnmount() {
+		this.state.session.stop();     
 	}
 
 	componentWillUnmount() {
