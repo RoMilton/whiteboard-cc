@@ -17,7 +17,7 @@ export default class CursorsWrapper extends React.Component {
 		this.handleMouseMove = this.handleMouseMove.bind(this);
 
 		this.state = {
-			ownPointerPos : [0,0]
+			ownPointerPos : []
 		};
 	}
 
@@ -64,20 +64,23 @@ export default class CursorsWrapper extends React.Component {
 			>
 				{ 
 					this.props.activeUsers.map((user)=>{
-						return (user.sessionId !== this.props.sessionId) ?
-							<RemoteMousePointer
+						if (user.sessionId !== this.props.sessionId) {
+							return <RemoteMousePointer
 									key={user.sessionId}
 									listenToSessionId= {user.sessionId}
 									name={user.name}
 									color={user.color}
-							/> 
-						: 
-							<OwnMousePointer 
+							/>
+						}else if (this.state.ownPointerPos.length){
+							return <OwnMousePointer 
 								key={user.sessionId}
-								name={user.name}
 								color={user.color}
 								pos={this.state.ownPointerPos}
 							/>
+						}else{
+							return false;
+						}
+							
 					})
 				}
 			</div>
