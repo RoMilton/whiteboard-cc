@@ -7,8 +7,10 @@ import Utils from '../utils/Utils.js';
 import ReactTooltip from 'react-tooltip';
 import TrackerReact from 'meteor/ultimatejs:tracker-react';
 import { Tracker } from 'meteor/tracker';
+import CursorsWrapper from './CursorsWrapper.jsx';
 
 Galleries = new Mongo.Collection("galleries");
+ActiveUsers = new Mongo.Collection("activeUsers");
 
 /**
  * Whiteboard App Component
@@ -44,6 +46,18 @@ export default class App extends TrackerReact(React.Component) {
 			'#F19F71',
 			'#FFE1B5',
 			'#39A7A2'
+		];
+	}
+
+	static get NAMES(){
+		return [
+			'User 1',
+			'User 2',
+			'User 3',
+			'User 4',
+			'User 5',
+			'User 6',
+			'User 7'
 		];
 	}
 
@@ -99,9 +113,7 @@ export default class App extends TrackerReact(React.Component) {
 		};
 
 		if (props.source){
-			state.subscription = {
-				gallery: this.getNewSubscription(this.props.source)
-			};
+			state.subscription = this.getNewSubscriptions(this.props.source)
 		}
 
 		this.state = state;
@@ -112,35 +124,54 @@ export default class App extends TrackerReact(React.Component) {
 		return Galleries.find().fetch()[0];
 	}
 
+	activeUsers(){
+		return ActiveUsers.find().fetch();
+	}
+
 	setURL(galleryName){
 		if (galleryName) { history.pushState(null, null,galleryName); }
 	}
 
-	setUpTracker(){
+	sessionId(){
+		return Meteor.default_connection._lastSessionId;
+	}
 
+	setUpTracker(){
 		Tracker.autorun(()=> {
 			let gallery = this.gallery();
-			if (gallery && (gallery.lastUpdatedBy !== Meteor.default_connection._lastSessionId)){
-				console.log('gallery',gallery);
+			if (gallery){
 				let userIndex = (this.state.userIndex === undefined) ? gallery.boards.length - 1 : this.state.userIndex;
-				this.sendDataToServer = false;
 				this.setState({
 					boards : gallery.boards,
 					iSelectedBoard : gallery.iSelectedBoard,
 					userIndex : userIndex
 				});
-			}else{
-				console.log('not updating',gallery);
 			}
+		});
+
+		Tracker.autorun(()=> {
+			let activeUsers = this.activeUsers();
+			//console.log('activeUsers',activeUsers);
+			let newState = {}
+			newState.activeUsers = activeUsers;
+			if (!this.state.name){
+				newState.name = App.NAMES[activeUsers.length-1];
+			}
+			this.setState(newState);
+			// }
 		});
 	}
 
-	getNewSubscription(galleryName){
-		return Meteor.subscribe('galleries',[galleryName,Meteor.default_connection._lastSessionId])
+	getNewSubscriptions(galleryName){
+		//Meteor.default_connection._lastSessionId
+		return {
+			gallery : Meteor.subscribe('galleries',[galleryName]),
+			activeUsers : Meteor.subscribe('activeUsers',[galleryName]),
+		}
 	}
 
 	componentDidMount(){
-		console.log('componentDidMount()',this.state.galleryName);
+		//console.log('componentDidMount()',this.state.galleryName);
 		// if no gallery provided, create a new one
 		if (!this.state.galleryName){
 			$.ajax({
@@ -152,15 +183,12 @@ export default class App extends TrackerReact(React.Component) {
 				this.setUpTracker();
 				this.setState({
 					galleryName : response.galleryName,
-					subscription : {
-						gallery: this.getNewSubscription(response.galleryName)
-					}
+					subscription : this.getNewSubscriptions(response.galleryName)
 				});
 			}).fail(()=>{
 				console.log('Could not create new gallery');
 			});
 		}
-
 		this.setUpTracker();
 	}
 
@@ -168,20 +196,32 @@ export default class App extends TrackerReact(React.Component) {
 		this.state.subscription.gallery.stop();     
 	}
 
+	changeName(newName){
+		this.setState({
+			name : newName
+		});
+	}	
+
 	componentWillUpdate(nextProps,nextState){
-		if (this.sendDataToServer){
+		//if (this.sendDataToServer){
+		if (!Tracker.currentComputation){
 			let gallery = this.gallery();
 			if (gallery){
 				gallery.boards = nextState.boards;
 				gallery.iSelectedBoard = nextState.iSelectedBoard;
-				gallery.lastUpdatedBy = Meteor.default_connection._lastSessionId;
 				Meteor.call('updateGallery',gallery);
 			}
+
 		}else{
-			this.sendDataToServer = true;
+			console.log('skipping update')
 		}
-		console.log("1",nextState.galleryName);
-		console.log("2",this.state.galleryName);
+
+		if ( nextState.name !== this.state.name
+		|| nextState.color !== this.state.selectedColor){
+			console.log('updating User details');
+			Meteor.call('updateUser',nextState.name,nextState.selectedColor);
+		}
+
 		if (nextState.galleryName !== this.state.galleryName){
 			this.setURL(nextState.galleryName);
 		}
@@ -227,9 +267,7 @@ export default class App extends TrackerReact(React.Component) {
 
 	addBoard(){
 		let boards = this.state.boards.slice();
-		console.log('old boards',boards);
 		boards.push(this.getNewBoard());
-		console.log('new boards',boards);
 		this.setState({
 			boards : boards,
 			iSelectedBoard : boards.length - 1
@@ -305,11 +343,13 @@ export default class App extends TrackerReact(React.Component) {
 	}
 
 	render(){
+		let sessionId = this.sessionId();
 		return (
 			<div id="container">
 				<Toolbar
 					tools = {App.TOOLS}
 					colors = {App.COLORS}
+					name = {this.state.name}
 					selectedTool = {this.state.selectedTool}
 					selectedColor = {this.state.selectedColor}
 					handleToolChange = {this.changeTool.bind(this)}
@@ -317,11 +357,18 @@ export default class App extends TrackerReact(React.Component) {
 					handleColorClick = {this.changeColor.bind(this)}
 					handleClearMyClick = {this.clearMy.bind(this)}
 					handleClearAllClick = {this.clearAll.bind(this)}
+					handleNameChange = {this.changeName.bind(this)}
 				/>
 				<main className="main">
 					<div className="wrap">
 						<div className="main-board">
 							<DisplayBoard images = {this.state.boards[this.state.iSelectedBoard]}/>
+							{ this.state.activeUsers && 
+								<CursorsWrapper 
+									sessionId = { sessionId }
+									activeUsers = {this.state.activeUsers}
+								/>
+							}
 							<DrawingCanvas 
 								color = {this.state.selectedColor}
 								tool = {this.state.selectedTool}

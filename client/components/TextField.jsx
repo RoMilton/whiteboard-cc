@@ -6,7 +6,7 @@ export default class TextField extends React.Component{
 		super(props);
 		
 		this.state = {
-			text : 'test'
+			text : props.defaultValue
 		}
 
 		this.handleTextChange = this.handleTextChange.bind(this);
@@ -23,7 +23,7 @@ export default class TextField extends React.Component{
 
 	handleKeyUp(e){
 		if (e.which == 13 || e.keyCode == 13) {
-			this.props.handleSubmit(e.target.value)
+			this.props.handleSubmit(e.target.value);
 		}
 	}
 
@@ -45,7 +45,7 @@ export default class TextField extends React.Component{
 }
 
 TextField.propTypes = {
-	value : PropTypes.string,
+	defaultValue : PropTypes.string,
 	handleSubmit : PropTypes.func
 }
 

@@ -70,7 +70,10 @@ export default class Toolbar extends React.Component {
 					selectedTool = {this.props.selectedTool}
 					handleToolChange = {this.props.handleToolChange}
 				/>
-				<ShareControls />
+				<ShareControls 
+					name = {this.props.name}
+					handleNameChange = {this.props.handleNameChange}
+				/>
 			</header>
 		)
 	}
@@ -80,10 +83,12 @@ Toolbar.propTypes = {
 	colors : React.PropTypes.array.isRequired,
 	selectedTool : React.PropTypes.string.isRequired,
 	selectedColor : React.PropTypes.string.isRequired,
+	name : React.PropTypes.string,
 	tools : React.PropTypes.array.isRequired,
 	handleToolChange : React.PropTypes.func,
 	handleUndoClick : React.PropTypes.func,
-	handleColorClick: React.PropTypes.func
+	handleColorClick: React.PropTypes.func,
+	handleNameChange: React.PropTypes.func
 };
 
 Toolbar.defaultProps = {

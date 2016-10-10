@@ -21,9 +21,10 @@ export default class ShareControls extends React.Component {
 					/>
 				</DropDown>
 				<DropDown anchor="right">
-					<div className="item item--name">Rohan</div>
+					<div className="item item--name">{this.props.name}</div>
 					<TextField 
-						
+						defaultValue = {this.props.name}
+						handleSubmit = {this.props.handleNameChange}
 					/>
 				</DropDown>
 				<div className="item item--share">Invite / Share</div>
@@ -31,4 +32,9 @@ export default class ShareControls extends React.Component {
 		);
 	}
 
+}
+
+ShareControls.propTypes = {
+	name : PropTypes.string,
+	handleNameChange : PropTypes.func
 }

@@ -69,6 +69,16 @@ body{
 	}
 }
 
+.cursors{
+	position:absolute;
+	width:100%;
+	height:100%;
+	&__pointer{
+		position:absolute;
+		color:red
+	}
+}
+
 .image-collection{
 	position:absolute;
 	width: 100%;
