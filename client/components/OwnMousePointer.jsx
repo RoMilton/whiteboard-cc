@@ -19,13 +19,12 @@ export default class OwnMousePointer extends React.Component {
 				styles.left = this.props.pos[0] + 'px';
 				styles.top = this.props.pos[1] + 'px';
 			}
-			styles.transform = 'translate(20px,20px)';
 			return styles;
 		};
 
 		return (
 			<div
-				className="cursors__pointer"
+				className="cursors__pointer cursors__pointer--own"
 				style={ getPointerStyles() }
 			>
 				{this.props.name || 'You'}

@@ -75,7 +75,10 @@ body{
 	height:100%;
 	&__pointer{
 		position:absolute;
-		color:red
+		color:red;
+		&--own{
+			transform: translate(20px,20px);
+		}
 	}
 }
 
