@@ -1,6 +1,7 @@
 import React, {PropTypes} from 'react';
 import classNames from 'classnames';
-import MousePointer from './MousePointer.jsx';
+import RemoteMousePointer from './RemoteMousePointer.jsx';
+import OwnMousePointer from './OwnMousePointer.jsx';
 
 /**
  * Toolbar allows users to perform actions (undo, share, change color) on the
@@ -11,21 +12,48 @@ import MousePointer from './MousePointer.jsx';
  */
 export default class CursorsWrapper extends React.Component {
 
-	componentDidMount(){
+	constructor(props){
+		super(props);
+		this.handleMouseMove = this.handleMouseMove.bind(this);
+
+		this.state = {
+			ownPointerPos : [0,0]
+		};
+	}
+
+	handleMouseMove(e){
 		let wrapper = this.refs.wrapper;
-		document.addEventListener('mousemove',(e)=>{
-			let rect = wrapper.getBoundingClientRect();
-			// console.log('wrapp',rect);
-			// console.log('rect',rect.top + document.body.scrollTop);
-			// console.log('rect',rect.scrollLeft);
-			console.log('broadcasting this','pointer-pos-'+this.props.sessionId);
-
-			Streamy.broadcast('pointer-pos-'+this.props.sessionId, { 
-				x : e.clientX - rect.left,
-				y : e.clientY - rect.top
-			});
-
+		let rect = wrapper.getBoundingClientRect();
+		
+		let allSessions = this.props.activeUsers.map((user)=>{
+			return user.sessionId;
 		});
+
+		let xPos = e.clientX - rect.left;
+		let yPos = e.clientY - rect.top;
+
+		// console.log('xPos',xPos);
+		// console.log('yPos',yPos);
+
+		Streamy.sessions(allSessions).emit(
+			'pointer-pos-'+this.props.sessionId, 
+			{ 
+				x : xPos,
+				y : yPos
+			}
+		);
+
+		this.setState({
+			ownPointerPos : [xPos,yPos]
+		})
+	}
+
+	componentDidMount(){
+		document.addEventListener('mousemove',this.handleMouseMove);
+	}
+
+	componentWillUnmount(){
+		document.removeEventListener('mousemove',this.handleMouseMove);
 	}
 
 	render(){
@@ -36,14 +64,20 @@ export default class CursorsWrapper extends React.Component {
 			>
 				{ 
 					this.props.activeUsers.map((user)=>{
-						console.log('user',user);
-						return <MousePointer
-							key={user.sessionId}
-							id={user.sessionId}
-							name={user.name}
-							color={user.color}
-							ownPointer = {user.sessionId !== this.props.sessionId}
-						/>
+						return (user.sessionId !== this.props.sessionId) ?
+							<RemoteMousePointer
+									key={user.sessionId}
+									listenToSessionId= {user.sessionId}
+									name={user.name}
+									color={user.color}
+							/> 
+						: 
+							<OwnMousePointer 
+								key={user.sessionId}
+								name={user.name}
+								color={user.color}
+								pos={this.state.ownPointerPos}
+							/>
 					})
 				}
 			</div>
