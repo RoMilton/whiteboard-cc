@@ -1,12 +1,13 @@
 import React from 'react';
+import TrackerReact from 'meteor/ultimatejs:tracker-react';
+import { Tracker } from 'meteor/tracker';
+import ReactTooltip from 'react-tooltip';
+import Utils from '../utils/Utils.js';
 import Toolbar from './Toolbar.jsx';
 import DrawingCanvas from './DrawingCanvas.jsx';
 import DisplayBoard from './DisplayBoard.jsx';
 import Nav from './Nav.jsx';
-import Utils from '../utils/Utils.js';
-import ReactTooltip from 'react-tooltip';
-import TrackerReact from 'meteor/ultimatejs:tracker-react';
-import { Tracker } from 'meteor/tracker';
+import Alert from './Alert.jsx';
 import CursorsWrapper from './CursorsWrapper.jsx';
 
 Galleries = new Mongo.Collection("galleries");
@@ -384,6 +385,7 @@ export default class App extends TrackerReact(React.Component) {
 						/>
 					</div>
 				</main>
+				
 				<ReactTooltip 
 					place="bottom"
 					effect="solid"
