@@ -105,7 +105,7 @@ export default class App extends TrackerReact(React.Component) {
 
 		this.state = {
 			selectedTool : this.getDefaultTool(),
-			selectedColor : App.COLORS[0],
+			//selectedColor : App.COLORS[0],
 			boards : [this.getNewBoard()],
 			iSelectedBoard : 0,
 			history : [],
@@ -161,14 +161,15 @@ export default class App extends TrackerReact(React.Component) {
 			if (!this.state.name){
 				newState.name = App.NAMES[activeUsers.length-1];
 			}
+			if (!this.state.selectedColor){
+				newState.selectedColor = App.COLORS[activeUsers.length-1];	
+			}
 			this.setState(newState);
 		});
 	}
 
 	componentDidMount(){
-
 		this.setUpTracker();
-
 	}
 
 	componentWillUnmount() {
