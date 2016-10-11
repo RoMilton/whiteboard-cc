@@ -28,36 +28,38 @@ let makeGalleryName=(alphabeticLength = 5, numSuffixLength = 2)=>{
 
 let createGallery = (galleryName) => {
 	galleryName = galleryName || makeGalleryName();
+	//console.log('new gallery name',galleryName);
 	return new Promise((resolve,reject)=>{
 		let newSession = {
 			galleryName : galleryName,
 			boards : [[null]], // 1 empty board
 			iSelectedBoard : 0 // first board selected by default
 		};
-		Galleries.insert(newSession,(err,result)=>{
+		Galleries.insert(newSession,(err,id)=>{
+			console.log('inserted',id);
 			if (err){
 				reject(err)
 			}else{
-				resolve(galleryName);
+				resolve(id);
 			}
 		});
 	});
 };
 
-Router.route('/create-gallery/', function () {
-	let req = this.request;
-	let res = this.response;
-	res.setHeader('Content-Type', 'application/json');
+// Router.route('/create-gallery/', function () {
+// 	let req = this.request;
+// 	let res = this.response;
+// 	res.setHeader('Content-Type', 'application/json');
 	
-	createGallery().then((galleryName)=>{
-		res.end(JSON.stringify({galleryName:galleryName}));
-	});
+// 	createGallery().then((galleryName)=>{
+// 		res.end(JSON.stringify({galleryName:galleryName}));
+// 	});
 
-}, {where: 'server'});
+// }, {where: 'server'});
 
 
 let addActiveUser = (galleryId,sessionId)=>{
-	console.log('inserting active user',sessionId);
+	//console.log('inserting active user',sessionId);
 	let activeUsers = ActiveUsers.find({sessionId: sessionId});
 
 	if (activeUsers.fetch().length){
@@ -88,8 +90,20 @@ let removeActiveUser = (sessionId)=>{
 	});
 };
 
-Meteor.publish('galleries',function([galleryName]){
+let getGalleryByName = (galleryName)=>{
+	//console.log('getGalleryByName',galleryName);
 	let galleries = Galleries.find({galleryName: galleryName});
+	let records = galleries.fetch();
+	//console.log('results length',records.length);
+	if (records.length){
+		return records[0];
+	}else{
+		return null;
+	}
+}
+
+Meteor.publish('galleries',function([galleryId]){
+	let galleries = Galleries.find({_id: galleryId});
 	let records = galleries.fetch();
 	if (records.length){
 		let sessionId = this.connection.id;
@@ -100,8 +114,8 @@ Meteor.publish('galleries',function([galleryName]){
 });
 
 
-Meteor.publish('activeUsers',function([galleryName]){
-	let galleries = Galleries.find({galleryName: galleryName}).fetch();
+Meteor.publish('activeUsers',function([galleryId]){
+	let galleries = Galleries.find({_id: galleryId}).fetch();
 	if (galleries.length){
 		let galleryId = galleries[0]._id;
 		//console.log('subscribing to gallery',galleryId);
@@ -111,6 +125,19 @@ Meteor.publish('activeUsers',function([galleryName]){
 });
 
 Meteor.methods({
+	getGalleryId(galleryName){
+		//console.log('getGalleryId()',galleryName);
+		if (galleryName){
+			let record = getGalleryByName(galleryName)
+			if (record){
+				return record._id;
+			}
+		}
+		return createGallery(galleryName).then((galleryId)=>{
+			//console.log('galleryId',galleryId);
+			return galleryId;
+		});
+	},
 	updateGallery(gallery){
 		let sessionId = this.connection.id
 		Galleries.update(
@@ -124,11 +151,25 @@ Meteor.methods({
 			}
 		);
 	},
+	updateGalleryName(names){
+		let sessionId = this.connection.id
+		let record = getGalleryByName(names.newName);
+		if (record){
+			throw new Meteor.Error(500, 'Name is already in use', '');	
+		}else{			
+			Galleries.update(
+				{ galleryName : names.currentName },
+				{
+					$set: {
+						galleryName: names.newName,
+						lastUpdatedBy: sessionId
+					}
+				}
+			);
+		}
+	},
 	updateUser(name, color){
-		console.log('name',name);
-		console.log('color',color);
 		let sessionId = this.connection.id;
-		console.log('sessionId',sessionId);
 		ActiveUsers.update(
 			{ sessionId : sessionId},
 			{

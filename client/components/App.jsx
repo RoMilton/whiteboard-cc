@@ -103,20 +103,22 @@ export default class App extends TrackerReact(React.Component) {
 	constructor(props){
 		super(props);
 
-		let state = {
+		this.state = {
 			selectedTool : this.getDefaultTool(),
 			selectedColor : App.COLORS[0],
 			boards : [this.getNewBoard()],
 			iSelectedBoard : 0,
 			history : [],
-			galleryName : props.source
+			activeUsers : []
 		};
 
-		if (props.source){
-			state.subscription = this.getNewSubscriptions(this.props.source)
-		}
+		Meteor.call('getGalleryId',this.props.source,(err,galleryId)=>{
+			this.state.subscription = {
+				gallery : Meteor.subscribe('galleries',[galleryId]),
+				activeUsers : Meteor.subscribe('activeUsers',[galleryId]),
+			};
 
-		this.state = state;
+		});
 
 	}
 
@@ -139,10 +141,12 @@ export default class App extends TrackerReact(React.Component) {
 	setUpTracker(){
 		Tracker.autorun(()=> {
 			let gallery = this.gallery();
+			// console.log('received gallery',gallery);
 			if (gallery){
 				let userIndex = (this.state.userIndex === undefined) ? gallery.boards.length - 1 : this.state.userIndex;
 				this.setState({
 					boards : gallery.boards,
+					galleryName : gallery.galleryName,
 					iSelectedBoard : gallery.iSelectedBoard,
 					userIndex : userIndex
 				});
@@ -158,49 +162,44 @@ export default class App extends TrackerReact(React.Component) {
 				newState.name = App.NAMES[activeUsers.length-1];
 			}
 			this.setState(newState);
-			// }
 		});
 	}
 
-	getNewSubscriptions(galleryName){
-		//Meteor.default_connection._lastSessionId
-		return {
-			gallery : Meteor.subscribe('galleries',[galleryName]),
-			activeUsers : Meteor.subscribe('activeUsers',[galleryName]),
-		}
-	}
-
 	componentDidMount(){
-		//console.log('componentDidMount()',this.state.galleryName);
-		// if no gallery provided, create a new one
-		if (!this.state.galleryName){
-			$.ajax({
-				type: "GET",
-				url: 'create-gallery/',
-				contentType: "application/json",
-				dataType: "json",
-			}).done((response)=>{
-				this.setUpTracker();
-				this.setState({
-					galleryName : response.galleryName,
-					subscription : this.getNewSubscriptions(response.galleryName)
-				});
-			}).fail(()=>{
-				console.log('Could not create new gallery');
-			});
-		}
+
 		this.setUpTracker();
+
 	}
 
 	componentWillUnmount() {
-		this.state.subscription.gallery.stop();     
+		if (this.state.subscription){
+			this.state.subscription.gallery.stop();
+			this.state.subscription.activeUsers.stop();
+		}
 	}
 
 	changeName(newName){
 		this.setState({
 			name : newName
 		});
-	}	
+	}
+
+	handleURLChange(newURL){
+		//console.log('handleURLChange',newURL);
+		Meteor.call('updateGalleryName', {
+			currentName : this.state.galleryName,
+			newName : newURL
+		},(err,res)=>{
+			if (err){
+				console.log('err',err);
+			}else{
+				//console.log('success',res);
+				this.setState({
+					galleryName : newURL
+				});
+			}
+		});
+	}
 
 	componentWillUpdate(nextProps,nextState){
 		//if (this.sendDataToServer){
@@ -212,19 +211,17 @@ export default class App extends TrackerReact(React.Component) {
 				Meteor.call('updateGallery',gallery);
 			}
 
-		}else{
-			console.log('skipping update')
-		}
-
-		if ( nextState.name !== this.state.name
-		|| nextState.color !== this.state.selectedColor){
-			console.log('updating User details');
-			Meteor.call('updateUser',nextState.name,nextState.selectedColor);
 		}
 
 		if (nextState.galleryName !== this.state.galleryName){
 			this.setURL(nextState.galleryName);
 		}
+
+		if ( nextState.name !== this.state.name
+		|| nextState.color !== this.state.selectedColor){
+			Meteor.call('updateUser',nextState.name,nextState.selectedColor);
+		}
+
 	}
 
 
@@ -350,6 +347,7 @@ export default class App extends TrackerReact(React.Component) {
 					tools = {App.TOOLS}
 					colors = {App.COLORS}
 					name = {this.state.name}
+					galleryName = {this.state.galleryName}
 					selectedTool = {this.state.selectedTool}
 					selectedColor = {this.state.selectedColor}
 					handleToolChange = {this.changeTool.bind(this)}
@@ -358,22 +356,23 @@ export default class App extends TrackerReact(React.Component) {
 					handleClearMyClick = {this.clearMy.bind(this)}
 					handleClearAllClick = {this.clearAll.bind(this)}
 					handleNameChange = {this.changeName.bind(this)}
+					handleURLChange = {this.handleURLChange.bind(this)}
 				/>
 				<main className="main">
 					<div className="wrap">
 						<div className="main-board">
 							<DisplayBoard images = {this.state.boards[this.state.iSelectedBoard]}/>
-							{ this.state.activeUsers && 
-								<CursorsWrapper 
-									sessionId = { sessionId }
-									activeUsers = {this.state.activeUsers}
-								/>
-							}
 							<DrawingCanvas 
 								color = {this.state.selectedColor}
 								tool = {this.state.selectedTool}
 								onShapeFinish = {this.insertShape.bind(this)}
 							/>
+							{ this.state.activeUsers.length && 
+								<CursorsWrapper 
+									sessionId = { sessionId }
+									activeUsers = {this.state.activeUsers}
+								/>
+							}
 						</div>
 						<Nav
 							boards = {this.state.boards}

@@ -17,7 +17,8 @@ export default class ShareControls extends React.Component {
 				<DropDown anchor="right">
 					<div className="item item--url-change">Change URL</div>
 					<TextField 
-						
+						defaultValue = {this.props.galleryName}
+						handleSubmit = {this.props.handleURLChange}
 					/>
 				</DropDown>
 				<DropDown anchor="right">
@@ -36,5 +37,7 @@ export default class ShareControls extends React.Component {
 
 ShareControls.propTypes = {
 	name : PropTypes.string,
-	handleNameChange : PropTypes.func
+	handleNameChange : PropTypes.func,
+	galleryName :  PropTypes.string,
+	handleURLChange : PropTypes.func
 }
