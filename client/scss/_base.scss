@@ -107,3 +107,17 @@ input{
 	border: 1px solid #ccc;
 	height:2em;
 }
+
+.alert{
+	position: fixed;
+    top: 50%;
+    height: 83px;
+    width: 100%;
+    background-color: black;
+    transform: translateY(-50%);
+    color: #fff;
+    text-align: center;
+    padding: 13px;
+    font-size: 37px;
+    background: linear-gradient(-90deg, rgba(6,6,6,0.05) 6%, rgba(70,70,70,0.50) 26%, rgba(69,72,71,0.81) 42%, rgba(68,75,73,0.80) 60%, rgba(67,77,73,0.50) 75%, rgba(0,0,0,0.05) 97%);
+}

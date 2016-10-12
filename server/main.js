@@ -4,7 +4,6 @@ Galleries = new Mongo.Collection("galleries");
 ActiveUsers = new Mongo.Collection("activeUsers");
 
 let RESERVED=[
-	'create-gallery',
 	'images'
 ];
 
@@ -32,11 +31,10 @@ let createGallery = (galleryName) => {
 	return new Promise((resolve,reject)=>{
 		let newSession = {
 			galleryName : galleryName,
-			boards : [[null]], // 1 empty board
+			//boards : [[null]], // 1 empty board
 			iSelectedBoard : 0 // first board selected by default
 		};
 		Galleries.insert(newSession,(err,id)=>{
-			console.log('inserted',id);
 			if (err){
 				reject(err)
 			}else{
@@ -59,7 +57,7 @@ let createGallery = (galleryName) => {
 
 
 let addActiveUser = (galleryId,sessionId)=>{
-	//console.log('inserting active user',sessionId);
+	console.log('inserting active user',sessionId);
 	let activeUsers = ActiveUsers.find({sessionId: sessionId});
 
 	if (activeUsers.fetch().length){
@@ -102,23 +100,33 @@ let getGalleryByName = (galleryName)=>{
 	}
 }
 
-Meteor.publish('galleries',function([galleryId]){
+let getGalleryById = (galleryId)=>{
 	let galleries = Galleries.find({_id: galleryId});
 	let records = galleries.fetch();
+	//console.log('results length',records.length);
 	if (records.length){
-		let sessionId = this.connection.id;
-		addActiveUser(galleries.fetch()[0]._id,sessionId);
+		return records[0];
+	}else{
+		return null;
 	}
+};
 
+Meteor.publish('galleries',function([galleryId]){
+	let galleries = Galleries.find(
+		{_id: galleryId},
+		{fields: { 'iSelectedBoard' : 1, 'galleryName' : 1 }}
+	);
+	//console.log('galleries',galleries.fetch()[0]);
 	return galleries;
 });
 
 
 Meteor.publish('activeUsers',function([galleryId]){
-	let galleries = Galleries.find({_id: galleryId}).fetch();
-	if (galleries.length){
-		let galleryId = galleries[0]._id;
-		//console.log('subscribing to gallery',galleryId);
+	let records = Galleries.find({_id: galleryId}).fetch();
+	if (records.length){
+		let sessionId = this.connection.id;
+		addActiveUser(records[0]._id,sessionId);
+		let galleryId = records[0]._id;
 		let activeUsers = ActiveUsers.find({galleryId: galleryId});
 		return activeUsers;
 	}
@@ -130,23 +138,47 @@ Meteor.methods({
 		if (galleryName){
 			let record = getGalleryByName(galleryName)
 			if (record){
-				return record._id;
+				return record;
 			}
 		}
 		return createGallery(galleryName).then((galleryId)=>{
-			//console.log('galleryId',galleryId);
-			return galleryId;
+			let record = getGalleryById(galleryId);
+			return record;
+			//return galleryId;
 		});
 	},
-	updateGallery(gallery){
+	// changeBoard(args){
+	// 	let sessionId = this.connection.id
+	// 	let { galleryId, iBoard } = args;
+
+	// 	let currentBoardCount = Galleries.findOne(galleryId).boards.length;
+	// 	let newBoards = [];
+	// 	let noOfBoardsToAdd = iBoard + 1 - currentBoardCount;
+	// 	console.log('noOfBoardsToAdd',noOfBoardsToAdd);
+	// 	for (var i = 0; i<noOfBoardsToAdd; i++){
+	// 		newBoards.push([null]);
+	// 	}
+
+	// 	Galleries.update(
+	// 		{ _id : galleryId },
+	// 		{ 
+	// 			$set: {
+	// 					iSelectedBoard: iBoard,
+	// 					lastUpdatedBy: sessionId
+	// 				},
+	// 			$push: { boards: { $each: newBoards } },
+	// 		}
+	// 	);
+	// },
+	updateBoard(args){
 		let sessionId = this.connection.id
+		let {galleryId, iBoard,newData,userIndex} = args;
 		Galleries.update(
-			{ _id : gallery._id },
+			{ _id : galleryId },
 			{ 
 				$set: {
-						boards: gallery.boards,
-						iSelectedBoard: gallery.iSelectedBoard,
-						lastUpdatedBy: sessionId
+						[`boards.${iBoard}.${userIndex}`] : newData,
+						lastUpdatedBy : sessionId
 					}
 			}
 		);
@@ -180,6 +212,20 @@ Meteor.methods({
 			}
 		);
 	}
+	// addBoard(galleryId,noOfBoardsToAdd){
+	// 	let sessionId = this.connection.id;
+	// 	let newBoards = [];
+	// 	for (var i = 0; i<noOfBoardsToAdd; i++){
+	// 		newBoards.push([null]);
+	// 	}
+	// 	Galleries.update(
+	// 		{ _id: galleryId },
+ //   			{
+ //   				$push: { boards: { $each: newBoards } },
+ //   				$set:  {lastUpdatedBy : sessionId}
+ //   			}
+	// 	);
+	// }
 });
 
 Meteor.startup(() => {

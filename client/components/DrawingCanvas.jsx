@@ -5,10 +5,10 @@ class Shape {
 
 	static get STATUS(){
 		return {
-			idle : 0, // not currently drawing
-			start: 1, // drawing the first point of a shape
-			middle: 2, // drawing but neither the first nor last point of a shape
-			end: 3 // drawing last point of a shape
+			idle : -1, // not currently drawing
+			start: 0, // drawing the first point of a shape
+			middle: 1, // drawing but neither the first nor last point of a shape
+			end: 2 // drawing last point of a shape
 		};
 	}
 	
@@ -18,6 +18,8 @@ class Shape {
 		this.canvas = obj.canvas;
 		this.color = obj.color;
 		this.ctx = this.canvas.getContext('2d');
+		this.onShapeSubmit = obj.onShapeSubmit;
+		this.points = [];
 	}
 
 	initialise(obj){
@@ -77,9 +79,32 @@ class Shape {
 
 	}
 
+	serialize(shapeName,){
+		return [
+			shapeName,
+			this.points,
+			this.color,
+			this.status
+		];
+	}
+
 }
 
 Shape.Line = class extends Shape{
+
+	static get TYPE(){
+		return 'Line';
+	}
+
+	static drawFromModel(model,canvas){
+		let ctx = canvas.getContext('2d');
+		ctx.strokeStyle = model[3];
+		ctx.lineJoin = "round";
+		ctx.lineWidth = 5;
+		let positions = model[1]
+		ctx.moveTo(position[0][0],position[0][1]);
+		ctx.lineTo(position[1][0],position[1][1]);
+	}
 
 	draw(){
 		if (this.status === Shape.STATUS.idle){ return; }
@@ -94,13 +119,18 @@ Shape.Line = class extends Shape{
 		//if (this.props.tool === 'pen'){
 		ctx.beginPath();
 		if(this.status === Shape.STATUS.middle){
-			ctx.moveTo(prevClickPos[0], prevClickPos[1]);
-			ctx.lineTo(clickPos[0], clickPos[1]);
+			var start = [prevClickPos[0], prevClickPos[1]];
+			var finish = [clickPos[0], clickPos[1]];
 		}else{
-			ctx.moveTo(clickPos[0], clickPos[1]);
-			ctx.lineTo(clickPos[0]+0.1, clickPos[1]+0.1);
+			var start = [clickPos[0], clickPos[1]];
+			var finish = [clickPos[0]+0.1, clickPos[1]+0.1];
 		}
-		
+		ctx.moveTo(start[0],start[1]);
+		ctx.lineTo(finish[0],finish[1]);
+
+		this.points = [start, finish];
+		this.onShapeSubmit(this.serialize(Shape.Line.TYPE));
+			
 		ctx.closePath();
 		ctx.stroke();
 	}
@@ -109,6 +139,10 @@ Shape.Line = class extends Shape{
 
 
 Shape.StraightLine = class extends Shape{
+
+	static get TYPE(){
+		return 'Line';
+	}
 
 	draw(){
 		if (this.status === Shape.STATUS.idle){ return; }
@@ -130,6 +164,10 @@ Shape.StraightLine = class extends Shape{
 
 
 Shape.FillRect = class extends Shape{
+
+	static get TYPE(){
+		return 'FillRect';
+	}
 
 	draw(){
 		if (this.status === Shape.STATUS.idle){ return; }
@@ -212,19 +250,14 @@ export default class DrawingCanvas extends React.Component {
 		}
 	}
 
-	_Ahs(e){
-		// if(this._currShape){
-		// 	this._currShape.mouseMove(this._getMouseCoords(e));
-		// }
-	}
-
 	_handleMouseDown(e){
 		let canvas = this.refs.canvas;
 
 		// create a new shape
 		this._currShape = new TOOLS[this.props.tool]({
 			canvas : canvas,
-			color : this.props.color
+			color : this.props.color,
+			onShapeSubmit : this.props.onDrawFinish
 		});
 
 		this._currShape.mouseDown(this._getMouseCoords(e));
@@ -246,11 +279,11 @@ export default class DrawingCanvas extends React.Component {
 	_finish(){
 		if (this._currShape){
 			let canvas = this.refs.canvas;
-			this.props.onShapeFinish(canvas.toDataURL("image/png")).then(()=>{
-				// console.log('clearing the drawing canvas');
-				this._ctx.clearRect(0, 0, canvas.width, canvas.height);
-				this._currShape = null;
-			});
+			//this.props.onShapeFinish(canvas.toDataURL("image/png")).then(()=>{
+			// console.log('clearing the drawing canvas');
+			this._ctx.clearRect(0, 0, canvas.width, canvas.height);
+			this._currShape = null;
+			//});
 		}
 	}
 
@@ -278,4 +311,5 @@ export default class DrawingCanvas extends React.Component {
 DrawingCanvas.propTypes = {
 	color : React.PropTypes.string.isRequired,
 	tool : React.PropTypes.string.isRequired,
+	onDrawFinish : React.PropTypes.func
 };

@@ -1,5 +1,7 @@
 import React from 'react';
 
+//import  './DrawingCanvas.jsx';
+
 /**
  *
  * @class Canvas
@@ -7,31 +9,55 @@ import React from 'react';
  */
 export default class DisplayBoard extends React.Component {
 
-	componentDidMount(){
-		
+
+	drawShapeOnCanvas(shapeModel){
+		//Shape[shapeModel.Type].drawOnCanvas(this.refs.canvas,shapeModel);
+		let model = shapeModel;
+		//console.log('draw on canvas',shapeModel);
+		let ctx = this.refs.canvas.getContext('2d');
+		ctx.strokeStyle = shapeModel[2];
+		ctx.lineJoin = "round";
+		ctx.lineWidth = 5;
+		//if (this.props.tool === 'pen'){
+		ctx.beginPath();
+		let positions = shapeModel[1];
+		ctx.moveTo(positions[0][0],positions[0][1]);
+		ctx.lineTo(positions[1][0],positions[1][1]);
+		ctx.closePath();
+		ctx.stroke();
 	}
 
-	componentDidUpdate(prevProps,prevState){
+	componentWillReceiveProps(nextProps,nextState){
+		if (nextProps.drawLastShapeOnly){
+			let shapeModel = nextProps.shapes[nextProps.shapes.length-1];
+			this.drawShapeOnCanvas(shapeModel);
+		}else{
+		//clearCanvas();
+		// let shapes = board.shapes();
+		// shapes.forEach((shapeModel)=>{
+		// 	this.drawShapeOnCanvas(shapeModel)
+		// });
+		}
+	}
+
+	shouldComponentUpdate(){
+		return false;
 	}
 
 	render(){
+		//console.log('6666666666')
 		return (
-			<div className="image-collection">
-				{this.props.images.map((image,index)=>{
-						if (image){
-							return <img 
-								className="image-collection__image"
-								key={index}
-								src={image}
-							/>;
-						}
-					})
-				}
-			</div>
+			<canvas 
+				className="canvas--big"
+				ref="canvas"
+				width = '1095'
+				height = '1095'
+			/>
 		)
 	}
 }
 
 DisplayBoard.propTypes = {
-	images : React.PropTypes.array.isRequired
+	shapes : React.PropTypes.array,
+	drawLastShapeOnly : React.PropTypes.bool
 }

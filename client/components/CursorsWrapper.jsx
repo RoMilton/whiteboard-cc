@@ -32,9 +32,6 @@ export default class CursorsWrapper extends React.Component {
 		let xPos = e.clientX - rect.left;
 		let yPos = e.clientY - rect.top;
 
-		// console.log('xPos',xPos);
-		// console.log('yPos',yPos);
-
 		Streamy.sessions(allSessions).emit(
 			'pointer-pos-'+this.props.sessionId, 
 			{ 
@@ -76,6 +73,7 @@ export default class CursorsWrapper extends React.Component {
 								key={user.sessionId}
 								color={user.color}
 								pos={this.state.ownPointerPos}
+								name={user.name}
 							/>
 						}else{
 							return false;

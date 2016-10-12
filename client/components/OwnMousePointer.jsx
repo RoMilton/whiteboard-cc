@@ -13,7 +13,8 @@ export default class OwnMousePointer extends React.Component {
 	render(){
 		let getPointerStyles = ()=>{
 			let styles = {
-				backgroundColor : this.props.color
+				backgroundColor : this.props.color,
+				color : (this.props.color === '#ffffff' ) ? '#111' : ''
 			}
 			if ( this.props.pos.length){
 				styles.left = this.props.pos[0] + 'px';
@@ -27,7 +28,7 @@ export default class OwnMousePointer extends React.Component {
 				className="cursors__pointer cursors__pointer--own"
 				style={ getPointerStyles() }
 			>
-				{this.props.name || 'You'}
+				{this.props.name}
 			</div>
 		)
 	}

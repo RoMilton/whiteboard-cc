@@ -13,19 +13,28 @@ export default class RemoteMousePointer extends React.Component {
 	constructor(props){
 		super(props);
 		this.state = {
-			pos : []
+			pos : [],
+			updatedCount : 0
 		}
+		this.receivedCount = 0;
 	}
 
 	listenToStream(listenToSessionId){
 		if (!listenToSessionId) {return;}
 		Streamy.on('pointer-pos-'+listenToSessionId, (pos)=>{
+			console.log('received pos');
+			this.receivedCount++;
 			if (pos){
 				this.setState({
-					pos : [pos.x, pos.y]
+					pos : [pos.x, pos.y],
+					updatedCount : this.state.updatedCount++ 
 				});
 			}
 		});
+	}
+
+	shouldComponentUpdate(nextProps,nextState){
+		return (this.receivedCount > nextState.updatedCount - 5);
 	}
 
 	componentDidMount(){

@@ -11,11 +11,15 @@ export default class Alert extends React.Component {
 	
 	constructor(props){
 		super(props);
-		this.state = { visible : false };
+		this.state = { 
+			visible : false 
+		};
 	}
 
 	componentWillReceiveProps(nextProps){
-		this.setState({ visible : true });
+		if (nextProps.text !== this.props.text){
+			this.setState({ visible : true });
+		}
 	}
 
 	componentDidUpdate(){
@@ -27,7 +31,7 @@ export default class Alert extends React.Component {
 	render(){
 		let getStyles = ()=>{
 			return {
-				display : visible ? 'block' : 'none'
+				display : this.state.visible ? 'block' : 'none'
 			};
 		};
 		return (
