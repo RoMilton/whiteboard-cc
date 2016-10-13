@@ -1,6 +1,5 @@
 import React from 'react';
-
-//import  './DrawingCanvas.jsx';
+import ShapesTemplate from '../shapes/ShapesTemplate.js';
 
 /**
  *
@@ -9,55 +8,76 @@ import React from 'react';
  */
 export default class DisplayBoard extends React.Component {
 
+	drawsShapes(shapes){
+		shapes.forEach((shapeModel)=>{
+			this.drawOneShape(shapeModel);
+		});
+	}
 
-	drawShapeOnCanvas(shapeModel){
-		//Shape[shapeModel.Type].drawOnCanvas(this.refs.canvas,shapeModel);
-		let model = shapeModel;
-		//console.log('draw on canvas',shapeModel);
-		let ctx = this.refs.canvas.getContext('2d');
-		ctx.strokeStyle = shapeModel[2];
-		ctx.lineJoin = "round";
-		ctx.lineWidth = 5;
-		//if (this.props.tool === 'pen'){
-		ctx.beginPath();
-		let positions = shapeModel[1];
-		ctx.moveTo(positions[0][0],positions[0][1]);
-		ctx.lineTo(positions[1][0],positions[1][1]);
-		ctx.closePath();
-		ctx.stroke();
+	drawOneShape(shapeModel){
+		let shapeName = shapeModel[0];
+		ShapesTemplate[shapeName].class.drawFromModel(
+			shapeModel,
+			this.refs.canvas
+		);
+	}
+
+	componentDidMount(){
+		this.ctx = this.refs.canvas.getContext('2d');
+		let shapes = this.props.board.shapes;
+		this.drawsShapes(shapes);		
+	}
+
+	clear(){
+		console.log('clearing');
+		this.ctx.clearRect(0, 0, this.props.width, this.props.height);
 	}
 
 	componentWillReceiveProps(nextProps,nextState){
-		if (nextProps.drawLastShapeOnly){
-			let shapeModel = nextProps.shapes[nextProps.shapes.length-1];
-			this.drawShapeOnCanvas(shapeModel);
-		}else{
-		//clearCanvas();
-		// let shapes = board.shapes();
-		// shapes.forEach((shapeModel)=>{
-		// 	this.drawShapeOnCanvas(shapeModel)
-		// });
+		let shapes = nextProps.board.shapes;
+			
+		if (this.props.board.id !== nextProps.board.id){
+			this.clear();
+			this.drawsShapes(shapes);
+		}else if (shapes.length){
+			let shapeModel = shapes[shapes.length-1];
+			this.drawOneShape(shapeModel);
 		}
 	}
 
-	shouldComponentUpdate(){
+	shouldComponentUpdate(nextProps,nextState){
+		for (let key in nextProps){
+			if ( key !== 'board'
+			&& nextProps[key] !== (this.props[key] )){
+				// a prop other than 'board' has been updated
+				return true;
+			}
+		}
+		// only board has updated, no need to re-render
 		return false;
 	}
 
 	render(){
-		//console.log('6666666666')
 		return (
 			<canvas 
-				className="canvas--big"
+				className = {"display-canvas " + this.props.className || ''}
 				ref="canvas"
-				width = '1095'
-				height = '1095'
+				width={this.props.width}
+				height={this.props.height}
 			/>
 		)
 	}
 }
 
 DisplayBoard.propTypes = {
-	shapes : React.PropTypes.array,
-	drawLastShapeOnly : React.PropTypes.bool
+	board : React.PropTypes.object.isRequired,
+	width : React.PropTypes.string,
+	height : React.PropTypes.string,
+	className : React.PropTypes.string,
+	name : React.PropTypes.string
+}
+
+DisplayBoard.defaultProps = {
+	width : '1095',
+	height : '688'
 }
