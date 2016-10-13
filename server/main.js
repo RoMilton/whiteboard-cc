@@ -147,42 +147,34 @@ Meteor.methods({
 			//return galleryId;
 		});
 	},
-	// changeBoard(args){
-	// 	let sessionId = this.connection.id
-	// 	let { galleryId, iBoard } = args;
-
-	// 	let currentBoardCount = Galleries.findOne(galleryId).boards.length;
-	// 	let newBoards = [];
-	// 	let noOfBoardsToAdd = iBoard + 1 - currentBoardCount;
-	// 	console.log('noOfBoardsToAdd',noOfBoardsToAdd);
-	// 	for (var i = 0; i<noOfBoardsToAdd; i++){
-	// 		newBoards.push([null]);
-	// 	}
-
-	// 	Galleries.update(
-	// 		{ _id : galleryId },
-	// 		{ 
-	// 			$set: {
-	// 					iSelectedBoard: iBoard,
-	// 					lastUpdatedBy: sessionId
-	// 				},
-	// 			$push: { boards: { $each: newBoards } },
-	// 		}
-	// 	);
-	// },
-	updateBoard(args){
+	changeBoard(args){
 		let sessionId = this.connection.id
-		let {galleryId, iBoard,newData,userIndex} = args;
+		let { galleryId, iBoard } = args;
+
 		Galleries.update(
 			{ _id : galleryId },
 			{ 
 				$set: {
-						[`boards.${iBoard}.${userIndex}`] : newData,
-						lastUpdatedBy : sessionId
+						iSelectedBoard: iBoard,
+						lastUpdatedBy: sessionId
 					}
+				//$push: { boards: { $each: newBoards } },
 			}
 		);
 	},
+	// updateBoard(args){
+	// 	let sessionId = this.connection.id
+	// 	let {galleryId, iBoard,shape} = args;
+	// 	Galleries.update(
+	// 		{ _id : galleryId },
+	// 		{ 
+	// 			$set: {
+	// 					//[`boards.${iBoard}.${userIndex}`] : newData,
+	// 					lastUpdatedBy : sessionId
+	// 				}
+	// 		}
+	// 	);
+	// },
 	updateGalleryName(names){
 		let sessionId = this.connection.id
 		let record = getGalleryByName(names.newName);

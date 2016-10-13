@@ -22,7 +22,6 @@ export default class RemoteMousePointer extends React.Component {
 	listenToStream(listenToSessionId){
 		if (!listenToSessionId) {return;}
 		Streamy.on('pointer-pos-'+listenToSessionId, (pos)=>{
-			console.log('received pos');
 			this.receivedCount++;
 			if (pos){
 				this.setState({

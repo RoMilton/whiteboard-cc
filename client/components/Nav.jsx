@@ -22,17 +22,19 @@ export default class NavBoards extends React.Component {
 			<nav className="nav">
 				<ol className="nav__list">
 					{
-						this.props.boards.map((board,index) => { 
-								return (
-									<li 
-										key={index}
-										className={getCSSClass(index)}
-										onClick={()=>this.props.onItemChange(index)}
-									>
-										<DisplayBoard images={board} />
-									</li>
-								);
-							})
+						this.props.boards.map((board,index) => {
+							return (
+								<li 
+									key={index}
+									className={getCSSClass(index)}
+									onClick={()=>this.props.onItemChange(index)}
+								>
+									<DisplayBoard 
+										board={board}
+									/>
+								</li>
+							);
+						})
 					}
 				</ol>
 				{

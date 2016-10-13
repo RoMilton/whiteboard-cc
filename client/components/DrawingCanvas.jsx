@@ -1,208 +1,6 @@
 import React from 'react';
-
-
-class Shape {
-
-	static get STATUS(){
-		return {
-			idle : -1, // not currently drawing
-			start: 0, // drawing the first point of a shape
-			middle: 1, // drawing but neither the first nor last point of a shape
-			end: 2 // drawing last point of a shape
-		};
-	}
-	
-	constructor(obj){
-		//console.log('Shape.Line()',obj);
-		//super();
-		this.canvas = obj.canvas;
-		this.color = obj.color;
-		this.ctx = this.canvas.getContext('2d');
-		this.onShapeSubmit = obj.onShapeSubmit;
-		this.points = [];
-	}
-
-	initialise(obj){
-
-	}
-
-	mouseDown(pos){
-		//store image data 
-		this.imgData = this.ctx.getImageData(0,0,this.canvas.width,this.canvas.height);
-		this.status = Shape.STATUS.start;
-		this.addPoint(pos)
-		this.draw();
-	}
-
-	mouseUp(pos){
-		this.status = Shape.STATUS.end;
-		this.addPoint(pos);
-		this.draw();
-		this.status = Shape.STATUS.idle;
-	}
-
-	mouseMove(pos){
-		if (this.status === Shape.STATUS.idle){ return; }
-		this.status = Shape.STATUS.middle;
-		this.addPoint(pos);
-		this.draw();
-	}
-
-	mouseOut(){
-		this.status = Shape.STATUS.end;
-		this.draw();
-		this.status = Shape.STATUS.idle;
-	}
-
-	addPoint(pos){
-		this.prevClickPos = this.clickPos;
-		this.clickPos = pos;
-		if (this.status === Shape.STATUS.start){
-			this.startPos = this.clickPos;
-		}
-	}
-
-	removeShape(){
-		if (this.imgData){
-			// Clears the canvas
-			this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height); 
-			// restore original image
-			this.ctx.putImageData(this.imgData,0,0);
-		}
-	}
-
-	getImageData(){
-		return this.ctx.getImageData(0,0,this.ctx.canvas.width,this.ctx.canvas.height);
-	}
-
-	draw(){
-
-	}
-
-	serialize(shapeName,){
-		return [
-			shapeName,
-			this.points,
-			this.color,
-			this.status
-		];
-	}
-
-}
-
-Shape.Line = class extends Shape{
-
-	static get TYPE(){
-		return 'Line';
-	}
-
-	static drawFromModel(model,canvas){
-		let ctx = canvas.getContext('2d');
-		ctx.strokeStyle = model[3];
-		ctx.lineJoin = "round";
-		ctx.lineWidth = 5;
-		let positions = model[1]
-		ctx.moveTo(position[0][0],position[0][1]);
-		ctx.lineTo(position[1][0],position[1][1]);
-	}
-
-	draw(){
-		if (this.status === Shape.STATUS.idle){ return; }
-		let ctx = this.ctx;
-		let clickPos = this.clickPos;
-		let prevClickPos = this.prevClickPos;
-		//if (!this._paint){return;}
-		//ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height); // Clears the canvas
-		ctx.strokeStyle = this.color;
-		ctx.lineJoin = "round";
-		ctx.lineWidth = 5;
-		//if (this.props.tool === 'pen'){
-		ctx.beginPath();
-		if(this.status === Shape.STATUS.middle){
-			var start = [prevClickPos[0], prevClickPos[1]];
-			var finish = [clickPos[0], clickPos[1]];
-		}else{
-			var start = [clickPos[0], clickPos[1]];
-			var finish = [clickPos[0]+0.1, clickPos[1]+0.1];
-		}
-		ctx.moveTo(start[0],start[1]);
-		ctx.lineTo(finish[0],finish[1]);
-
-		this.points = [start, finish];
-		this.onShapeSubmit(this.serialize(Shape.Line.TYPE));
-			
-		ctx.closePath();
-		ctx.stroke();
-	}
-
-}
-
-
-Shape.StraightLine = class extends Shape{
-
-	static get TYPE(){
-		return 'Line';
-	}
-
-	draw(){
-		if (this.status === Shape.STATUS.idle){ return; }
-		let ctx = this.ctx;
-		ctx.strokeStyle = this.color;
-		ctx.lineJoin = "round";
-		ctx.lineWidth = 5;
-		ctx.beginPath();
-		if(this.status === Shape.STATUS.middle){
-			this.removeShape();
-		}
-		ctx.moveTo(this.startPos[0], this.startPos[1]);
-		ctx.lineTo(this.clickPos[0], this.clickPos[1]);
-		ctx.closePath();
-		ctx.stroke();
-	}
-
-}
-
-
-Shape.FillRect = class extends Shape{
-
-	static get TYPE(){
-		return 'FillRect';
-	}
-
-	draw(){
-		if (this.status === Shape.STATUS.idle){ return; }
-		let ctx = this.ctx;
-		
-		//ctx.strokeStyle = this.color;
-		//ctx.lineJoin = "round";
-		//ctx.lineWidth = 5;
-		//ctx.beginPath();
-		if(this.status === Shape.STATUS.middle){
-			this.removeShape();
-		}
-		ctx.fillStyle = this.color;
-
-		if(this.status !== Shape.STATUS.start){
-			let width = this.clickPos[0] - this.startPos[0];
-			let height = this.clickPos[1] - this.startPos[1];
-			ctx.fillRect(this.startPos[0],this.startPos[1],width,height);
-		}
-		
-		// ctx.moveTo(this.startPos[0], this.startPos[1]);
-		// ctx.lineTo(clickPos[0], clickPos[1]);
-		//ctx.closePath();
-		//ctx.stroke();
-	}
-
-}
-
-
-
-const TOOLS = {
-	'pen' : Shape.Line,
-	'line' : Shape.StraightLine,
-	'rect' : Shape.FillRect
-}
+import CanvasBase from './CanvasBase.jsx';
+import ShapesTemplate from '../shapes/ShapesTemplate.js';
 
 /**
  * The Whiteboard Canvas has one purpose - to allow the drawing of new shapes.
@@ -212,7 +10,7 @@ const TOOLS = {
  * @class Canvas
  * @extends React.Component
  */
-export default class DrawingCanvas extends React.Component {
+export default class DrawingCanvas extends CanvasBase {
 
 	componentDidMount(){
 		let canvas = this.refs.canvas;
@@ -254,7 +52,8 @@ export default class DrawingCanvas extends React.Component {
 		let canvas = this.refs.canvas;
 
 		// create a new shape
-		this._currShape = new TOOLS[this.props.tool]({
+		this._currShape = new ShapesTemplate[this.props.tool].class({
+			shapeName : this.props.tool,
 			canvas : canvas,
 			color : this.props.color,
 			onShapeSubmit : this.props.onDrawFinish
