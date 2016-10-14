@@ -178,7 +178,6 @@ export default class App extends TrackerReact(React.Component) {
 
 		Tracker.autorun(()=> {
 			let activeUsers = this.activeUsers();
-			console.log('received users',activeUsers);
 			let newState = {}
 			newState.activeUsers = activeUsers;
 			if (!this.state.name){
@@ -205,6 +204,12 @@ export default class App extends TrackerReact(React.Component) {
 				data.items.forEach((itemToRemove)=>{
 					this.removeShape(itemToRemove.iBoard,itemToRemove.shapeId);
 				});
+			}
+		});
+
+		Streamy.on('clear-all',(data)=>{
+			if (data.__from !== this.sessionId()){
+				this.handleClearAll(false);
 			}
 		});
 	}
@@ -312,26 +317,25 @@ export default class App extends TrackerReact(React.Component) {
 	addBoard(){
 		let boards = this.state.boards.slice();
 		boards.push(this.getNewBoard());
-		console.log('99999');
 		this.setState({
 			boards : boards,
 			iSelectedBoard : boards.length - 1
 		});
 	}
 
-	clearMy(){
-		let newHistory = this.state.history.slice(),
-			historyItem = newHistory[newHistory-1],
-			newBoards = this.state.boards.slice();
-	}
 
-	clearAll(){
-		// let newBoards = [];
-		// newBoards.push([this.getNewBoard()]);
-		// this.setState({
-		// 	boards : newBoards,
-		// 	iSelectedBoard : newBoards.length - 1
-		// });
+	handleClearAll(send = true){
+		let boards = this.state.boards.slice();
+		boards.forEach(board=>{
+			board.clear();
+		});
+		if (send){
+			Streamy.sessions(this.allSessionIds()).emit('clear-all',{});
+		}
+		this.setState({
+			boards : boards,
+			history : []
+		});
 	}
 
 	changeBoard(iBoard){
@@ -427,10 +431,10 @@ export default class App extends TrackerReact(React.Component) {
 					galleryName = {this.state.galleryName}
 					selectedTool = {this.state.selectedTool}
 					selectedColor = {this.state.selectedColor}
+					handleColorClick = {this.changeColor.bind(this)}
 					handleToolChange = {this.changeTool.bind(this)}
 					handleUndoClick = {this.handleUndo.bind(this)}
-					handleColorClick = {this.changeColor.bind(this)}
-					handleClearAllClick = {this.clearAll.bind(this)}
+					handleClearAllClick = {this.handleClearAll.bind(this)}
 					handleNameChange = {this.changeName.bind(this)}
 					handleURLChange = {this.handleURLChange.bind(this)}
 				/>

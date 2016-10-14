@@ -20,10 +20,12 @@ export default class Whiteboard{
 		if (index > -1){
 			this.shapes.splice(index, 1);
 			this.redrawAll = true;
-			return true;
-			console.log('22',this.shapes);
 		}
-		return false;
+	}
+
+	clear(){
+		this.shapes = [];
+		this.redrawAll = true;
 	}
 
 	lastShape(){
