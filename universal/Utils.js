@@ -20,6 +20,20 @@ export default class Utils{
 		});
 	}
 
+	static validItemFromArrays(validValues,invalidValues,random = true){
+		let vals = validValues.slice();
+		invalidValues.forEach((item)=>{
+			let i = vals.indexOf(item);
+			if (i > -1) {
+				vals.splice(i,1);
+			}
+		});
+		if (vals.length === 0){
+			vals = validValues;
+		}
+		return random ? vals[Math.floor(Math.random()*vals.length)] : vals[0];
+	}
+
 	static preloadImage(imageSrc){
 		return new Promise((resolve,reject)=>{
 			let image = new Image();

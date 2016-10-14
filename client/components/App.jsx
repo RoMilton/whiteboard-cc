@@ -10,6 +10,7 @@ import Nav from './Nav.jsx';
 import Alert from './Alert.jsx';
 import Whiteboard from '../../universal/Whiteboard.js';
 import CursorsWrapper from './CursorsWrapper.jsx';
+import Colors from '../../universal/Colors.js'
 
 Galleries = new Mongo.Collection("galleries");
 ActiveUsers = new Mongo.Collection("activeUsers");
@@ -22,48 +23,6 @@ ActiveUsers = new Mongo.Collection("activeUsers");
  */
 export default class App extends TrackerReact(React.Component) {
 
-	/**
-	 * COLORS used by whiteboard App
-	 *
-	 * @property COLORS
-	 * @static
-	 */
-	static get COLORS(){
-		return [
-			'#1846ec',
-			'#F5A623',
-			'#ae2be1',
-			'#E74C3C',
-			'#8B572A',
-			'#7ED321',
-			'#4A90E2',
-			'#9013FE',
-			'#B8E986',
-			'#111',
-			'#9B9B9B',
-			'#ffffff',
-			'#3A5065',
-			'#417505',
-			'#640F0F',
-			'#F19F71',
-			'#FFE1B5',
-			'#39A7A2'
-		];
-	}
-
-	static get NAMES(){
-		return [
-		    "Friendly Fox",
-			"Brilliant Beaver",
-			"Observant Owl",
-			"Gregarious Giraffe",
-			"Wild Wolf",
-			"Silent Seal",
-			"Wacky Whale",
-			"Curious Cat",
-			"Intelligent Iguana"
-		];
-	}
 
 	/**
 	 * The maximum number of boards in a gallery
@@ -116,15 +75,18 @@ export default class App extends TrackerReact(React.Component) {
 			activeUsers : []
 		};
 
-		Meteor.call('getGalleryId',this.props.source,(err,gallery)=>{
-			//console.log('gallery received - ',gallery);
+		Meteor.call('getGalleryId',this.props.source,(err,res)=>{
+			// console.log('gallery received - ',res);
+			this.state.name = res.user.nickname;
+			this.state.selectedColor = res.user.color;
+			let gallery = res.gallery;
+			this.state.iSele
 			this.state.galleryName = gallery.galleryName;
 			this.setURL(gallery.galleryName);
-
 			this.state.galleryId = gallery._id;
 			this.state.subscription = {
 				gallery : Meteor.subscribe('galleries',[gallery._id]),
-				activeUsers : Meteor.subscribe('activeUsers',[gallery._id]),
+				activeUsers : Meteor.subscribe('activeUsers',[gallery._id])
 			};
 		});
 
@@ -144,14 +106,6 @@ export default class App extends TrackerReact(React.Component) {
 
 	sessionId(){
 		return Meteor.default_connection._lastSessionId;
-	}
-
-	getNickname(){
-		let getRandomName = ()=>{
-			return App.NAMES[Math.floor(Math.random()*App.NAMES.length)];
-		};
-
-		return getRandomName();
 	}
 
 	setUpTracker(){
@@ -180,12 +134,6 @@ export default class App extends TrackerReact(React.Component) {
 			let activeUsers = this.activeUsers();
 			let newState = {}
 			newState.activeUsers = activeUsers;
-			if (!this.state.name){
-				newState.name = this.getNickname();
-			}
-			if (!this.state.selectedColor){
-				newState.selectedColor = App.COLORS[activeUsers.length-1];	
-			}
 			this.setState(newState);
 		});
 	}
@@ -426,7 +374,7 @@ export default class App extends TrackerReact(React.Component) {
 			<div id="container">
 				<Toolbar
 					tools = {App.TOOLS}
-					colors = {App.COLORS}
+					colors = {Colors}
 					name = {this.state.name}
 					galleryName = {this.state.galleryName}
 					selectedTool = {this.state.selectedTool}

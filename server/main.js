@@ -1,9 +1,11 @@
+import Colors from '../universal/Colors.js';
+import Utils from '../universal/Utils.js';
 import { Meteor } from 'meteor/meteor';
 
 Galleries = new Mongo.Collection("galleries");
 ActiveUsers = new Mongo.Collection("activeUsers");
 
-let RESERVED=[
+let RESERVED_NAMES = [
 	'images'
 ];
 
@@ -44,45 +46,67 @@ let createGallery = (galleryName) => {
 	});
 };
 
-// Router.route('/create-gallery/', function () {
-// 	let req = this.request;
-// 	let res = this.response;
-// 	res.setHeader('Content-Type', 'application/json');
-	
-// 	createGallery().then((galleryName)=>{
-// 		res.end(JSON.stringify({galleryName:galleryName}));
-// 	});
+let DEFAULT_NAMES =[
+	"Friendly Fox",
+	"Brilliant Beaver",
+	"Observant Owl",
+	"Gregarious Giraffe",
+	"Wild Wolf",
+	"Silent Seal",
+	"Wacky Whale",
+	"Curious Cat",
+	"Intelligent Iguana"
+];
 
-// }, {where: 'server'});
-
-
-let addActiveUser = (galleryId,sessionId)=>{
-	console.log('inserting active user',sessionId);
+let addActiveUser = (galleryId,sessionId,defaultName)=>{
+	//console.log('inserting active user',sessionId);
 	let activeUsers = ActiveUsers.find({sessionId: sessionId});
+	
+	let galleryUsers = ActiveUsers.find(
+		{galleryId: galleryId},
+		{fields: {
+			'name' : 1 , 
+			'color' : 1 
+		}}
+	).fetch();
+	let currentNames = galleryUsers.map((rec)=>{ return rec.name;});
+	let currentColors = galleryUsers.map((rec)=>{ return rec.color;	});
+
+	//let nickname = defaultName || getNickname(currentNames);
+	let nickname = defaultName || Utils.validItemFromArrays(DEFAULT_NAMES, currentNames);
+	let color = Utils.validItemFromArrays(Colors,currentColors,false);
 
 	if (activeUsers.fetch().length){
-
+		
 		ActiveUsers.update(
 			{ sessionId : sessionId },
 			{
 				$set: {
-					galleryId : galleryId
+					galleryId : galleryId,
+					name : nickname,
+					color : color
 				}
 			}
 		);
 
 	}else{
-
 		ActiveUsers.insert({
 			sessionId : sessionId,
-			galleryId : galleryId
+			galleryId : galleryId,
+			name : nickname,
+			color : color
 		});
+	}
 
+	return {
+		nickname : nickname,
+		color: color,
+		userCount : currentNames.length + 1
 	}
 };
 
 let removeActiveUser = (sessionId)=>{
-	console.log('removing active user',sessionId);
+	// console.log('removing active user',sessionId);
 	ActiveUsers.remove({
 		sessionId : sessionId
 	});
@@ -92,7 +116,6 @@ let getGalleryByName = (galleryName)=>{
 	//console.log('getGalleryByName',galleryName);
 	let galleries = Galleries.find({galleryName: galleryName});
 	let records = galleries.fetch();
-	//console.log('results length',records.length);
 	if (records.length){
 		return records[0];
 	}else{
@@ -137,14 +160,20 @@ Meteor.methods({
 		if (galleryName){
 			let record = getGalleryByName(galleryName)
 			if (record){
-				addActiveUser(record._id,sessionId);
-				return record;
+				let user = addActiveUser(record._id,sessionId);
+				return {
+					user : user,
+					gallery : record
+				};
 			}
 		}
 		return createGallery(galleryName).then((galleryId)=>{
 			let record = getGalleryById(galleryId);
-			addActiveUser(record._id,sessionId);
-			return record;
+			let user = addActiveUser(record._id,sessionId);
+			return {
+				user : user,
+				gallery : record
+			};
 			//return galleryId;
 		});
 	},
@@ -163,19 +192,6 @@ Meteor.methods({
 			}
 		);
 	},
-	// updateBoard(args){
-	// 	let sessionId = this.connection.id
-	// 	let {galleryId, iBoard,shape} = args;
-	// 	Galleries.update(
-	// 		{ _id : galleryId },
-	// 		{ 
-	// 			$set: {
-	// 					//[`boards.${iBoard}.${userIndex}`] : newData,
-	// 					lastUpdatedBy : sessionId
-	// 				}
-	// 		}
-	// 	);
-	// },
 	updateGalleryName(names){
 		let sessionId = this.connection.id
 		let record = getGalleryByName(names.newName);
