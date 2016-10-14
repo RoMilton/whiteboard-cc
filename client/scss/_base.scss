@@ -119,11 +119,24 @@ input{
     top: 50%;
     height: 83px;
     width: 100%;
-    background-color: black;
     transform: translateY(-50%);
     color: #fff;
     text-align: center;
-    padding: 13px;
+    padding: 15px;
     font-size: 37px;
     background: linear-gradient(-90deg, rgba(6,6,6,0.05) 6%, rgba(70,70,70,0.50) 26%, rgba(69,72,71,0.81) 42%, rgba(68,75,73,0.80) 60%, rgba(67,77,73,0.50) 75%, rgba(0,0,0,0.05) 97%);
+}
+
+.spinner{
+    background: url(images/icon-pen.png) 50% -6px;
+    margin-top:-16.5px;
+    margin-left:-16.5px;
+    width: 33px;
+    height: 33px;
+    opacity: 0.7;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background-size: 33px;
+    @include spin-anim(1000ms);
 }

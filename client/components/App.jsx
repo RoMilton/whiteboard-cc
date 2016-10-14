@@ -72,7 +72,11 @@ export default class App extends TrackerReact(React.Component) {
 			boards : [this.getNewBoard()],
 			iSelectedBoard : 0,
 			history : [],
-			activeUsers : []
+			activeUsers : [],
+			alert : {
+				visible : false,
+				text : ''
+			}
 		};
 
 		Meteor.call('getGalleryId',this.props.source,(err,res)=>{
@@ -114,19 +118,9 @@ export default class App extends TrackerReact(React.Component) {
 			// console.log('received subscription',this.state.boards);
 			if (gallery
 			&& (gallery.lastUpdatedBy !== this.sessionId())){
-				
-				let newBoards = this.state.boards.slice()
-				let noOfBoardsToAdd = gallery.iSelectedBoard + 1 - this.state.boards.length;
-				for (var i = 0; i<noOfBoardsToAdd; i++){
-					newBoards.push(new Whiteboard());
-				}
 
 				this.receivedData = true;
-				this.setState({
-					galleryName : gallery.galleryName,
-					iSelectedBoard : gallery.iSelectedBoard,
-					boards : newBoards
-				});
+				this.updateGallery(gallery.iSelectedBoard,gallery.galleryName);
 			}
 		});
 
@@ -214,8 +208,12 @@ export default class App extends TrackerReact(React.Component) {
 			}
 			//console.log('sending user',this.state.name);
 			if ( this.state.name !== prevState.name
-			|| this.state.color !== prevState.selectedColor){
+			|| this.state.selectedColor !== prevState.selectedColor){
 				// console.log('111','sending',this.state.name);
+				// console.log('this.state.name',this.state.name);
+				// console.log('prevState.name',prevState.name);
+				// console.log('this.state.color',this.state.color);
+				// console.log('prevState.selectedColor',prevState.selectedColor);
 				Meteor.call('updateUser',this.state.name,this.state.selectedColor);
 			}
 
@@ -262,15 +260,37 @@ export default class App extends TrackerReact(React.Component) {
 		return new Whiteboard();
 	}
 
-	addBoard(){
-		let boards = this.state.boards.slice();
-		boards.push(this.getNewBoard());
-		this.setState({
-			boards : boards,
-			iSelectedBoard : boards.length - 1
-		});
+	updateGallery(iSelectedBoard,galleryName,changedBy){
+		let newState = {};
+		if (galleryName){
+			newState.galleryName = galleryName;
+		}
+		if (iSelectedBoard !== undefined && iSelectedBoard !== this.state.iSelectedBoard){
+			newState.iSelectedBoard = iSelectedBoard;
+			newState.alert = {
+				visible : true,
+				text : 'Changed to board '+ (iSelectedBoard + 1)
+			}
+		
+			if (iSelectedBoard > this.state.boards.length - 1){
+				newState.boards = this.state.boards.slice()
+				let noOfBoardsToAdd = iSelectedBoard + 1 - this.state.boards.length;
+				for (var i = 0; i<noOfBoardsToAdd; i++){
+					newState.boards.push(new Whiteboard());
+				}
+			}
+
+		}
+		this.setState(newState);
 	}
 
+	changeBoard(iBoard){
+		this.updateGallery(iBoard);
+	}
+
+	addBoard(){
+		this.changeBoard(this.state.boards.length);
+	}
 
 	handleClearAll(send = true){
 		let boards = this.state.boards.slice();
@@ -283,12 +303,6 @@ export default class App extends TrackerReact(React.Component) {
 		this.setState({
 			boards : boards,
 			history : []
-		});
-	}
-
-	changeBoard(iBoard){
-		this.setState({
-			iSelectedBoard : iBoard
 		});
 	}
 
@@ -337,6 +351,15 @@ export default class App extends TrackerReact(React.Component) {
 		}
 	}
 
+	handleAlertFinish(){
+		this.setState({
+			alert : {
+				visible : false,
+				text : ''
+			}
+		});
+	}
+
 	handleNewShape(shapeModel, iBoard = this.state.iSelectedBoard, send = true ){
 		let newState = {};
 		if (send){
@@ -364,11 +387,11 @@ export default class App extends TrackerReact(React.Component) {
 	}
 
 	render(){
+		
 		let sessionId = this.sessionId();
 		let selectedBoard = this.state.boards[this.state.iSelectedBoard]
-		//console.log('render()',selectedBoard.shapes);
 		if (!this.state.activeUsers.length && this.state.boards.length){
-			return (<div>Loading</div>);
+			return (<div className="spinner"></div>);
 		}
 		return (
 			<div id="container">
@@ -414,7 +437,9 @@ export default class App extends TrackerReact(React.Component) {
 					</div>
 				</main>
 				<Alert
-					text={this.state.alertText}
+					visible = {this.state.alert.visible}
+					text = {this.state.alert.text}
+					handleAlertFinish = {this.handleAlertFinish.bind(this)}
 				/>
 				<ReactTooltip 
 					place="bottom"

@@ -9,38 +9,32 @@ import React, {PropTypes} from 'react';
  */
 export default class Alert extends React.Component {
 	
-	constructor(props){
-		super(props);
-		this.state = { 
-			visible : false 
-		};
-	}
-
-	componentWillReceiveProps(nextProps){
-		if (nextProps.text !== this.props.text){
-			this.setState({ visible : true });
+	close(){
+		if (this.timer){
+			clearInterval(this.timer);
 		}
-	}
-
-	componentDidUpdate(){
-		setTimeout(()=>{
-			this.setState({'visible':false});
+		this.timer = setTimeout(()=>{
+			this.props.handleAlertFinish();
 		},this.props.duration);
 	}
 
+	componentDidMount(){
+		this.close();
+	}
+
+	componentDidUpdate(){
+		this.close();
+	}
+
 	render(){
-		let getStyles = ()=>{
-			return {
-				display : this.state.visible ? 'block' : 'none'
-			};
-		};
 		return (
 			<div 
-				style={getStyles()}
-				ref="container"
-				className="alert"
+				className = 'alert'
+				style={{ display : this.props.visible ? 'block' : 'none' }}
 			>
-				{this.props.text}
+				{
+					this.props.visible && this.props.text
+				}
 			</div>
 		)
 	}
@@ -48,10 +42,13 @@ export default class Alert extends React.Component {
 
 
 Alert.PropTypes = {
+	handleAlertFinish : PropTypes.func.isRequired,
+	visible : PropTypes.bool,
 	text : PropTypes.string,
 	duration : PropTypes.number
 };
 
 Alert.defaultProps = {
-	duration : 5000
+	duration : 2000,
+	visible : false
 };
