@@ -146,6 +146,14 @@ export default class App extends TrackerReact(React.Component) {
 		return Meteor.default_connection._lastSessionId;
 	}
 
+	getNickname(){
+		let getRandomName = ()=>{
+			return App.NAMES[Math.floor(Math.random()*App.NAMES.length)];
+		};
+
+		return getRandomName();
+	}
+
 	setUpTracker(){
 		Tracker.autorun(()=> {
 			let gallery = this.gallery();
@@ -170,10 +178,11 @@ export default class App extends TrackerReact(React.Component) {
 
 		Tracker.autorun(()=> {
 			let activeUsers = this.activeUsers();
+			console.log('received users',activeUsers);
 			let newState = {}
 			newState.activeUsers = activeUsers;
 			if (!this.state.name){
-				newState.name = App.NAMES[activeUsers.length-1];
+				newState.name = this.getNickname();
 			}
 			if (!this.state.selectedColor){
 				newState.selectedColor = App.COLORS[activeUsers.length-1];	
@@ -186,10 +195,18 @@ export default class App extends TrackerReact(React.Component) {
 		this.setUpTracker();
 		Streamy.on('insert-shape',(data)=>{
 			if (data.__from !== this.sessionId()){
-				this.insertShapeIntoBoard(data.shape,data.iBoard);
+				// console.log('received new shape',data);
+				this.handleNewShape(data.shape,data.iBoard,false);
 			}
 		});
 
+		Streamy.on('remove-shapes',(data)=>{
+			if (data.__from !== this.sessionId()){
+				data.items.forEach((itemToRemove)=>{
+					this.removeShape(itemToRemove.iBoard,itemToRemove.shapeId);
+				});
+			}
+		});
 	}
 
 	componentWillUnmount() {
@@ -242,9 +259,10 @@ export default class App extends TrackerReact(React.Component) {
 				 }
 				);
 			}
-
+			//console.log('sending user',this.state.name);
 			if ( this.state.name !== prevState.name
 			|| this.state.color !== prevState.selectedColor){
+				// console.log('111','sending',this.state.name);
 				Meteor.call('updateUser',this.state.name,this.state.selectedColor);
 			}
 
@@ -302,12 +320,9 @@ export default class App extends TrackerReact(React.Component) {
 	}
 
 	clearMy(){
-		// let boards = this.state.boards.map(()=>{
-		// 	return [this.getNewBoard()];
-		// });
-		// this.setState({
-		// 	boards : boards,
-		// });
+		let newHistory = this.state.history.slice(),
+			historyItem = newHistory[newHistory-1],
+			newBoards = this.state.boards.slice();
 	}
 
 	clearAll(){
@@ -325,50 +340,75 @@ export default class App extends TrackerReact(React.Component) {
 		});
 	}
 
-	undoLast(){
-		// if (!this.state.history.length){return;}
-		// let boards = this.state.boards.slice();
-		// let historyItem = this.state.history[this.state.history.length-1];
-		// boards[historyItem.iBoard][historyItem.userIndex] = historyItem.imageDataURL;
-		// this.setState({
-		// 	boards : boards
-		// });
-		// Meteor.call('updateBoard',{
-		// 	galleryId : this.state.galleryId,
-		// 	iBoard : historyItem.iBoard,
-		// 	userIndex : historyItem.userIndex,
-		// 	newData : historyItem.imageDataURL,
-		// 	activeUsers : this.state.activeUsers
-		// });
-		// this.state.history.pop();
-	}
 
-	insertShapeIntoBoard(shapeModel,iBoard){
-		let boards = this.state.boards.slice();
-		boards[iBoard].addShape(shapeModel);
-		this.setState({
-			boards : boards
+	allSessionIds(){
+		return this.state.activeUsers.map((user)=>{
+			return user.sessionId;
 		});
 	}
 
-	handleShapeInsert(shapeModel, iBoard = this.state.iSelectedBoard){
-		return new Promise((resolve,reject)=>{
+	removeShape(iBoard,shapeModel){
+		let boards = this.state.boards.slice();
+		if (!boards[iBoard]){return;}
+		boards[iBoard].removeShape(shapeModel);
+		this.setState({
+			boards : boards
+		})
+	}
 
-			let allSessions = this.state.activeUsers.map((user)=>{
-				return user.sessionId;
-			});
-			console.log('shapeModel',shapeModel);
-			Streamy.sessions(allSessions).emit(
-				'insert-shape',
-				{ 
-					iBoard : iBoard,
-					shape : shapeModel
+	handleUndo(numberToRemove = 1){
+		let history = this.state.history.slice(),
+			boards = this.state.boards.slice();
+
+		numberToRemove = numberToRemove === 'all' ? history.length : numberToRemove;
+		let itemsToRemove = history.slice(history.length - numberToRemove);
+
+		if (itemsToRemove){
+			//console.log('itemsToRemove',itemsToRemove);
+			Streamy.sessions(this.allSessionIds()).emit(
+				'remove-shapes',
+				{
+					items : itemsToRemove
 				}
 			);
 
-			this.insertShapeIntoBoard(shapeModel,iBoard);
-			resolve();
-		});
+			itemsToRemove.forEach((historyItem)=>{			
+				boards[historyItem.iBoard].removeShape(historyItem.shapeId);
+			});		
+			
+			history = history.slice(0, history.length - itemsToRemove.length);
+
+			this.setState({
+				boards : boards,
+				history : history
+			});
+		}
+	}
+
+	handleNewShape(shapeModel, iBoard = this.state.iSelectedBoard, send = true ){
+		let newState = {};
+		if (send){
+			let newItemObj = {
+				iBoard : iBoard,
+				shape : shapeModel
+			}
+
+			Streamy.sessions(this.allSessionIds()).emit(
+				'insert-shape',
+				newItemObj
+			);
+
+			newState.history = this.state.history.slice();
+			newState.history.push({
+				iBoard : iBoard,
+				shapeId : shapeModel.id
+			});
+		}
+
+		newState.boards = this.state.boards.slice();
+		newState.boards[iBoard].addShape(shapeModel);
+
+		this.setState(newState);
 	}
 
 	render(){
@@ -388,9 +428,8 @@ export default class App extends TrackerReact(React.Component) {
 					selectedTool = {this.state.selectedTool}
 					selectedColor = {this.state.selectedColor}
 					handleToolChange = {this.changeTool.bind(this)}
-					handleUndoClick = {this.undoLast.bind(this)}
+					handleUndoClick = {this.handleUndo.bind(this)}
 					handleColorClick = {this.changeColor.bind(this)}
-					handleClearMyClick = {this.clearMy.bind(this)}
 					handleClearAllClick = {this.clearAll.bind(this)}
 					handleNameChange = {this.changeName.bind(this)}
 					handleURLChange = {this.handleURLChange.bind(this)}
@@ -404,7 +443,7 @@ export default class App extends TrackerReact(React.Component) {
 							<DrawingCanvas 
 								color = {this.state.selectedColor}
 								tool = {this.state.selectedTool}
-								onDrawFinish = {this.handleShapeInsert.bind(this)}
+								onDrawFinish = {this.handleNewShape.bind(this)}
 							/>
 							{ this.state.activeUsers.length && 
 								<CursorsWrapper 

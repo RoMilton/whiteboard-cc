@@ -4,10 +4,10 @@ export default Shape.FillRect = class extends Shape{
 
 	static drawFromModel(shapeModel,canvas){
 		let ctx = canvas.getContext('2d');
-		ctx.fillStyle = shapeModel[2];
+		ctx.fillStyle = shapeModel.col;
 		ctx.lineJoin = "round";
 		ctx.lineWidth = 5;
-		let positions = shapeModel[1];
+		let positions = shapeModel.pts;
 		ctx.beginPath();
 		let width = positions[1][0] - positions[0][0];
 		let height = positions[1][1] - positions[0][1];

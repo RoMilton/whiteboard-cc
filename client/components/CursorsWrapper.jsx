@@ -15,7 +15,6 @@ export default class CursorsWrapper extends React.Component {
 	constructor(props){
 		super(props);
 		this.handleMouseMove = this.handleMouseMove.bind(this);
-
 		this.state = {
 			ownPointerPos : []
 		};

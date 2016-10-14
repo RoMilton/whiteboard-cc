@@ -4,10 +4,10 @@ export default Shape.Line = class extends Shape{
 
 	static drawFromModel(shapeModel,canvas){
 		let ctx = canvas.getContext('2d');
-		ctx.strokeStyle = shapeModel[2];
+		ctx.strokeStyle = shapeModel.col;
 		ctx.lineJoin = "round";
 		ctx.lineWidth = 5;
-		let positions = shapeModel[1];
+		let positions = shapeModel.pts;
 		positions.forEach((lineSegment)=>{
 			ctx.beginPath();
 			ctx.moveTo(lineSegment[0][0],lineSegment[0][1]);

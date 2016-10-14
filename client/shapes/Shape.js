@@ -1,3 +1,5 @@
+import Utils from '../../universal/Utils.js';
+
 export default class Shape {
 
 	static get STATUS(){
@@ -15,6 +17,7 @@ export default class Shape {
 	constructor(obj){
 		//console.log('Shape.Line()',obj);
 		//super();
+		this.id = Utils.guid();
 		this.shapeName = obj.shapeName,
 		this.canvas = obj.canvas;
 		this.color = obj.color;
@@ -82,12 +85,12 @@ export default class Shape {
 	}
 
 	serialize(){
-		return [
-			this.shapeName,
-			this.points,
-			this.color,
-			this.status
-		];
+		return {
+			id: this.id,
+			type: this.shapeName,
+			pts: this.points,
+			col: this.color
+		};
 	}
 
 }

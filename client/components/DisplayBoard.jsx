@@ -8,15 +8,14 @@ import ShapesTemplate from '../shapes/ShapesTemplate.js';
  */
 export default class DisplayBoard extends React.Component {
 
-	drawsShapes(shapes){
+	drawShapes(shapes){
 		shapes.forEach((shapeModel)=>{
 			this.drawOneShape(shapeModel);
 		});
 	}
 
 	drawOneShape(shapeModel){
-		let shapeName = shapeModel[0];
-		ShapesTemplate[shapeName].class.drawFromModel(
+		ShapesTemplate[shapeModel.type].class.drawFromModel(
 			shapeModel,
 			this.refs.canvas
 		);
@@ -25,20 +24,20 @@ export default class DisplayBoard extends React.Component {
 	componentDidMount(){
 		this.ctx = this.refs.canvas.getContext('2d');
 		let shapes = this.props.board.shapes;
-		this.drawsShapes(shapes);		
+		this.drawShapes(shapes);		
 	}
 
 	clear(){
-		console.log('clearing');
 		this.ctx.clearRect(0, 0, this.props.width, this.props.height);
 	}
 
 	componentWillReceiveProps(nextProps,nextState){
 		let shapes = nextProps.board.shapes;
 			
-		if (this.props.board.id !== nextProps.board.id){
+		if (this.props.board.id !== nextProps.board.id
+		|| nextProps.board.redrawAll){
 			this.clear();
-			this.drawsShapes(shapes);
+			this.drawShapes(shapes);
 		}else if (shapes.length){
 			let shapeModel = shapes[shapes.length-1];
 			this.drawOneShape(shapeModel);
