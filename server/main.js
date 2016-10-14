@@ -124,8 +124,6 @@ Meteor.publish('galleries',function([galleryId]){
 Meteor.publish('activeUsers',function([galleryId]){
 	let records = Galleries.find({_id: galleryId}).fetch();
 	if (records.length){
-		let sessionId = this.connection.id;
-		addActiveUser(records[0]._id,sessionId);
 		let galleryId = records[0]._id;
 		let activeUsers = ActiveUsers.find({galleryId: galleryId});
 		return activeUsers;
@@ -134,15 +132,18 @@ Meteor.publish('activeUsers',function([galleryId]){
 
 Meteor.methods({
 	getGalleryId(galleryName){
+		let sessionId = this.connection.id;
 		//console.log('getGalleryId()',galleryName);
 		if (galleryName){
 			let record = getGalleryByName(galleryName)
 			if (record){
+				addActiveUser(record._id,sessionId);
 				return record;
 			}
 		}
 		return createGallery(galleryName).then((galleryId)=>{
 			let record = getGalleryById(galleryId);
+			addActiveUser(record._id,sessionId);
 			return record;
 			//return galleryId;
 		});
@@ -193,6 +194,7 @@ Meteor.methods({
 		}
 	},
 	updateUser(name, color){
+		console.log('updating user',name);
 		let sessionId = this.connection.id;
 		ActiveUsers.update(
 			{ sessionId : sessionId},
