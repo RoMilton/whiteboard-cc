@@ -52,6 +52,8 @@ let DEFAULT_NAMES =[
 	"Observant Owl",
 	"Gregarious Giraffe",
 	"Wild Wolf",
+	"Diligent Dog",
+	"Terrific Tiger",
 	"Silent Seal",
 	"Wacky Whale",
 	"Curious Cat",
@@ -137,7 +139,7 @@ let getGalleryById = (galleryId)=>{
 Meteor.publish('galleries',function([galleryId]){
 	let galleries = Galleries.find(
 		{_id: galleryId},
-		{fields: { 'iSelectedBoard' : 1, 'galleryName' : 1 }}
+		{fields: { 'iSelectedBoard' : 1, 'galleryName' : 1, 'lastUpdatedBy' : 1 }}
 	);
 	//console.log('galleries',galleries.fetch()[0]);
 	return galleries;

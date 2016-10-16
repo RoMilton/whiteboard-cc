@@ -115,12 +115,12 @@ export default class App extends TrackerReact(React.Component) {
 	setUpTracker(){
 		Tracker.autorun(()=> {
 			let gallery = this.gallery();
-			// console.log('received subscription',this.state.boards);
+			console.log('received subscription',gallery);
+			console.log('my session id',this.sessionId());
 			if (gallery
 			&& (gallery.lastUpdatedBy !== this.sessionId())){
-
 				this.receivedData = true;
-				this.updateGallery(gallery.iSelectedBoard,gallery.galleryName);
+				this.updateGallery(gallery.iSelectedBoard,gallery.galleryName,gallery.lastUpdatedBy);
 			}
 		});
 
@@ -260,18 +260,23 @@ export default class App extends TrackerReact(React.Component) {
 		return new Whiteboard();
 	}
 
-	updateGallery(iSelectedBoard,galleryName,changedBy){
+	updateGallery(iSelectedBoard,galleryName,changedBy = this.sessionId()){
 		let newState = {};
 		if (galleryName){
 			newState.galleryName = galleryName;
 		}
+
 		if (iSelectedBoard !== undefined && iSelectedBoard !== this.state.iSelectedBoard){
+			this.initial = true;
 			newState.iSelectedBoard = iSelectedBoard;
+			
+			let name = this.state.activeUsers.find((user)=>{return user.sessionId === changedBy}).name;
+
 			newState.alert = {
 				visible : true,
-				text : 'Changed to board '+ (iSelectedBoard + 1)
-			}
-		
+				text : 'Changed to board '+ (iSelectedBoard + 1) + ' by '+ name
+			};
+			this.initial = false;
 			if (iSelectedBoard > this.state.boards.length - 1){
 				newState.boards = this.state.boards.slice()
 				let noOfBoardsToAdd = iSelectedBoard + 1 - this.state.boards.length;
