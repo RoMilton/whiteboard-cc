@@ -15,8 +15,6 @@ export default class Shape {
 	}
 	
 	constructor(obj){
-		//console.log('Shape.Line()',obj);
-		//super();
 		this.id = Utils.guid();
 		this.shapeName = obj.shapeName,
 		this.canvas = obj.canvas;
@@ -53,10 +51,18 @@ export default class Shape {
 		this.draw();
 	}
 
-	mouseOut(){
-		this.status = Shape.STATUS.end;
-		this.draw();
-		this.status = Shape.STATUS.idle;
+
+	mouseEnter(pos){
+		//console.log('mouse enter',this.isMouseDown);
+		if (this.status === Shape.STATUS.middle && this.isMouseDown){
+			this.addPoint(pos);
+			this.draw();
+		}else if (!this.isMouseDown){
+			this.status = Shape.STATUS.end;
+			this.draw();
+			this.onShapeSubmit(this.serialize());
+			this.status = Shape.STATUS.idle;
+		}
 	}
 
 	addPoint(pos){

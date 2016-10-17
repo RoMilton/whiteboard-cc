@@ -12,13 +12,24 @@ import ShapesTemplate from '../shapes/ShapesTemplate.js';
  */
 export default class DrawingCanvas extends CanvasBase {
 
+	constructor(props){
+		super(props);
+		this._documentMouseDown = this._documentMouseClick.bind(this,true);
+		this._documentMouseUp = this._documentMouseClick.bind(this,false);
+	}
+
+	_documentMouseClick(status){
+		//console.log('setting to',status);
+		if (this._currShape){
+			this._currShape.isMouseDown = status;
+		}
+	}
+
 	componentDidMount(){
 		let canvas = this.refs.canvas;
 		this._width = canvas.width;
 		this._height = canvas.height;
 		this._ctx = canvas.getContext("2d");
-		// this._clickX = new Array();
-		// this._clickY = new Array();
 		this._clickPos = [];
 		this._prevClickPos = [];
 
@@ -26,6 +37,14 @@ export default class DrawingCanvas extends CanvasBase {
 		let styles = window.getComputedStyle(canvas);
 		canvas.setAttribute('width',parseInt(styles.width));
 		canvas.setAttribute('height',parseInt(styles.height));
+		
+		document.addEventListener('mousedown',this._documentMouseDown);
+		document.addEventListener('mouseup',this._documentMouseUp);
+	}
+
+	componentWillUnmount(){
+		document.removeEventListener('mousedown',this._documentMouseDown);
+		document.removeEventListener('mouseup',this._documentMouseUp);
 	}
 
 	_getMouseCoords(e){
@@ -40,11 +59,13 @@ export default class DrawingCanvas extends CanvasBase {
 
 	_handleMouseMove(e){
 		if(this._currShape){
-			// console.log('mousemoving');
-			// this._currShape.mouseMove(this._getMouseCoords(e));
-			// console.log('e',e.pageX);
-			// console.log('canvas',canvas.offsetLeft);
 			this._currShape.mouseMove(this._getMouseCoords(e));
+		}
+	}
+
+	_handleMouseEnter(e){
+		if(this._currShape){
+			this._currShape.mouseEnter(this._getMouseCoords(e));
 		}
 	}
 
@@ -78,18 +99,8 @@ export default class DrawingCanvas extends CanvasBase {
 	_finish(){
 		if (this._currShape){
 			let canvas = this.refs.canvas;
-			//this.props.onShapeFinish(canvas.toDataURL("image/png")).then(()=>{
-			// console.log('clearing the drawing canvas');
 			this._ctx.clearRect(0, 0, canvas.width, canvas.height);
 			this._currShape = null;
-			//});
-		}
-	}
-
-	_handleMouseOut(e){
-		if (this._currShape){
-			this._currShape.mouseOut();
-			this._finish();
 		}
 	}
 
@@ -100,7 +111,7 @@ export default class DrawingCanvas extends CanvasBase {
 				onMouseMove = {this._handleMouseMove.bind(this)}
 				onMouseDown = {this._handleMouseDown.bind(this)}
 				onMouseUp = {this._handleMouseUp.bind(this)}
-				onMouseOut = {this._handleMouseOut.bind(this)}
+				onMouseEnter = {this._handleMouseEnter.bind(this)}
 				ref = "canvas"
 			/>
 		)
