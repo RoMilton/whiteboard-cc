@@ -302,8 +302,8 @@ $nav-item-margin: 10px;
 	&__card{
 		position: absolute;
 		background-color: $spring-wood;
-		width: 174px;
-		padding: 7px;
+		width: 260px;
+		padding: 10px;
 		box-sizing: border-box;
 		top: $toolbar-height + 8px;
 		@include box_shadow(3);
@@ -343,14 +343,6 @@ $nav-item-margin: 10px;
 		&.is-active{
 			@include highlight_shadow;
 		}
-	}
-}
-
-.text{
-	&__input{
-		width: 100%;
-		padding:4px 8px;
-		text-align:center;
 	}
 }
 

@@ -28,6 +28,15 @@ body{
 	background-color: $ebb;
 }
 
+a,a:visited{
+    background: transparent;
+    border: none;
+    text-decoration: none;
+    color: $grey;
+    border-bottom: 1px solid lighten($bright,15%);
+    padding-bottom: 1px;
+}
+
 .toolbar{
 	display:none;
 }
@@ -109,7 +118,6 @@ body{
 }
 
 input{
-	@include border-radius;
 	outline: none;
 	border: 1px solid #ccc;
 	height:2em;
@@ -140,4 +148,43 @@ input{
     left: 50%;
     background-size: 33px;
     @include spin-anim(1000ms);
+}
+
+.label{
+	color:$grey;
+	display:block;
+	font-size:15px;
+	margin-bottom:10px;
+}
+
+$text-submit-width: 60px;
+.text{
+	height:32px;
+	&__input{
+		height:100%;
+		width: calc(100% - #{$text-submit-width});
+		padding:4px 8px;
+		text-align:center;
+		font-size:14px;
+		border-right:0;
+		@include bord-rad-left;
+	}
+	&__submit{
+		width: $text-submit-width;
+		display:inline-block;
+		background-color:$bright;
+		height:100%;
+		color:#fff;
+		font-size:14px;
+		vertical-align: top;
+		line-height:32px;
+		@include button;
+		@include bord-rad-right;
+		&:hover{
+			background-color:darken($bright,10%);
+		}
+		&:active{
+			background-color:lighten($bright,5%);
+		}
+	}
 }

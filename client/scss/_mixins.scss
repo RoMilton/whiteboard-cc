@@ -12,8 +12,20 @@ Sass mixins intended to be used by CSS classes via @include functionality
     cursor: pointer;
 }
 
+$rad: 5px;
+
 @mixin border-radius{
     border-radius:5px;
+}
+
+@mixin bord-rad-right{
+    border-top-right-radius:$rad;
+    border-bottom-right-radius:$rad;
+}
+
+@mixin bord-rad-left{
+    border-top-left-radius:$rad;
+    border-bottom-left-radius:$rad;
 }
 
 /**
