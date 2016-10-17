@@ -29,53 +29,55 @@ export default class Toolbar extends React.Component {
 		};
 		return (
 			<header className="toolbar">
-				<div className="toolbar__controls">
-					<DropDown 
-						anchor="left"
-						closeOnContentClick={true}
-					>
-						<ToolButton
-							className="button button--filled" 
-							style={colorStyles}
+				<div className="wrap wrap--toolbar">
+					<div className="toolbar__controls">
+						<DropDown 
+							anchor="left"
+							closeOnContentClick={true}
 						>
-						</ToolButton>
-						<ColorSelect
-							colors={this.props.colors} 
-							selectedColor = {this.props.selectedColor}
-							handleColorClick = {this.handleColorClick}
-						/>
-					</DropDown>
-					<ToolButton 
-						className="button button--undo" 
-						handleClick={ ()=>{this.props.handleUndoClick(1)} }
-					>
-						Undo
-					</ToolButton>
-					<ToolButton 
-						className="button button--clear button--dropdown"
-					>
-						<span>Clear My Sketches</span>
-						<DropDown>
-							<span className="button--dropdown__toggle" />
-							<ul className="options-list">
-								<li onClick={()=>{this.props.handleUndoClick('all')}} >Clear My Sketches</li>
-								<li onClick={this.props.handleClearAllClick} > Clear Everything</li>
-							</ul>
+							<ToolButton
+								className="button button--filled" 
+								style={colorStyles}
+							>
+							</ToolButton>
+							<ColorSelect
+								colors={this.props.colors} 
+								selectedColor = {this.props.selectedColor}
+								handleColorClick = {this.handleColorClick}
+							/>
 						</DropDown>
-						
-					</ToolButton>
+						<ToolButton 
+							className="button button--undo" 
+							handleClick={ ()=>{this.props.handleUndoClick(1)} }
+						>
+							Undo
+						</ToolButton>
+						<ToolButton 
+							className="button button--clear button--dropdown"
+						>
+							<span>Clear My Sketches</span>
+							<DropDown>
+								<span className="button--dropdown__toggle" />
+								<ul className="options-list">
+									<li onClick={()=>{this.props.handleUndoClick('all')}} >Clear My Sketches</li>
+									<li onClick={this.props.handleClearAllClick} > Clear Everything</li>
+								</ul>
+							</DropDown>
+							
+						</ToolButton>
+					</div>
+					<ShapePalette
+						tools={this.props.tools}
+						selectedTool = {this.props.selectedTool}
+						handleToolChange = {this.props.handleToolChange}
+					/>
+					<ShareControls 
+						name = {this.props.name}
+						galleryName = {this.props.galleryName}
+						handleNameChange = {this.props.handleNameChange}
+						handleURLChange = {this.props.handleURLChange}
+					/>
 				</div>
-				<ShapePalette
-					tools={this.props.tools}
-					selectedTool = {this.props.selectedTool}
-					handleToolChange = {this.props.handleToolChange}
-				/>
-				<ShareControls 
-					name = {this.props.name}
-					galleryName = {this.props.galleryName}
-					handleNameChange = {this.props.handleNameChange}
-					handleURLChange = {this.props.handleURLChange}
-				/>
 			</header>
 		)
 	}

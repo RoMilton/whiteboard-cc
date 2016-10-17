@@ -28,7 +28,7 @@ $button-height: 36px;
 	&__controls{
 		position:absolute;
 		left:0;
-		padding-left:10px;
+		padding-left: 10px;
 	}
 
 	// container for Share, Username and change URL buttons
@@ -181,6 +181,7 @@ $button-height: 36px;
 .main{
 	margin-top:$toolbar-height;
 	height: calc(100% - #{$toolbar-height});
+	padding-top:25px;
 }
 
 // list of modes (pen, line, rectangle etc)
@@ -320,6 +321,11 @@ $nav-item-margin: 10px;
 			@include triangle(top,$spring-wood,8px);
 		}
 	}
+}
+
+.wrap--toolbar{
+    width: auto;
+    max-width: 1300px;
 }
 
 .color-palette{
