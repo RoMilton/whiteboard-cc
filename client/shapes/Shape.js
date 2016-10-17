@@ -10,9 +10,6 @@ export default class Shape {
 			end: 2 // drawing last point of a shape
 		};
 	}
-
-	static drawFromModel(model,canvas){
-	}
 	
 	constructor(obj){
 		this.id = Utils.guid();
@@ -22,10 +19,6 @@ export default class Shape {
 		this.ctx = this.canvas.getContext('2d');
 		this.onShapeSubmit = obj.onShapeSubmit;
 		this.points = [];
-	}
-
-	initialise(obj){
-
 	}
 
 	mouseDown(pos){
@@ -88,6 +81,10 @@ export default class Shape {
 
 	draw(){
 
+	}
+
+	static drawFromModel(model,canvas){
+	
 	}
 
 	serialize(){
