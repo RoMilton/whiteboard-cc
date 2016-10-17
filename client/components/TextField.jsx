@@ -1,4 +1,5 @@
 import React, {PropTypes} from 'react';
+import CopyToClipboard from 'react-copy-to-clipboard';
 
 export default class TextField extends React.Component{
 	
@@ -27,6 +28,10 @@ export default class TextField extends React.Component{
 		}
 	}
 
+	getVal(){
+		return this.refs.input.value;
+	}
+
 	render(){
 		return (
 			<div className="text">
@@ -38,7 +43,18 @@ export default class TextField extends React.Component{
 					onChange={this.handleTextChange}
 					onKeyUp={this.handleKeyUp}
 					className="text__input" 
+					readOnly={this.props.readOnly}
 				/>
+				<div
+					onClick={()=>{ this.props.handleSubmit(this.state.text);}}
+					className="text__submit"
+				>
+					{ this.props.copyToClipBoard ? 
+						<CopyToClipboard text={this.state.text}>
+							<span>{ this.props.submitText }</span>
+						</CopyToClipboard>
+				  	: this.props.submitText }
+				</div>
 			</div>
 		);
 	}
@@ -46,9 +62,15 @@ export default class TextField extends React.Component{
 
 TextField.propTypes = {
 	defaultValue : PropTypes.string,
-	handleSubmit : PropTypes.func
+	handleSubmit : PropTypes.func,
+	submitText : PropTypes.string,
+	readOnly : PropTypes.bool,
+	copyToClipBoard : PropTypes.bool
 }
 
 TextField.defaultProps = {
-	handleSubmit : 	()=>{}
+	handleSubmit : 	()=>{},
+	submitText : 'Save',
+	readOnly : false,
+	copyToClipBoard : true
 }
