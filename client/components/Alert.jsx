@@ -26,15 +26,15 @@ export default class Alert extends React.Component {
 		this.close();
 	}
 
+
+
 	render(){
-		return (
+		return !this.props.visible ? null : (
 			<div 
 				className = 'alert'
 				style={{ display : this.props.visible ? 'block' : 'none' }}
 			>
-				{
-					this.props.visible && this.props.text
-				}
+				{ this.props.text }
 			</div>
 		)
 	}
