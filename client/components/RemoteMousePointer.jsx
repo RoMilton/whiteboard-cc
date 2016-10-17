@@ -51,7 +51,8 @@ export default class RemoteMousePointer extends React.Component {
 	render(){
 		let getPointerStyles = ()=>{
 			let styles = {
-				backgroundColor : this.props.color
+				backgroundColor : this.props.color,
+				color : (this.props.color === '#ffffff' ) ? '#111' : ''
 			}
 			if ( this.state.pos.length){
 				styles.left = this.state.pos[0] + 'px';
