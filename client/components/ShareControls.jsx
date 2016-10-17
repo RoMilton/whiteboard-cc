@@ -28,7 +28,7 @@ export default class ShareControls extends React.Component {
 						handleSubmit = {this.props.handleNameChange}
 					/>
 				</DropDown>
-				<div className="item item--share">Invite / Share</div>
+				<div className="item item--share">Invite</div>
 			</div>
 		);
 	}
