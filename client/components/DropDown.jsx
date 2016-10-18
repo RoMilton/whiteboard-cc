@@ -1,5 +1,6 @@
 import React, {PropTypes} from 'react';
 import classNames from 'classnames';
+import eventService from '../eventService.js';
 
 /**
  *
@@ -19,20 +20,26 @@ export default class DropDown extends React.Component {
 			isVisible: false,
 		};
 
-		this.hideDropdown = this.hideDropdown.bind(this);
+		this.documentClick = this.documentClick.bind(this);
+		this.hide = this.hide.bind(this);
 		this.toggleDropdown = this.toggleDropdown.bind(this);
 	}
 
+	hide(){
+		this.setState({ isVisible:false });
+	}
 
 	componentDidMount() {
 		// Hide dropdown block on click outside the block
-		document.addEventListener('click', this.hideDropdown, false);
+		document.addEventListener('click', this.documentClick, false);
+		eventService.on('collapse-dropdowns',this.hide);
 	}
 
 
 	componentWillUnmount() {
 		// Remove click event listener on component unmount
-		document.removeEventListener('click', this.hideDropdown, false);
+		document.removeEventListener('click', this.documentClick, false);
+		eventService.removeListener('collapse-dropdowns',this.hide);
 	}
 
 
@@ -49,10 +56,10 @@ export default class DropDown extends React.Component {
 	toggleDropdown(e) {
 		let { isVisible } = this.state;
 		// Toggle dropdown block visibility
-		this.setState({ isVisible: !isVisible });
+		this.setState({ isVisible : !isVisible });
 	}
 
-	hideDropdown(e) {
+	documentClick(e) {
 		if ((!this.state.isVisible)
 		|| (this.clickedContent(e) && !this.props.closeOnContentClick)
 		|| this.clickedOnToggle(e)){
@@ -77,31 +84,31 @@ export default class DropDown extends React.Component {
 			});
 		}
 		return (
+			<div
+				className={getDropDownCSSClass()}
+				tabIndex="1"
+			>
 				<div
-					className={getDropDownCSSClass()}
-					tabIndex="1"
+					ref="toggle"
+					onClick={this.toggleDropdown} 
+					className="dropdown__toggle"
 				>
-					<div
-						ref="toggle"
-						onClick={this.toggleDropdown} 
-						className="dropdown__toggle"
-					>
-						{this.props.children[0]}
+					{this.props.children[0]}
 
-					</div>
-					{
-						this.state.isVisible && 
-						<div 
-							style={ getCardStyles() }
-							className="dropdown__card"
-							ref="content"
-						>
-							{this.props.closeButton && 
-								<span onClick={this.toggleDropdown} className="dropdown__btnClose">&#10005;</span>}
-							{this.props.children[1]}
-						</div>
-					}
 				</div>
+				{
+					this.state.isVisible && 
+					<div 
+						style={ getCardStyles() }
+						className="dropdown__card"
+						ref="content"
+					>
+						{this.props.closeButton && 
+							<span onClick={this.toggleDropdown} className="dropdown__btnClose">&#10005;</span>}
+						{this.props.children[1]}
+					</div>
+				}
+			</div>
 		);
 	}
 

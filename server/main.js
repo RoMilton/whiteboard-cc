@@ -10,21 +10,21 @@ let RESERVED_NAMES = [
 ];
 
 let makeGalleryName=(alphabeticLength = 5, numSuffixLength = 2)=>{
-    let text = "";
-    let possibleV = "aeiou";
-    let possibleC = "bcdfghkmnpqrsty";
-    let possibleN = "0123456789";
+	let text = "";
+	let possibleV = "aeiou";
+	let possibleC = "bcdfghkmnpqrsty";
+	let possibleN = "0123456789";
 
-    for( let i=0; i < alphabeticLength; i++ ){
-    	let poss = (i % 2) == 1 ? possibleV : possibleC;
-        text += poss.charAt(Math.floor(Math.random() * poss.length));
-    }
+	for( let i=0; i < alphabeticLength; i++ ){
+		let poss = (i % 2) == 1 ? possibleV : possibleC;
+			text += poss.charAt(Math.floor(Math.random() * poss.length));
+	}
 
-    for( let i=0; i < numSuffixLength; i++ ){
-    	text += possibleN.charAt(Math.floor(Math.random() * possibleN.length));
-    }
+	for( let i=0; i < numSuffixLength; i++ ){
+		text += possibleN.charAt(Math.floor(Math.random() * possibleN.length));
+	}
 
-    return text;
+	return text;
 }
 
 let createGallery = (galleryName) => {
@@ -190,15 +190,18 @@ Meteor.methods({
 						iSelectedBoard: iBoard,
 						lastUpdatedBy: sessionId
 					}
-				//$push: { boards: { $each: newBoards } },
 			}
 		);
 	},
 	updateGalleryName(names){
 		let sessionId = this.connection.id
+		names.name = names.newName.trim();
+		if (!names.newName){
+			throw new Meteor.Error(500, 'You must provide a URL', '');	
+		}
 		let record = getGalleryByName(names.newName);
 		if (record){
-			throw new Meteor.Error(500, 'Name is already in use', '');	
+			throw new Meteor.Error(500, "'" +names.newName +"' is already in use", '');	
 		}else{			
 			Galleries.update(
 				{ galleryName : names.currentName },
@@ -211,41 +214,45 @@ Meteor.methods({
 			);
 		}
 	},
-	updateUser(name, color){
-		console.log('updating user',name);
+	updateNickname(nickname){
 		let sessionId = this.connection.id;
+		nickname = nickname.trim();
+		console.log('nickname',nickname);
+		if (!nickname){
+			throw new Meteor.Error(500, "You must provide a name", '');	
+		}
 		ActiveUsers.update(
 			{ sessionId : sessionId},
 			{
 				$set: {
-					name : name,
+					name : nickname
+				}
+			}
+		);
+	},
+	updateColor(color){
+		let sessionId = this.connection.id;
+		color = color.trim();
+		if (!color){
+			throw new Meteor.Error(500, "You must provide a color", '');	
+		}
+		ActiveUsers.update(
+			{ sessionId : sessionId},
+			{
+				$set: {
 					color : color
 				}
 			}
 		);
 	}
-	// addBoard(galleryId,noOfBoardsToAdd){
-	// 	let sessionId = this.connection.id;
-	// 	let newBoards = [];
-	// 	for (var i = 0; i<noOfBoardsToAdd; i++){
-	// 		newBoards.push([null]);
-	// 	}
-	// 	Galleries.update(
-	// 		{ _id: galleryId },
- //   			{
- //   				$push: { boards: { $each: newBoards } },
- //   				$set:  {lastUpdatedBy : sessionId}
- //   			}
-	// 	);
-	// }
 });
 
 Meteor.startup(() => {
-  // code to run on server at startup
+	// code to run on server at startup
 
-  Streamy.onDisconnect((session)=>{
-  	removeActiveUser(session.__sid);
-  });
+	Streamy.onDisconnect((session)=>{
+		removeActiveUser(session.__sid);
+	});
 
 });
 

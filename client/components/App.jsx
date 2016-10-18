@@ -94,6 +94,18 @@ export default class App extends TrackerReact(React.Component) {
 			};
 		});
 
+		this.changeColor = this.changeColor.bind(this)
+		this.changeTool = this.changeTool.bind(this);
+		this.handleUndo = this.handleUndo.bind(this);
+		this.handleClearMy = this.handleClearMy.bind(this);
+		this.handleClearAll = this.handleClearAll.bind(this);
+		this.changeName = this.changeName.bind(this);
+		this.handleURLChange = this.handleURLChange.bind(this);
+		this.handleNewShape = this.handleNewShape.bind(this);
+		this.addBoard = this.addBoard.bind(this);
+		this.changeBoard = this.changeBoard.bind(this);
+		this.handleAlertFinish = this.handleAlertFinish.bind(this);
+
 	}
 
 	gallery(){
@@ -164,25 +176,35 @@ export default class App extends TrackerReact(React.Component) {
 	}
 
 	changeName(newName){
-		this.setState({
-			name : newName
+		return new Promise((resolve,reject)=>{
+			Meteor.call('updateNickname',newName, (err,result)=>{
+				if (err){
+					reject(err.reason);
+				}else{
+					this.setState({
+						name : newName
+					});
+					resolve(newName)
+				}
+			});
 		});
 	}
 
 	handleURLChange(newURL){
-		//console.log('handleURLChange',newURL);
-		Meteor.call('updateGalleryName', {
-			currentName : this.state.galleryName,
-			newName : newURL
-		},(err,res)=>{
-			if (err){
-				console.log('err',err);
-			}else{
-				//console.log('success',res);
-				this.setState({
-					galleryName : newURL
-				});
-			}
+		return new Promise((resolve,reject)=>{
+			Meteor.call('updateGalleryName', {
+				currentName : this.state.galleryName,
+				newName : newURL
+			},(err,res)=>{
+				if (err){
+					reject(err.reason);
+				}else{
+					this.setState({
+						galleryName : newURL
+					});
+					resolve(newURL);
+				}
+			});
 		});
 	}
 
@@ -207,15 +229,10 @@ export default class App extends TrackerReact(React.Component) {
 				);
 			}
 			//console.log('sending user',this.state.name);
-			if ( this.state.name !== prevState.name
-			|| this.state.selectedColor !== prevState.selectedColor){
-				// console.log('111','sending',this.state.name);
-				// console.log('this.state.name',this.state.name);
-				// console.log('prevState.name',prevState.name);
-				// console.log('this.state.color',this.state.color);
-				// console.log('prevState.selectedColor',prevState.selectedColor);
-				Meteor.call('updateUser',this.state.name,this.state.selectedColor);
-			}
+			// if ( this.state.name !== prevState.name
+			// || this.state.selectedColor !== prevState.selectedColor){
+				
+			// }
 
 		}else{
 			this.receivedData = false;
@@ -396,7 +413,6 @@ export default class App extends TrackerReact(React.Component) {
 	}
 
 	render(){
-		
 		let sessionId = this.sessionId();
 		let selectedBoard = this.state.boards[this.state.iSelectedBoard]
 		if (!this.state.activeUsers.length && this.state.boards.length){
@@ -411,13 +427,13 @@ export default class App extends TrackerReact(React.Component) {
 					galleryName = {this.state.galleryName}
 					selectedTool = {this.state.selectedTool}
 					selectedColor = {this.state.selectedColor}
-					handleColorClick = {this.changeColor.bind(this)}
-					handleToolChange = {this.changeTool.bind(this)}
-					handleUndoClick = {this.handleUndo.bind(this)}
-					handleClearMyClick = {this.handleClearMy.bind(this)}
-					handleClearAllClick = {this.handleClearAll.bind(this)}
-					handleNameChange = {this.changeName.bind(this)}
-					handleURLChange = {this.handleURLChange.bind(this)}
+					handleColorClick = {this.changeColor}
+					handleToolChange = {this.changeTool}
+					handleUndoClick = {()=>{this.handleUndo(1)}}
+					handleClearMyClick = {this.handleClearMy}
+					handleClearAllClick = {this.handleClearAll}
+					handleNameChange = {this.changeName}
+					handleURLChange = {this.handleURLChange}
 				/>
 				<main className="main">
 					<div className="wrap">
@@ -428,7 +444,7 @@ export default class App extends TrackerReact(React.Component) {
 							<DrawingCanvas 
 								color = {this.state.selectedColor}
 								tool = {this.state.selectedTool}
-								onDrawFinish = {this.handleNewShape.bind(this)}
+								onDrawFinish = {this.handleNewShape}
 							/>
 							{ this.state.activeUsers.length && 
 								<CursorsWrapper 
@@ -440,8 +456,8 @@ export default class App extends TrackerReact(React.Component) {
 						<Nav
 							boards = {this.state.boards}
 							iSelectedBoard = {this.state.iSelectedBoard}
-							onItemChange = {this.changeBoard.bind(this)}
-							onItemAdd = {this.addBoard.bind(this)}
+							onItemChange = {this.changeBoard}
+							onItemAdd = {this.addBoard}
 							maxBoardCount = {App.MAX_BOARD_COUNT}
 						/>
 					</div>
@@ -449,7 +465,7 @@ export default class App extends TrackerReact(React.Component) {
 				<Alert
 					visible = {this.state.alert.visible}
 					text = {this.state.alert.text}
-					handleAlertFinish = {this.handleAlertFinish.bind(this)}
+					handleAlertFinish = {this.handleAlertFinish}
 				/>
 				<ReactTooltip 
 					place="bottom"

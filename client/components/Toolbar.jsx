@@ -28,7 +28,6 @@ export default class Toolbar extends React.Component {
 		let colorStyles = {
 			backgroundColor : this.props.selectedColor
 		};
-		console.log('aaa',this.props.handleClearMyClick);
 		return (
 			<header className="toolbar">
 				<div className="wrap wrap--toolbar">
@@ -51,7 +50,7 @@ export default class Toolbar extends React.Component {
 						</DropDown>
 						<ToolButton 
 							className="button button--undo" 
-							handleClick={ ()=>{this.props.handleUndoClick(1)} }
+							handleClick={ this.props.handleUndoClick }
 						>
 							Undo
 						</ToolButton>
@@ -60,10 +59,7 @@ export default class Toolbar extends React.Component {
 							text="Clear My Sketches"
 							handleClick={ this.props.handleClearMyClick }
 							optionNames={['Clear My Sketches','Clear Everything']}
-							optionClicks={[
-								this.props.handleClearMyClick,
-								this.props.handleClearAllClick
-							]}
+							optionClicks={[this.props.handleClearMyClick,this.props.handleClearAllClick]}
 						/>
 					</div>
 					<ShapePalette

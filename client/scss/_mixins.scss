@@ -23,6 +23,11 @@ $rad: 5px;
     border-bottom-right-radius:$rad;
 }
 
+@mixin bord-rad-bottom{
+    border-bottom-right-radius:$rad;
+    border-bottom-left-radius:$rad;
+}
+
 @mixin bord-rad-left{
     border-top-left-radius:$rad;
     border-bottom-left-radius:$rad;
@@ -70,7 +75,6 @@ $rad: 5px;
     width: 0;
     height: 0;
     content: '';
-    z-index: 2;
     border-#{opposite-direction($direction)}: ($size * 1.5) solid $color;
 
     $perpendicular-borders: $size solid transparent;

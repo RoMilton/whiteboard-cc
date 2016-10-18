@@ -97,6 +97,7 @@ a,a:visited{
 		color:#fff;
 		padding:4px 10px;
 		font-size:13px;
+		z-index:25;
 		@include box_shadow(4);
 		@include border-radius;
 		&--own{
@@ -151,11 +152,25 @@ input{
 }
 
 .label{
+	display:block;
 	text-align: left;
 	color:$grey;
 	display:block;
 	font-size:15px;
-	margin-bottom:13px;
+	&--link{
+		margin-bottom:15px;
+	}
+	&--success, &--error{
+		text-align:center;
+		width:100%;
+		color:#fff;
+	}
+	&--success{
+		background-color: darken($bright,8%);
+	}
+	&--error{
+		background-color: $grenadier;
+	}
 }
 
 $text-submit-width: 60px;
@@ -169,6 +184,9 @@ $text-submit-width: 60px;
 		font-size:14px;
 		border-right:0;
 		@include bord-rad-left;
+		// &:focus{
+		// 	background-color: $china-ivory;
+		// }
 	}
 	&__submit{
 		width: $text-submit-width;
