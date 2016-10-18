@@ -11,13 +11,6 @@ import ReactTooltip from 'react-tooltip';
 export default class ToolButton extends React.Component {
 
 	render(){
-		// let getCSSClass(){
-		// 	return classNames({
-		// 		'button',
-		// 		`button--${this.props.cssSuffix}`,
-		// 		this.props.cssClasses
-		// 	});
-		// }
 		return (
 			<div 
 				data-tip={this.props.description}

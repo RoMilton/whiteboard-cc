@@ -41,6 +41,18 @@ $button-height: 36px;
 
 }
 
+@mixin icon_image{
+	background-position: 50% 50%;
+	background-repeat:no-repeat;
+	background-size:100%;
+	width: 18px;
+	height:18px;
+	content:"";
+	position:absolute;
+	left:9px;
+	opacity:0.34;
+}
+
 // traditional button for use anywhere on page
 .button{
 	display:inline-block;
@@ -59,57 +71,50 @@ $button-height: 36px;
 
 	// background image is assigned to pseudo element to its opacity can be controlled
 	&:before{
-		background-position: 50% 50%;
-		background-repeat:no-repeat;
-		background-size:100%;
-		width: 18px;
-		height:18px;
-		content:"";
-		position:absolute;
-		left:9px;
-		opacity:0.34;
+		@include icon-image;
 	}
 
 	&--undo:before{
 		background-image: url('images/icon-arrow-round.png');
 	}
-	&--clear:before{
-		background-image: url('images/icon-cross.png');
-	}
-
-	// button with no icon - just solid color;
-	&--filled{
-		width: 58px;
-	}
-
-	// button with dropdown menu
-	&--dropdown{
-		padding-right:28px;
-
-		//arrow to toggle dropdown menu
-		&__toggle{
-			position:absolute;
-			right:0px;
-			top:50%;
-			transform: translate(0,-50%);
+	&--select{
+		padding: 0 28px 0 0;
+		&__arrow{
+			position: absolute;
+			top: 0;
+			right: 0;
+			height: 100%;
 			width:25px;
-			height:100%;
-			display:inline-block;
-			opacity:0.63;
+		}
+		&__text{
+			padding: 8px 0 9px 33px;
+			display:block;
+			&:before{
+				@include icon-image;
+			}
+			&--clear:before{
+				background-image: url('images/icon-cross.png');
+			}
+		}
+		&__toggle{
+			position: relative;
+			top: 50%;
+			transform: translate(0, -50%);
+			width: 25px;
+			height: 100%;
+			display: inline-block;
+			opacity: 0.63;
 			background: url('images/icon-arrow-down.png') 50% 50% no-repeat;
 			&:hover{
 				background-color:$ebb;
 				opacity:1;
 			}
 		}
+	}
 
-		//dropdown menu
-		.dropdown{
-			position: absolute;
-			right: 0;
-			top: 0;
-			width: 25px;
-		}
+	// button with no icon - just solid color;
+	&--filled{
+		width: 58px;
 	}
 	
 	// when hover on toolbar button
@@ -167,8 +172,10 @@ $button-height: 36px;
 
 	// invite/share toolbar item
 	&--share{
-		//background-color: #EBE8E8;
+		background-color: #EBE8E8;
 		// color:$bright;
+		// background-color:darken($ebb ,2%);
+		//background-color:$bright;
 		&:before{
 			background-image: url('images/icon-share.png');
 		}
@@ -302,11 +309,22 @@ $nav-item-margin: 10px;
 	&__card{
 		position: absolute;
 		background-color: $spring-wood;
-		width: 260px;
-		padding: 10px;
+		width: 266px;
+		padding: 13px;
 		box-sizing: border-box;
 		top: $toolbar-height + 8px;
 		@include box_shadow(3);
+	}
+	&__btnClose {
+		position: absolute;
+		right: 8px;
+		top: 6px;
+		color: $grey;
+		cursor: pointer;
+		&:hover{
+			color: $grenadiar;
+		}
+		@include button;
 	}
 	&.is-active{
 		.dropdown__toggle:before{

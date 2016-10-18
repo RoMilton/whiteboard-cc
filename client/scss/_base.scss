@@ -151,10 +151,11 @@ input{
 }
 
 .label{
+	text-align: left;
 	color:$grey;
 	display:block;
 	font-size:15px;
-	margin-bottom:10px;
+	margin-bottom:13px;
 }
 
 $text-submit-width: 60px;

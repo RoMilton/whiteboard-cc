@@ -24,6 +24,7 @@ export default class ShareControls extends React.Component {
 					inputDescriptionLink={'http://' + currentURL}
 					submitText="Save"
 					handleSubmit={this.props.handleURLChange}
+					width={270}
 				/>
 				<TextControl
 					buttonClassName="item item--name"
@@ -32,11 +33,13 @@ export default class ShareControls extends React.Component {
 					inputDescription="Enter Your Name:"
 					handleSubmit= {this.props.handleNameChange}
 					submitText="Save"
+					width={270}
 				/>
 				<TextControl
 					buttonClassName="item item--share"
 					buttonText="Invite"
 					submitText="Copy"
+					width={320}
 					defaultValue={currentURL}
 					readOnly = {true}
 					inputDescription="Share this link to invite others"

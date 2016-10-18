@@ -6,9 +6,9 @@ export default class TextControl extends React.Component{
 
 	render(){
 		return (
-			<DropDown>
+			<DropDown width={this.props.width}>
 				<div className={this.props.buttonClassName}>
-					{this.props.buttonText}
+					{this.props.buttonText.substr(0,16)}
 				</div>
 				<div>
 					{ this.props.inputDescription && 
@@ -40,6 +40,7 @@ TextControl.propTypes = {
 	inputDescription : PropTypes.string,
 	inputDesciptionLink : PropTypes.string,
 	defaultValue : PropTypes.string,
+	width : PropTypes.number,
 	handleSubmit : PropTypes.func
 }
 

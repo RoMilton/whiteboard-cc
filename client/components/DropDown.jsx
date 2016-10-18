@@ -67,6 +67,7 @@ export default class DropDown extends React.Component {
 		let getCardStyles=()=>{
 			let styles = {};
 			styles[this.props.anchor] = '2px';
+			styles.width = this.props.width ? (this.props.width + 'px') : '';
 			return styles;
 		};
 		let getDropDownCSSClass=()=>{
@@ -95,6 +96,8 @@ export default class DropDown extends React.Component {
 							className="dropdown__card"
 							ref="content"
 						>
+							{this.props.closeButton && 
+								<span onClick={this.toggleDropdown} className="dropdown__btnClose">&#10005;</span>}
 							{this.props.children[1]}
 						</div>
 					}
@@ -106,10 +109,15 @@ export default class DropDown extends React.Component {
 
 DropDown.propTypes = {
 	anchor : PropTypes.oneOf(['left','right']),
+	closeButton : PropTypes.bool,
+	width: PropTypes.number,
+	showArrow : PropTypes.bool,
 	closeOnContentClick : PropTypes.bool
 }
 
 DropDown.defaultProps = {
 	anchor : 'right',
-	closeOnContentClick : false
+	closeOnContentClick : false,
+	closeButton : true,
+	showArrow : true
 }

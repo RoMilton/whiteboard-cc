@@ -356,6 +356,10 @@ export default class App extends TrackerReact(React.Component) {
 		}
 	}
 
+	handleClearMy(){
+		this.handleUndo('all');
+	}
+
 	handleAlertFinish(){
 		this.setState({
 			alert : {
@@ -410,6 +414,7 @@ export default class App extends TrackerReact(React.Component) {
 					handleColorClick = {this.changeColor.bind(this)}
 					handleToolChange = {this.changeTool.bind(this)}
 					handleUndoClick = {this.handleUndo.bind(this)}
+					handleClearMyClick = {this.handleClearMy.bind(this)}
 					handleClearAllClick = {this.handleClearAll.bind(this)}
 					handleNameChange = {this.changeName.bind(this)}
 					handleURLChange = {this.handleURLChange.bind(this)}

@@ -4,6 +4,7 @@ import ColorSelect from './ColorSelect.jsx';
 import ToolButton from './ToolButton.jsx';
 import DropDown from './DropDown.jsx';
 import ShareControls from './ShareControls.jsx';
+import ToolSelectList from './ToolSelectList.jsx';
 
 
 /**
@@ -27,12 +28,14 @@ export default class Toolbar extends React.Component {
 		let colorStyles = {
 			backgroundColor : this.props.selectedColor
 		};
+		console.log('aaa',this.props.handleClearMyClick);
 		return (
 			<header className="toolbar">
 				<div className="wrap wrap--toolbar">
 					<div className="toolbar__controls">
 						<DropDown 
 							anchor="left"
+							closeButton={false}
 							closeOnContentClick={true}
 						>
 							<ToolButton
@@ -52,19 +55,16 @@ export default class Toolbar extends React.Component {
 						>
 							Undo
 						</ToolButton>
-						<ToolButton 
-							className="button button--clear button--dropdown"
-						>
-							<span>Clear My Sketches</span>
-							<DropDown>
-								<span className="button--dropdown__toggle" />
-								<ul className="options-list">
-									<li onClick={()=>{this.props.handleUndoClick('all')}} >Clear My Sketches</li>
-									<li onClick={this.props.handleClearAllClick} > Clear Everything</li>
-								</ul>
-							</DropDown>
-							
-						</ToolButton>
+						<ToolSelectList
+							buttonClassName="button button--clear"
+							text="Clear My Sketches"
+							handleClick={ this.props.handleClearMyClick }
+							optionNames={['Clear My Sketches','Clear Everything']}
+							optionClicks={[
+								this.props.handleClearMyClick,
+								this.props.handleClearAllClick
+							]}
+						/>
 					</div>
 					<ShapePalette
 						tools={this.props.tools}
