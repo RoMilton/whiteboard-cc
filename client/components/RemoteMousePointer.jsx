@@ -1,5 +1,6 @@
 import React, {PropTypes} from 'react';
 import classNames from 'classnames';
+import MousePointer from './MousePointer.jsx';
 
 /**
  * Toolbar allows users to perform actions (undo, share, change color) on the
@@ -8,7 +9,7 @@ import classNames from 'classnames';
  * @class Toolbar
  * @extends React.Component
  */
-export default class RemoteMousePointer extends React.Component {
+export default class RemoteMousePointer extends MousePointer {
 
 	constructor(props){
 		super(props);
@@ -49,25 +50,12 @@ export default class RemoteMousePointer extends React.Component {
 	}
 
 	render(){
-		let getPointerStyles = ()=>{
-			let styles = {
-				backgroundColor : this.props.color,
-				color : (this.props.color === '#ffffff' ) ? '#111' : ''
-			}
-			if ( this.state.pos.length){
-				styles.left = this.state.pos[0] + 'px';
-				styles.top = this.state.pos[1] + 'px';
-			}
-
-			return styles;
-		};
-
 		return (
 			<div
 				ref = "pointer"
 				key = { this.props.id }
 				className="cursors__pointer"
-				style={ getPointerStyles() }
+				style={ this.getPointerStyles(this.state.pos) }
 			>
 				{this.props.name}
 			</div>

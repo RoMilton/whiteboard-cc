@@ -41,7 +41,7 @@ export default class ShareControls extends React.Component {
 		this.props.handleURLChange(galleryName).then(()=>{
 			this.setState({
 				nameSuccessMsg : null,
-				urlSuccessMsg : 'URL succesfully changed',
+				urlSuccessMsg : 'URL changed to '+window.location.host + '/'+galleryName,
 				urlErrorMsg : null
 			});
 			eventService.emit('collapse-dropdowns');
