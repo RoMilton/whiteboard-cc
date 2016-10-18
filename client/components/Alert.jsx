@@ -8,8 +8,8 @@ import React, {PropTypes} from 'react';
  * @extends React.Component
  */
 export default class Alert extends React.Component {
-	
-	close(){
+
+	componentDidUpdate(){
 		if (this.timer){
 			clearInterval(this.timer);
 		}
@@ -18,25 +18,15 @@ export default class Alert extends React.Component {
 		},this.props.duration);
 	}
 
-	componentDidMount(){
-		this.close();
-	}
-
-	componentDidUpdate(){
-		this.close();
-	}
-
-
-
 	render(){
-		return !this.props.visible ? null : (
+		return this.props.visible ? (
 			<div 
 				className = 'alert'
 				style={{ display : this.props.visible ? 'block' : 'none' }}
 			>
 				{ this.props.text }
 			</div>
-		)
+		) : null;
 	}
 }
 
