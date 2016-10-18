@@ -12,6 +12,7 @@ export default class TextField extends React.Component{
 
 		this.handleTextChange = this.handleTextChange.bind(this);
 		this.handleKeyUp = this.handleKeyUp.bind(this);
+		this.handleInputClick = this.handleInputClick.bind(this);
 	}
 
 	componentDidMount(){
@@ -25,6 +26,12 @@ export default class TextField extends React.Component{
 	handleKeyUp(e){
 		if (e.which == 13 || e.keyCode == 13) {
 			this.props.handleSubmit(e.target.value);
+		}
+	}
+
+	handleInputClick(){
+		if (this.props.readOnly){
+			this.refs.input.select();
 		}
 	}
 
@@ -44,6 +51,7 @@ export default class TextField extends React.Component{
 					onKeyUp={this.handleKeyUp}
 					className="text__input" 
 					readOnly={this.props.readOnly}
+					onClick={this.handleInputClick}
 				/>
 				<div
 					onClick={()=>{ this.props.handleSubmit(this.state.text);}}
