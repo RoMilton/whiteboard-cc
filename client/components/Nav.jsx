@@ -1,6 +1,6 @@
 import React, {PropTypes} from 'react';
 import classNames from 'classnames';
-import DisplayBoard from './DisplayBoard.jsx';
+import DisplayCanvas from './DisplayCanvas.jsx';
 
 /**
  * Board Navigation. Since Whiteboard app uses multiple boards, this component allows users
@@ -29,7 +29,7 @@ export default class NavBoards extends React.Component {
 									className={getCSSClass(index)}
 									onClick={()=>this.props.onItemChange(index)}
 								>
-									<DisplayBoard 
+									<DisplayCanvas
 										shapes={board.shapes}
 									/>
 								</li>

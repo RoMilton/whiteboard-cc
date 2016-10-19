@@ -7,7 +7,7 @@ import CanvasBase from './CanvasBase.jsx';
  * @class Canvas
  * @extends React.Component
  */
-export default class DisplayBoard extends CanvasBase {
+export default class DisplayCanvas extends CanvasBase {
 
 	componentDidMount(){
 		this._initialiseCanvas();
@@ -48,14 +48,14 @@ export default class DisplayBoard extends CanvasBase {
 	}
 }
 
-DisplayBoard.propTypes = {
+DisplayCanvas.propTypes = {
 	shapes : PropTypes.array,
 	width : PropTypes.number,
 	height : PropTypes.number,
 	className : PropTypes.string
 }
 
-DisplayBoard.defaultProps = {
+DisplayCanvas.defaultProps = {
 	shapes : [],
 	width : 1095,
 	height : 688

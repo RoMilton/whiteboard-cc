@@ -4,7 +4,7 @@ import { Tracker } from 'meteor/tracker';
 import ReactTooltip from 'react-tooltip';
 import Toolbar from './Toolbar.jsx';
 import DrawingCanvas from './DrawingCanvas.jsx';
-import DisplayBoard from './DisplayBoard.jsx';
+import DisplayCanvas from './DisplayCanvas.jsx';
 import Nav from './Nav.jsx';
 import Alert from './Alert.jsx';
 import Whiteboard from '../../universal/Whiteboard.js';
@@ -412,7 +412,7 @@ export default class App extends TrackerReact(React.Component) {
 				<main className="main">
 					<div className="wrap">
 						<div className="main-board">
-							<DisplayBoard 
+							<DisplayCanvas 
 								shapes = {this.state.boards[this.state.iSelectedBoard].shapes}
 							/>
 							<DrawingCanvas 
