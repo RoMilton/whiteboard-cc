@@ -66,6 +66,6 @@ export default class RemoteMousePointer extends MousePointer {
 
 RemoteMousePointer.propTypes = {
 	name : PropTypes.string,
-	color : PropTypes.string,
+	bgColor : PropTypes.string,
 	listenToSessionId : PropTypes.string
 }

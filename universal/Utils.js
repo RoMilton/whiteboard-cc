@@ -1,23 +1,13 @@
 export default class Utils{
 
-	static mergeImages(imageSrc1,imageSrc2,fileType = 'png'){
-		return new Promise((resolve,reject)=>{
-			let c = document.createElement("canvas");
-			let ctx = c.getContext("2d");
-			let imageObj1 = new Image();
-			let imageObj2 = new Image();
-			imageObj1.src = imageSrc1;
-			imageObj1.onload = ()=>{
-				imageObj2.src = imageSrc2;
-				imageObj2.onload = ()=>{
-					c.setAttribute('width',Math.max(imageObj1.width,imageObj2.width));
-					c.setAttribute('height',Math.max(imageObj1.height,imageObj2.height));
-					ctx.drawImage(imageObj1, 0, 0);
-					ctx.drawImage(imageObj2, 0, 0);
-					resolve (c.toDataURL("image/png"));
-				}
-			}
-		});
+	static getBrightness(color){
+		var color = color.substring(1);      // strip #
+		var rgb = parseInt(color, 16);   // convert rrggbb to decimal
+		var r = (rgb >> 16) & 0xff;  // extract red
+		var g = (rgb >>  8) & 0xff;  // extract green
+		var b = (rgb >>  0) & 0xff;  // extract blue
+		var brightness = 0.2126 * r + 0.7152 * g + 0.0722 * b; // per ITU-R BT.709
+		return brightness;
 	}
 
 	static validItemFromArrays(validValues,invalidValues,random = true){

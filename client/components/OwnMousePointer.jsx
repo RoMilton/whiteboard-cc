@@ -25,7 +25,7 @@ export default class OwnMousePointer extends MousePointer {
 
 OwnMousePointer.propTypes = {
 	name : PropTypes.string,
-	color : PropTypes.string,
-	tool : PropTypes.string,
-	pos : PropTypes.array
+	bgColor : PropTypes.string,
+	tool : PropTypes.string
+	
 }
