@@ -252,7 +252,7 @@ $nav-item-margin: 10px;
 		box-sizing: border-box;
 		vertical-align: top;
 		&:hover{
-			border-color:lighten($grey,20%);
+			border-color: lighten($lunar-green,10%);
 		}
 		@include button;
 		&:before{
@@ -278,6 +278,9 @@ $nav-item-margin: 10px;
 				content:"+";
 				font-size:52px;
 				line-height:106px;
+			}
+			&:hover{
+				border-color: $lunar-green;
 			}
 		}
 		&:last-child{
