@@ -250,6 +250,9 @@ Meteor.methods({
 Meteor.startup(() => {
 	// code to run on server at startup
 
+	//Clear Active Users
+	ActiveUsers.remove({});
+
 	Streamy.onDisconnect((session)=>{
 		removeActiveUser(session.__sid);
 	});
