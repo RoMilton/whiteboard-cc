@@ -18,12 +18,13 @@ export default class Alert extends React.Component {
 	}
 
 	_startTimer(){
+		if (!this.props.handleFinish) return;
 		if (this.props.visible){
 			if (this.timer){
 				clearTimeout(this.timer);
 			}
 			this.timer = setTimeout(()=>{
-				this.props.handleAlertFinish();
+				this.props.handleFinish();
 			},this.props.duration);
 		}
 	}
