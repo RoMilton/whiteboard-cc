@@ -264,16 +264,15 @@ export default class App extends TrackerReact(React.Component) {
 		}
 
 		if (iSelectedBoard !== undefined && iSelectedBoard !== this.state.iSelectedBoard){
-			this.initial = true;
-			newState.iSelectedBoard = iSelectedBoard;
 			
+			newState.iSelectedBoard = iSelectedBoard;
 			let name = this.state.activeUsers.find((user)=>{return user.sessionId === changedBy}).name;
 
 			newState.alert = {
 				visible : true,
 				text : 'Changed to board '+ (iSelectedBoard + 1) + ' by '+ name
 			};
-			this.initial = false;
+
 			if (iSelectedBoard > this.state.boards.length - 1){
 				newState.boards = this.state.boards.slice()
 				let noOfBoardsToAdd = iSelectedBoard + 1 - this.state.boards.length;
