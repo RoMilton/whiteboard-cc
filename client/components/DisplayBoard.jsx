@@ -1,7 +1,6 @@
 import React from 'react';
 import ShapeMap from '../shapes/ShapeMap.js';
 import CanvasBase from './CanvasBase.jsx';
-import Utils from '../../universal/Utils.js';
 
 /**
  *
