@@ -92,8 +92,13 @@ $button-height: 36px;
 			&:before{
 				@include icon-image;
 			}
-			&--clear:before{
-				background-image: url('images/icon-cross.png');
+			&--clear{
+				&:before{
+					background-image: url('images/icon-cross.png');
+				}
+				&:hover:before{
+					@extend .button:hover:before
+				}
 			}
 		}
 		&__toggle{
@@ -129,14 +134,17 @@ $button-height: 36px;
 }
 
 // 100% height item
-.item{
+.tool-link{
 	color:$grey;
-	padding:15px 15px 0 40px;
+	padding:16px 15px 0 40px;
 	font-size:14px;
 	display:inline-block;
 	@include button;
 	height:100%;
 	position:relative;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.3px;
 
 	&:hover{
 		//background-color: darken($spring-wood,2%);
@@ -397,6 +405,7 @@ $nav-item-margin: 10px;
 	top: calc(100% - 12px);
 	min-width:200px;
 	&__text{
+		text-transform: none;
 		text-align: center;
 		display:block;
 		width: 100%;

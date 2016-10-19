@@ -79,7 +79,7 @@ export default class ShareControls extends React.Component {
 		return (
 			<div className="toolbar__share">
 				<TextControl
-					buttonClassName="item item--url-change"
+					buttonClassName="tool-link tool-link--url-change"
 					buttonText="Change URL"
 					defaultValue={this.props.galleryName}
 					inputDescription={currentURL}
@@ -91,7 +91,7 @@ export default class ShareControls extends React.Component {
 					errorMsg={this.state.urlErrorMsg}
 				/>
 				<TextControl
-					buttonClassName="item item--name"
+					buttonClassName="tool-link tool-link--name"
 					buttonText="Change Name"
 					defaultValue={this.props.name}
 					inputDescription="Enter Your Name:"
@@ -102,7 +102,7 @@ export default class ShareControls extends React.Component {
 					errorMsg={this.state.nameErrorMsg}
 				/>
 				<TextControl
-					buttonClassName="item item--share"
+					buttonClassName="tool-link tool-link--share"
 					buttonText="Invite"
 					submitText="Copy"
 					width={320}
