@@ -126,6 +126,8 @@ input{
 
 .alert{
 	position: fixed;
+	z-index: 30;
+	pointer-events:none;
     top: 50%;
     height: 83px;
     width: 100%;
