@@ -14,13 +14,13 @@ export default class CursorsWrapper extends React.Component {
 
 	constructor(props){
 		super(props);
-		this.handleMouseMove = this.handleMouseMove.bind(this);
+		this._handleMouseMove = this._handleMouseMove.bind(this);
 		this.state = {
 			ownPointerPos : []
 		};
 	}
 
-	handleMouseMove(e){
+	_handleMouseMove(e){
 		let wrapper = this.refs.wrapper;
 		let rect = wrapper.getBoundingClientRect();
 		
@@ -45,11 +45,11 @@ export default class CursorsWrapper extends React.Component {
 	}
 
 	componentDidMount(){
-		document.addEventListener('mousemove',this.handleMouseMove);
+		document.addEventListener('mousemove',this._handleMouseMove);
 	}
 
 	componentWillUnmount(){
-		document.removeEventListener('mousemove',this.handleMouseMove);
+		document.removeEventListener('mousemove',this._handleMouseMove);
 	}
 
 	render(){

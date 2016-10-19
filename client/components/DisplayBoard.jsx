@@ -9,32 +9,31 @@ import CanvasBase from './CanvasBase.jsx';
  */
 export default class DisplayBoard extends CanvasBase {
 
-	drawShapes(shapes){
+	componentDidMount(){
+		this._initialiseCanvas();
+		this._drawShapes(this.props.shapes);
+	}
+
+	componentDidUpdate(prevProps,prevState){
+		this._clear();
+		this._drawShapes(this.props.shapes);
+	}
+
+	_drawShapes(shapes){
 		shapes.forEach((shapeModel)=>{
-			this.drawOneShape(shapeModel);
+			this._drawOneShape(shapeModel);
 		});
 	}
 
-	drawOneShape(shapeModel){
+	_drawOneShape(shapeModel){
 		ShapeMap[shapeModel.type].class.drawFromModel(
 			shapeModel,
 			this.refs.canvas
 		);
 	}
 
-	componentDidMount(){
-		this.initialiseCanvas();
-		console.log('000');
-		this.drawShapes(this.props.shapes);
-	}
-
-	clear(){
+	_clear(){
 		this.ctx.clearRect(0, 0, this.props.width, this.props.height);
-	}
-
-	componentDidUpdate(prevProps,prevState){
-		this.clear();
-		this.drawShapes(this.props.shapes);
 	}
 
 	render(){

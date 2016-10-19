@@ -17,10 +17,10 @@ import ToolSelectList from './ToolSelectList.jsx';
 export default class Toolbar extends React.Component {
 	constructor(props){
 		super(props);
-		this.handleColorClick = this.handleColorClick.bind(this);
+		this._handleColorClick = this._handleColorClick.bind(this);
 	}
 
-	handleColorClick(newCol){
+	_handleColorClick(newCol){
 		this.props.handleColorClick(newCol);
 	}
 
@@ -45,7 +45,7 @@ export default class Toolbar extends React.Component {
 							<ColorSelect
 								colors={this.props.colors} 
 								selectedColor = {this.props.selectedColor}
-								handleColorClick = {this.handleColorClick}
+								handleColorClick = {this._handleColorClick}
 							/>
 						</DropDown>
 						<ToolButton 
@@ -71,7 +71,7 @@ export default class Toolbar extends React.Component {
 						name = {this.props.name}
 						galleryName = {this.props.galleryName}
 						handleNameChange = {this.props.handleNameChange}
-						handleURLChange = {this.props.handleURLChange}
+						handleUrlChange = {this.props.handleUrlChange}
 					/>
 				</div>
 			</header>
@@ -90,7 +90,7 @@ Toolbar.propTypes = {
 	handleUndoClick : React.PropTypes.func,
 	handleColorClick: React.PropTypes.func,
 	handleNameChange: React.PropTypes.func,
-	handleURLChange : React.PropTypes.func,
+	handleUrlChange : React.PropTypes.func,
 	handleClearMyClick : React.PropTypes.func,
 	handleClearAllClick : React.PropTypes.func
 };

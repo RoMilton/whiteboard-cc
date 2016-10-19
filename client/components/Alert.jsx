@@ -9,7 +9,15 @@ import React, {PropTypes} from 'react';
  */
 export default class Alert extends React.Component {
 
+	componentDidMount(){
+		this._startTimer();
+	}
+
 	componentDidUpdate(){
+		this._startTimer();
+	}
+
+	_startTimer(){
 		if (this.props.visible){
 			if (this.timer){
 				clearTimeout(this.timer);
@@ -34,7 +42,7 @@ export default class Alert extends React.Component {
 
 
 Alert.PropTypes = {
-	handleAlertFinish : PropTypes.func.isRequired,
+	handleFinish : PropTypes.func.isRequired,
 	visible : PropTypes.bool,
 	text : PropTypes.string,
 	duration : PropTypes.number

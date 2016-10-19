@@ -14,21 +14,21 @@ export default class MousePointer extends React.Component {
 	constructor(props){
 		super(props);
 		this.state = {
-			textColor : this.getTextColor(props.bgColor)
+			textColor : this._getTextColor(props.bgColor)
 		}
-	}
-
-	getTextColor(backgroundColor){
-		return Utils.getBrightness(backgroundColor) > 200 ? '#3f2713' : '#fff';
 	}
 
 	componentWillReceiveProps(nextProps){
 		if (nextProps.bgColor !== this.props.bgColor){
-			this.setState({ textColor : this.getTextColor(nextProps.bgColor) });
+			this.setState({ textColor : this._getTextColor(nextProps.bgColor) });
 		}
 	}
 
-	getPointerStyles(pos){
+	_getTextColor(backgroundColor){
+		return Utils.getBrightness(backgroundColor) > 200 ? '#3f2713' : '#fff';
+	}
+
+	_getPointerStyles(pos){
 		let styles = {
 			backgroundColor : this.props.bgColor,
 			color : this.state.textColor

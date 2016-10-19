@@ -38,9 +38,9 @@ export default class App extends TrackerReact(React.Component) {
 		super(props);
 
 		this.state = {
-			selectedShape : this.getDefaultTool(),
+			selectedShape : this._getDefaultTool(),
 			//selectedColor : App.COLORS[0],
-			boards : [this.getNewBoard()],
+			boards : [new Whiteboard()],
 			iSelectedBoard : 0,
 			history : [],
 			activeUsers : [],
@@ -56,7 +56,7 @@ export default class App extends TrackerReact(React.Component) {
 			let gallery = res.gallery;
 			this.state.iSele
 			this.state.galleryName = gallery.galleryName;
-			this.setURL(gallery.galleryName);
+			this._setURL(gallery.galleryName);
 			this.state.galleryId = gallery._id;
 			this.state.subscription = {
 				gallery : Meteor.subscribe('galleries',[gallery._id]),
@@ -65,50 +65,50 @@ export default class App extends TrackerReact(React.Component) {
 		});
 
 		// binding methods here to improve performance of re-renders
-		this.changeColor = this.changeColor.bind(this)
-		this.changeTool = this.changeTool.bind(this);
-		this.handleUndo = this.handleUndo.bind(this);
-		this.handleClearMy = this.handleClearMy.bind(this);
-		this.handleClearAll = this.handleClearAll.bind(this);
-		this.changeName = this.changeName.bind(this);
-		this.handleURLChange = this.handleURLChange.bind(this);
-		this.handleNewShape = this.handleNewShape.bind(this);
-		this.addBoard = this.addBoard.bind(this);
-		this.changeBoard = this.changeBoard.bind(this);
-		this.handleAlertFinish = this.handleAlertFinish.bind(this);
+		this._handleColorChange = this._handleColorChange.bind(this)
+		this._handleToolChange = this._handleToolChange.bind(this);
+		this._handleUndo = this._handleUndo.bind(this);
+		this._handleClearMy = this._handleClearMy.bind(this);
+		this._handleClearAll = this._handleClearAll.bind(this);
+		this._handleNameChange = this._handleNameChange.bind(this);
+		this._handleUrlChange = this._handleUrlChange.bind(this);
+		this._handleNewShape = this._handleNewShape.bind(this);
+		this._handleAddBoard = this._handleAddBoard.bind(this);
+		this._handleBoardChange = this._handleBoardChange.bind(this);
+		this._handleAlertFinish = this._handleAlertFinish.bind(this);
 
 	}
 
-	gallery(){
+	_gallery(){
 		return Galleries.find().fetch()[0];
 	}
 
-	activeUsers(){
+	_activeUsers(){
 		return ActiveUsers.find().fetch();
 	}
 
-	setURL(galleryName){
+	_setURL(galleryName){
 		if (galleryName) { history.pushState(null, null,galleryName); }
 	}
 
-	sessionId(){
+	_sessionId(){
 		return Meteor.default_connection._lastSessionId;
 	}
 
-	setUpTracker(){
+	_setUpTracker(){
 		Tracker.autorun(()=> {
-			let gallery = this.gallery();
+			let gallery = this._gallery();
 			console.log('received subscription',gallery);
-			console.log('my session id',this.sessionId());
+			console.log('my session id',this._sessionId());
 			if (gallery
-			&& (gallery.lastUpdatedBy !== this.sessionId())){
+			&& (gallery.lastUpdatedBy !== this._sessionId())){
 				this.receivedData = true;
 				this.updateGallery(gallery.iSelectedBoard,gallery.galleryName,gallery.lastUpdatedBy);
 			}
 		});
 
 		Tracker.autorun(()=> {
-			let activeUsers = this.activeUsers();
+			let activeUsers = this._activeUsers();
 			let newState = {}
 			newState.activeUsers = activeUsers;
 			this.setState(newState);
@@ -116,25 +116,25 @@ export default class App extends TrackerReact(React.Component) {
 	}
 
 	componentDidMount(){
-		this.setUpTracker();
+		this._setUpTracker();
 		Streamy.on('insert-shape',(data)=>{
-			if (data.__from !== this.sessionId()){
+			if (data.__from !== this._sessionId()){
 				// console.log('received new shape',data);
-				this.handleNewShape(data.shape,data.iBoard,false);
+				this._handleNewShape(data.shape,data.iBoard,false);
 			}
 		});
 
 		Streamy.on('remove-shapes',(data)=>{
-			if (data.__from !== this.sessionId()){
+			if (data.__from !== this._sessionId()){
 				data.items.forEach((itemToRemove)=>{
-					this.removeShape(itemToRemove.iBoard,itemToRemove.shapeId);
+					this._removeShape(itemToRemove.iBoard,itemToRemove.shapeId);
 				});
 			}
 		});
 
 		Streamy.on('clear-all',(data)=>{
-			if (data.__from !== this.sessionId()){
-				this.handleClearAll(false);
+			if (data.__from !== this._sessionId()){
+				this._handleClearAll(false);
 			}
 		});
 	}
@@ -146,7 +146,7 @@ export default class App extends TrackerReact(React.Component) {
 		}
 	}
 
-	changeName(newName){
+	_handleNameChange(newName){
 		return new Promise((resolve,reject)=>{
 			Meteor.call('updateNickname',newName, (err,result)=>{
 				if (err){
@@ -161,7 +161,7 @@ export default class App extends TrackerReact(React.Component) {
 		});
 	}
 
-	handleURLChange(newURL){
+	_handleUrlChange(newURL){
 		return new Promise((resolve,reject)=>{
 			Meteor.call('updateGalleryName', {
 				currentName : this.state.galleryName,
@@ -182,12 +182,12 @@ export default class App extends TrackerReact(React.Component) {
 	componentDidUpdate(prevProps, prevState){
 
 		if (prevState.galleryName !== this.state.galleryName){
-			this.setURL(this.state.galleryName);
+			this._setURL(this.state.galleryName);
 		}
 
 		if (!this.receivedData){
 			if (this.state.iSelectedBoard !== prevState.iSelectedBoard){
-				Meteor.call('changeBoard',{
+				Meteor.call('_handleBoardChange',{
 					galleryId : this.state.galleryId,
 					iBoard : this.state.iSelectedBoard
 				},(err,result)=>{
@@ -218,7 +218,7 @@ export default class App extends TrackerReact(React.Component) {
 	 *
 	 * @method getDefaultTool
 	 */
-	getDefaultTool(){
+	_getDefaultTool(){
 		//for each tool
 		for (let key in ShapeMap){
 			if (ShapeMap[key].isDefault) {return key;}
@@ -229,16 +229,16 @@ export default class App extends TrackerReact(React.Component) {
 	/**
 	 * Handles tool change
 	 *
-	 * @method handleToolChange
+	 * @method _handleToolChange
 	 * @param {String} toolName - String to represent new tool. Must be property in TOOLS
 	 */
-	changeTool(toolName){
+	_handleToolChange(toolName){
 		this.setState({
 			selectedShape : toolName
 		});
 	}
 
-	changeColor(newCol){
+	_handleColorChange(newCol){
 		return new Promise((resolve,reject)=>{
 			Meteor.call('updateColor',newCol, (err,result)=>{
 				if (err){
@@ -253,11 +253,7 @@ export default class App extends TrackerReact(React.Component) {
 		});
 	}
 
-	getNewBoard(){
-		return new Whiteboard();
-	}
-
-	updateGallery(iSelectedBoard,galleryName,changedBy = this.sessionId()){
+	updateGallery(iSelectedBoard,galleryName,changedBy = this._sessionId()){
 		let newState = {};
 		if (galleryName){
 			newState.galleryName = galleryName;
@@ -285,21 +281,21 @@ export default class App extends TrackerReact(React.Component) {
 		this.setState(newState);
 	}
 
-	changeBoard(iBoard){
+	_handleBoardChange(iBoard){
 		this.updateGallery(iBoard);
 	}
 
-	addBoard(){
-		this.changeBoard(this.state.boards.length);
+	_handleAddBoard(){
+		this._handleBoardChange(this.state.boards.length);
 	}
 
-	handleClearAll(send = true){
+	_handleClearAll(send = true){
 		let boards = this.state.boards.slice();
 		boards.forEach(board=>{
 			board.clear();
 		});
 		if (send){
-			Streamy.sessions(this.allSessionIds()).emit('clear-all',{});
+			Streamy.sessions(this._allSessionIds()).emit('clear-all',{});
 		}
 		this.setState({
 			boards : boards,
@@ -308,13 +304,13 @@ export default class App extends TrackerReact(React.Component) {
 	}
 
 
-	allSessionIds(){
+	_allSessionIds(){
 		return this.state.activeUsers.map((user)=>{
 			return user.sessionId;
 		});
 	}
 
-	removeShape(iBoard,shapeModel){
+	_removeShape(iBoard,shapeModel){
 		let boards = this.state.boards.slice();
 		if (!boards[iBoard]){return;}
 		boards[iBoard].removeShape(shapeModel);
@@ -323,7 +319,7 @@ export default class App extends TrackerReact(React.Component) {
 		})
 	}
 
-	handleUndo(numberToRemove = 1){
+	_handleUndo(numberToRemove = 1){
 		let history = this.state.history.slice(),
 			boards = this.state.boards.slice();
 
@@ -332,7 +328,7 @@ export default class App extends TrackerReact(React.Component) {
 
 		if (itemsToRemove){
 			//console.log('itemsToRemove',itemsToRemove);
-			Streamy.sessions(this.allSessionIds()).emit(
+			Streamy.sessions(this._allSessionIds()).emit(
 				'remove-shapes',
 				{
 					items : itemsToRemove
@@ -352,11 +348,11 @@ export default class App extends TrackerReact(React.Component) {
 		}
 	}
 
-	handleClearMy(){
-		this.handleUndo('all');
+	_handleClearMy(){
+		this._handleUndo('all');
 	}
 
-	handleAlertFinish(){
+	_handleAlertFinish(){
 		this.setState({
 			alert : {
 				visible : false,
@@ -365,7 +361,7 @@ export default class App extends TrackerReact(React.Component) {
 		});
 	}
 
-	handleNewShape(shapeModel, iBoard = this.state.iSelectedBoard, send = true ){
+	_handleNewShape(shapeModel, iBoard = this.state.iSelectedBoard, send = true ){
 		let newState = {};
 		if (send){
 			let newItemObj = {
@@ -373,7 +369,7 @@ export default class App extends TrackerReact(React.Component) {
 				shape : shapeModel
 			}
 
-			Streamy.sessions(this.allSessionIds()).emit(
+			Streamy.sessions(this._allSessionIds()).emit(
 				'insert-shape',
 				newItemObj
 			);
@@ -392,7 +388,7 @@ export default class App extends TrackerReact(React.Component) {
 	}
 
 	render(){
-		let sessionId = this.sessionId();
+		let sessionId = this._sessionId();
 		if (!this.state.activeUsers.length && this.state.boards.length){
 			return (<div className="spinner"></div>);
 		}
@@ -405,13 +401,13 @@ export default class App extends TrackerReact(React.Component) {
 					galleryName = {this.state.galleryName}
 					selectedShape = {this.state.selectedShape}
 					selectedColor = {this.state.selectedColor}
-					handleColorClick = {this.changeColor}
-					handleToolChange = {this.changeTool}
-					handleUndoClick = {()=>{this.handleUndo(1)}}
-					handleClearMyClick = {this.handleClearMy}
-					handleClearAllClick = {this.handleClearAll}
-					handleNameChange = {this.changeName}
-					handleURLChange = {this.handleURLChange}
+					handleColorClick = {this._handleColorChange}
+					handleToolChange = {this._handleToolChange}
+					handleUndoClick = {()=>{this._handleUndo(1)}}
+					handleClearMyClick = {this._handleClearMy}
+					handleClearAllClick = {this._handleClearAll}
+					handleNameChange = {this._handleNameChange}
+					handleUrlChange = {this._handleUrlChange}
 				/>
 				<main className="main">
 					<div className="wrap">
@@ -422,7 +418,7 @@ export default class App extends TrackerReact(React.Component) {
 							<DrawingCanvas 
 								color = {this.state.selectedColor}
 								selectedShape = {this.state.selectedShape}
-								onDrawFinish = {this.handleNewShape}
+								onDrawFinish = {this._handleNewShape}
 							/>
 							{ this.state.activeUsers.length && 
 								<CursorsWrapper 
@@ -434,8 +430,8 @@ export default class App extends TrackerReact(React.Component) {
 						<Nav
 							boards = {this.state.boards}
 							iSelectedBoard = {this.state.iSelectedBoard}
-							onItemChange = {this.changeBoard}
-							onItemAdd = {this.addBoard}
+							onItemChange = {this._handleBoardChange}
+							onItemAdd = {this._handleAddBoard}
 							maxBoardCount = {App.MAX_BOARD_COUNT}
 						/>
 					</div>
@@ -443,7 +439,7 @@ export default class App extends TrackerReact(React.Component) {
 				<Alert
 					visible = {this.state.alert.visible}
 					text = {this.state.alert.text}
-					handleAlertFinish = {this.handleAlertFinish}
+					handleFinish = {this._handleAlertFinish}
 				/>
 				<ReactTooltip 
 					place="bottom"

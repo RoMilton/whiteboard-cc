@@ -14,7 +14,7 @@ export default class OwnMousePointer extends MousePointer {
 		return (this.props.pos[1] < 0) ? null : (
 			<div
 				className="cursors__pointer cursors__pointer--own"
-				style={ this.getPointerStyles(this.props.pos) }
+				style={ this._getPointerStyles(this.props.pos) }
 			>
 				{this.props.name}
 			</div>

@@ -18,15 +18,8 @@ export default class DrawingCanvas extends CanvasBase {
 		this._documentMouseUp = this._documentMouseClick.bind(this,false);
 	}
 
-	_documentMouseClick(status){
-		//console.log('setting to',status);
-		if (this._currShape){
-			this._currShape.isMouseDown = status;
-		}
-	}
-
 	componentDidMount(){
-		this.initialiseCanvas();
+		this._initialiseCanvas();
 		
 		this._clickPos = [];
 		this._prevClickPos = [];
@@ -38,6 +31,19 @@ export default class DrawingCanvas extends CanvasBase {
 	componentWillUnmount(){
 		document.removeEventListener('mousedown',this._documentMouseDown);
 		document.removeEventListener('mouseup',this._documentMouseUp);
+	}
+
+	componentwillReceiveNewProps(nextProps){
+		if (this._currShape){
+			this._currShape.color = nextProps.color;
+		}
+	}
+
+	_documentMouseClick(status){
+		//console.log('setting to',status);
+		if (this._currShape){
+			this._currShape.isMouseDown = status;
+		}
 	}
 
 	_getMouseCoords(e){
@@ -74,12 +80,6 @@ export default class DrawingCanvas extends CanvasBase {
 		});
 
 		this._currShape.mouseDown(this._getMouseCoords(e));
-	}
-
-	componentwillReceiveNewProps(nextProps){
-		if (this._currShape){
-			this._currShape.color = nextProps.color;
-		}
 	}
 
 	_handleMouseUp(e){

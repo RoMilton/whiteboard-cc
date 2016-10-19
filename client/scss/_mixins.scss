@@ -14,21 +14,21 @@ Sass mixins intended to be used by CSS classes via @include functionality
 
 $rad: 5px;
 
-@mixin border-radius{
+@mixin bord_rad{
     border-radius:5px;
 }
 
-@mixin bord-rad-right{
+@mixin bord_rad_right{
     border-top-right-radius:$rad;
     border-bottom-right-radius:$rad;
 }
 
-@mixin bord-rad-bottom{
+@mixin bord_rad_bottom{
     border-bottom-right-radius:$rad;
     border-bottom-left-radius:$rad;
 }
 
-@mixin bord-rad-left{
+@mixin bord_rad_left{
     border-top-left-radius:$rad;
     border-bottom-left-radius:$rad;
 }
@@ -75,7 +75,7 @@ $rad: 5px;
     width: 0;
     height: 0;
     content: '';
-    border-#{opposite-direction($direction)}: ($size * 1.5) solid $color;
+    border-#{opposite_direction($direction)}: ($size * 1.5) solid $color;
 
     $perpendicular-borders: $size solid transparent;
 
@@ -96,7 +96,7 @@ $rad: 5px;
 * @param {List} $directions - List of initial directions
 * @return {List} - List of opposite directions
 */
-@function opposite-direction($directions) {
+@function opposite_direction($directions) {
   $opposite-directions: ();
   $direction-map: (
     'top':    'bottom',

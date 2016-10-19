@@ -99,7 +99,7 @@ a,a:visited{
 		font-size:13px;
 		z-index:14;
 		@include box_shadow(4);
-		@include border-radius;
+		@include bord_rad;
 		&--own{
 			transform: translate(20px,20px);
 		}
@@ -183,10 +183,7 @@ $text-submit-width: 60px;
 		text-align:center;
 		font-size:14px;
 		border-right:0;
-		@include bord-rad-left;
-		// &:focus{
-		// 	background-color: $china-ivory;
-		// }
+		@include bord_rad_left;
 	}
 	&__submit{
 		width: $text-submit-width;
@@ -198,7 +195,7 @@ $text-submit-width: 60px;
 		vertical-align: top;
 		line-height:32px;
 		@include button;
-		@include bord-rad-right;
+		@include bord_rad_right;
 		&:hover{
 			background-color:darken($bright,10%);
 		}

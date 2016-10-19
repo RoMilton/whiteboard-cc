@@ -20,49 +20,48 @@ export default class DropDown extends React.Component {
 			isVisible: false,
 		};
 
-		this.documentClick = this.documentClick.bind(this);
-		this.hide = this.hide.bind(this);
-		this.toggleDropdown = this.toggleDropdown.bind(this);
-	}
-
-	hide(){
-		this.setState({ isVisible:false });
+		this._documentClick = this._documentClick.bind(this);
+		this._hide = this._hide.bind(this);
+		this._toggleDropdown = this._toggleDropdown.bind(this);
 	}
 
 	componentDidMount() {
 		// Hide dropdown block on click outside the block
-		document.addEventListener('click', this.documentClick, false);
-		eventService.on('collapse-dropdowns',this.hide);
+		document.addEventListener('click', this._documentClick, false);
+		eventService.on('collapse-dropdowns',this._hide);
 	}
 
 
 	componentWillUnmount() {
 		// Remove click event listener on component unmount
-		document.removeEventListener('click', this.documentClick, false);
-		eventService.removeListener('collapse-dropdowns',this.hide);
+		document.removeEventListener('click', this._documentClick, false);
+		eventService.removeListener('collapse-dropdowns',this._hide);
 	}
 
+	_hide(){
+		this.setState({ isVisible:false });
+	}
 
-	clickedContent(e){
+	_clickedContent(e){
 		let content = this.refs.content;
 		return (content && content.contains(e.target));
 	}
 
-	clickedOnToggle(e){
+	_clickedToggle(e){
 		let toggle = this.refs.toggle;
 		return (toggle && toggle.contains(e.target));	
 	}
 
-	toggleDropdown(e) {
+	_toggleDropdown(e) {
 		let { isVisible } = this.state;
 		// Toggle dropdown block visibility
 		this.setState({ isVisible : !isVisible });
 	}
 
-	documentClick(e) {
+	_documentClick(e) {
 		if ((!this.state.isVisible)
-		|| (this.clickedContent(e) && !this.props.closeOnContentClick)
-		|| this.clickedOnToggle(e)){
+		|| (this._clickedContent(e) && !this.props.closeOnContentClick)
+		|| this._clickedToggle(e)){
 			// dont hide
 			return;
 		}	
@@ -90,7 +89,7 @@ export default class DropDown extends React.Component {
 			>
 				<div
 					ref="toggle"
-					onClick={this.toggleDropdown} 
+					onClick={this._toggleDropdown} 
 					className="dropdown__toggle"
 				>
 					{this.props.children[0]}
@@ -104,7 +103,7 @@ export default class DropDown extends React.Component {
 						ref="content"
 					>
 						{this.props.closeButton && 
-							<span onClick={this.toggleDropdown} className="dropdown__btnClose">&#10005;</span>}
+							<span onClick={this._toggleDropdown} className="dropdown__btnClose">&#10005;</span>}
 						{this.props.children[1]}
 					</div>
 				}

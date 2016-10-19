@@ -10,32 +10,32 @@ export default class TextField extends React.Component{
 			text : props.defaultValue
 		}
 
-		this.handleTextChange = this.handleTextChange.bind(this);
-		this.handleKeyUp = this.handleKeyUp.bind(this);
-		this.handleInputClick = this.handleInputClick.bind(this);
+		this._handleTextChange = this._handleTextChange.bind(this);
+		this._handleKeyUp = this._handleKeyUp.bind(this);
+		this._handleInputClick = this._handleInputClick.bind(this);
 	}
 
 	componentDidMount(){
 		this.refs.input.select();
 	}
 
-	handleTextChange(e){
+	_handleTextChange(e){
 		this.setState({text : e.target.value});
 	}
 
-	handleKeyUp(e){
+	_handleKeyUp(e){
 		if (e.which == 13 || e.keyCode == 13) {
 			this.props.handleSubmit(e.target.value);
 		}
 	}
 
-	handleInputClick(){
+	_handleInputClick(){
 		if (this.props.readOnly){
 			this.refs.input.select();
 		}
 	}
 
-	getVal(){
+	_getVal(){
 		return this.refs.input.value;
 	}
 
@@ -47,11 +47,11 @@ export default class TextField extends React.Component{
 					autoFocus
 					type="text" 
 					value={this.state.text}
-					onChange={this.handleTextChange}
-					onKeyUp={this.handleKeyUp}
+					onChange={this._handleTextChange}
+					onKeyUp={this._handleKeyUp}
 					className="text__input" 
 					readOnly={this.props.readOnly}
-					onClick={this.handleInputClick}
+					onClick={this._handleInputClick}
 				/>
 				<div
 					onClick={()=>{ this.props.handleSubmit(this.state.text);}}

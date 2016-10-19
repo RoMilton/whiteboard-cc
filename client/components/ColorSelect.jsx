@@ -9,28 +9,6 @@ import classNames from 'classnames';
  * @extends React.Component
  */
 export default class ColorSelect extends React.Component {
-	
-	constructor(props){
-		super(props);
-		this.handleDocumentClick = this.handleDocumentClick.bind(this);
-	}
-
-	componentDidMount(){
- 		document.addEventListener('click', this.handleDocumentClick);
-	}
-
-	componentWillUnmount(){
-		document.removeEventListener('click', this.handleDocumentClick);
-	}
-
-	handleDocumentClick(e){
-		e.stopPropagation();
-		if (!this.props.visible || !this.props.handleClickOutside){return;}
-		let area = this.refs.dropdownCard;
-		if (!area.contains(e.target)) {
-			this.props.handleClickOutside(e)
-		}
-	}
 
 	render(){
 		let getItemCSSClass = (col)=>{

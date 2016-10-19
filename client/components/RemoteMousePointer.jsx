@@ -20,7 +20,23 @@ export default class RemoteMousePointer extends MousePointer {
 		this.receivedCount = 0;
 	}
 
-	listenToStream(listenToSessionId){
+	componentDidMount(){
+		if (this.props.listenToSessionId){
+			this._listenToStream(this.props.listenToSessionId);
+		}
+	}
+
+	shouldComponentUpdate(nextProps,nextState){
+		return (this.receivedCount > nextState.updatedCount - 5);
+	}
+
+	componentWillUpdate(nextProps,nextState){
+		if (nextProps.listenToSessionId !== this.props.listenToSessionId){
+			this._listenToStream(nextProps.listenToSessionId);
+		}
+	}
+
+	_listenToStream(listenToSessionId){
 		if (!listenToSessionId) {return;}
 		Streamy.on('pointer-pos-'+listenToSessionId, (pos)=>{
 			this.receivedCount++;
@@ -33,29 +49,13 @@ export default class RemoteMousePointer extends MousePointer {
 		});
 	}
 
-	shouldComponentUpdate(nextProps,nextState){
-		return (this.receivedCount > nextState.updatedCount - 5);
-	}
-
-	componentDidMount(){
-		if (this.props.listenToSessionId){
-			this.listenToStream(this.props.listenToSessionId);
-		}
-	}
-
-	componentWillUpdate(nextProps,nextState){
-		if (nextProps.listenToSessionId !== this.props.listenToSessionId){
-			this.listenToStream(nextProps.listenToSessionId);
-		}
-	}
-
 	render(){
 		return (
 			<div
 				ref = "pointer"
 				key = { this.props.id }
 				className="cursors__pointer"
-				style={ this.getPointerStyles(this.state.pos) }
+				style={ this._getPointerStyles(this.state.pos) }
 			>
 				{this.props.name}
 			</div>

@@ -10,7 +10,7 @@ import React from 'react';
  */
 export default class DrawingCanvas extends React.Component {
 	
-	initialiseCanvas(){
+	_initialiseCanvas(){
 		let canvas = this.refs.canvas;
 		this.ctx = canvas.getContext('2d');
 		this.ctx.imageSmoothingEnabled = true;

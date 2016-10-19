@@ -22,11 +22,11 @@ export default class ShareControls extends React.Component {
 			nameSuccessMsg : null,
 			nameErrorMsg : null
 		}
-		this.handleURLChange = this.handleURLChange.bind(this);
-		this.handleNameChange = this.handleNameChange.bind(this);
+		this._handleUrlChange = this._handleUrlChange.bind(this);
+		this._handleNameChange = this._handleNameChange.bind(this);
 	}
 
-	startClearTimer(){
+	_startTimer(){
 		if (this.timer){clearTimeout(this.timer);}
 		this.timer = setTimeout(()=>{
 			this.setState({
@@ -37,15 +37,15 @@ export default class ShareControls extends React.Component {
 	};
 
 
-	handleURLChange(galleryName){
-		this.props.handleURLChange(galleryName).then(()=>{
+	_handleUrlChange(galleryName){
+		this.props._handleUrlChange(galleryName).then(()=>{
 			this.setState({
 				nameSuccessMsg : null,
 				urlSuccessMsg : 'URL changed to '+window.location.host + '/'+galleryName,
 				urlErrorMsg : null
 			});
 			eventService.emit('collapse-dropdowns');
-			this.startClearTimer();
+			this._startTimer();
 		},(err)=>{
 			this.setState({
 				urlSuccessMsg : null,
@@ -55,7 +55,7 @@ export default class ShareControls extends React.Component {
 	}
 
 
-	handleNameChange(nickname){
+	_handleNameChange(nickname){
 		this.props.handleNameChange(nickname).then(()=>{
 			this.setState({
 				nameSuccessMsg : null,
@@ -64,7 +64,7 @@ export default class ShareControls extends React.Component {
 				nameErrorMsg : null
 			});
 			eventService.emit('collapse-dropdowns');
-			this.startClearTimer();
+			this._startTimer();
 		},(err)=>{
 			this.setState({
 				nameSuccessMsg : null,
@@ -85,7 +85,7 @@ export default class ShareControls extends React.Component {
 					inputDescription={currentURL}
 					inputDescriptionLink={'http://' + currentURL}
 					submitText="Save"
-					handleSubmit={this.handleURLChange}
+					handleSubmit={this._handleUrlChange}
 					width={270}
 					successMsg={this.state.urlSuccessMsg}
 					errorMsg={this.state.urlErrorMsg}
@@ -95,7 +95,7 @@ export default class ShareControls extends React.Component {
 					buttonText={this.props.name}
 					defaultValue={this.props.name}
 					inputDescription="Enter Your Name:"
-					handleSubmit= {this.handleNameChange}
+					handleSubmit= {this._handleNameChange}
 					submitText="Save"
 					width={270}
 					successMsg={this.state.nameSuccessMsg}
@@ -120,5 +120,5 @@ ShareControls.propTypes = {
 	name : PropTypes.string,
 	handleNameChange : PropTypes.func,
 	galleryName :  PropTypes.string,
-	handleURLChange : PropTypes.func
+	handleUrlChange : PropTypes.func
 }
