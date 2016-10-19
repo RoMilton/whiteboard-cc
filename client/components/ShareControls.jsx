@@ -27,7 +27,7 @@ export default class ShareControls extends React.Component {
 	}
 
 	startClearTimer(){
-		if (this.timer){clearInterval(this.timer);}
+		if (this.timer){clearTimeout(this.timer);}
 		this.timer = setTimeout(()=>{
 			this.setState({
 				urlSuccessMsg : null,

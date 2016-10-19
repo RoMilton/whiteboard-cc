@@ -394,7 +394,6 @@ export default class App extends TrackerReact(React.Component) {
 
 	render(){
 		let sessionId = this.sessionId();
-		let selectedBoard = this.state.boards[this.state.iSelectedBoard]
 		if (!this.state.activeUsers.length && this.state.boards.length){
 			return (<div className="spinner"></div>);
 		}
@@ -419,7 +418,7 @@ export default class App extends TrackerReact(React.Component) {
 					<div className="wrap">
 						<div className="main-board">
 							<DisplayBoard 
-								board = {selectedBoard}
+								shapes = {this.state.boards[this.state.iSelectedBoard].shapes}
 							/>
 							<DrawingCanvas 
 								color = {this.state.selectedColor}

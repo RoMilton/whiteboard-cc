@@ -1,12 +1,14 @@
 import React from 'react';
 import ShapeMap from '../shapes/ShapeMap.js';
+import CanvasBase from './CanvasBase.jsx';
+import Utils from '../../universal/Utils.js';
 
 /**
  *
  * @class Canvas
  * @extends React.Component
  */
-export default class DisplayBoard extends React.Component {
+export default class DisplayBoard extends CanvasBase {
 
 	drawShapes(shapes){
 		shapes.forEach((shapeModel)=>{
@@ -22,38 +24,18 @@ export default class DisplayBoard extends React.Component {
 	}
 
 	componentDidMount(){
-		this.ctx = this.refs.canvas.getContext('2d');
-		let shapes = this.props.board.shapes;
-		this.drawShapes(shapes);		
+		this.initialiseCanvas();
+		console.log('000');
+		this.drawShapes(this.props.shapes);
 	}
 
 	clear(){
 		this.ctx.clearRect(0, 0, this.props.width, this.props.height);
 	}
 
-	componentWillReceiveProps(nextProps,nextState){
-		let shapes = nextProps.board.shapes;
-			
-		if (this.props.board.id !== nextProps.board.id
-		|| nextProps.board.redrawAll){
-			this.clear();
-			this.drawShapes(shapes);
-		}else if (shapes.length){
-			let shapeModel = shapes[shapes.length-1];
-			this.drawOneShape(shapeModel);
-		}
-	}
-
-	shouldComponentUpdate(nextProps,nextState){
-		for (let key in nextProps){
-			if ( key !== 'board'
-			&& nextProps[key] !== (this.props[key] )){
-				// a prop other than 'board' has been updated
-				return true;
-			}
-		}
-		// only board has updated, no need to re-render
-		return false;
+	componentDidUpdate(prevProps,prevState){
+		this.clear();
+		this.drawShapes(this.props.shapes);
 	}
 
 	render(){
@@ -69,14 +51,14 @@ export default class DisplayBoard extends React.Component {
 }
 
 DisplayBoard.propTypes = {
-	board : React.PropTypes.object.isRequired,
-	width : React.PropTypes.string,
-	height : React.PropTypes.string,
-	className : React.PropTypes.string,
-	name : React.PropTypes.string
+	shapes : React.PropTypes.array,
+	width : React.PropTypes.number,
+	height : React.PropTypes.number,
+	className : React.PropTypes.string
 }
 
 DisplayBoard.defaultProps = {
-	width : '1095',
-	height : '688'
+	shapes : [],
+	width : 1095,
+	height : 688
 }

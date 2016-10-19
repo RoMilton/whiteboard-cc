@@ -15,7 +15,7 @@ export default ShapePalette = class extends React.Component {
 			return classNames({
 				'tool-list__item' : true,
 				[`tool-list__item--${shapeName}`]  : true,
-				'is-active' : this.props.selectedTool === shapeName
+				'is-active' : this.props.selectedShape === shapeName
 			});
 		};
 		return (

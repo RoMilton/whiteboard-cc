@@ -1,8 +1,4 @@
 import React from 'react';
-import Line from '../shapes/Shape-Line.js';
-import StraightLine from '../shapes/Shape-StraightLine.js';
-import FillRect from '../shapes/Shape-FillRect.js';
-
 
 /**
  * The Whiteboard Canvas has one purpose - to allow the drawing of new shapes.
@@ -14,19 +10,10 @@ import FillRect from '../shapes/Shape-FillRect.js';
  */
 export default class DrawingCanvas extends React.Component {
 	
-	constructor(props){
-		super(props);
-		
-		this.SHAPES = {
-			'pen' : Line,
-			'line' : StraightLine,
-			'rect' : FillRect
-		}
-	}
-	
-
-	initialize(){
-
+	initialiseCanvas(){
+		let canvas = this.refs.canvas;
+		this.ctx = canvas.getContext('2d');
+		this.ctx.imageSmoothingEnabled = true;
 	}
 
 };

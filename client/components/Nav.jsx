@@ -30,7 +30,7 @@ export default class NavBoards extends React.Component {
 									onClick={()=>this.props.onItemChange(index)}
 								>
 									<DisplayBoard 
-										board={board}
+										shapes={board.shapes}
 									/>
 								</li>
 							);

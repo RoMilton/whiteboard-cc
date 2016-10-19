@@ -26,17 +26,10 @@ export default class DrawingCanvas extends CanvasBase {
 	}
 
 	componentDidMount(){
-		let canvas = this.refs.canvas;
-		this._width = canvas.width;
-		this._height = canvas.height;
-		this._ctx = canvas.getContext("2d");
+		this.initialiseCanvas();
+		
 		this._clickPos = [];
 		this._prevClickPos = [];
-
-		// canvas needs height and width attributes to be set. Let's retrieve them from the CSS 
-		let styles = window.getComputedStyle(canvas);
-		canvas.setAttribute('width',parseInt(styles.width));
-		canvas.setAttribute('height',parseInt(styles.height));
 		
 		document.addEventListener('mousedown',this._documentMouseDown);
 		document.addEventListener('mouseup',this._documentMouseUp);
@@ -99,7 +92,7 @@ export default class DrawingCanvas extends CanvasBase {
 	_finish(){
 		if (this._currShape){
 			let canvas = this.refs.canvas;
-			this._ctx.clearRect(0, 0, canvas.width, canvas.height);
+			this.ctx.clearRect(0, 0, canvas.width, canvas.height);
 			this._currShape = null;
 		}
 	}
@@ -113,6 +106,8 @@ export default class DrawingCanvas extends CanvasBase {
 				onMouseUp = {this._handleMouseUp.bind(this)}
 				onMouseEnter = {this._handleMouseEnter.bind(this)}
 				ref = "canvas"
+				width={this.props.width}
+				height={this.props.height}
 			/>
 		)
 	}
@@ -121,5 +116,12 @@ export default class DrawingCanvas extends CanvasBase {
 DrawingCanvas.propTypes = {
 	color : React.PropTypes.string.isRequired,
 	selectedShape : React.PropTypes.string.isRequired,
-	onDrawFinish : React.PropTypes.func
+	onDrawFinish : React.PropTypes.func,
+	width: React.PropTypes.number,
+	height: React.PropTypes.number
 };
+
+DrawingCanvas.defaultProps = {
+	width : 1095,
+	height : 688
+}

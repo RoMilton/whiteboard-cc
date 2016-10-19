@@ -10,12 +10,14 @@ import React, {PropTypes} from 'react';
 export default class Alert extends React.Component {
 
 	componentDidUpdate(){
-		if (this.timer){
-			clearInterval(this.timer);
+		if (this.props.visible){
+			if (this.timer){
+				clearTimeout(this.timer);
+			}
+			this.timer = setTimeout(()=>{
+				this.props.handleAlertFinish();
+			},this.props.duration);
 		}
-		this.timer = setTimeout(()=>{
-			this.props.handleAlertFinish();
-		},this.props.duration);
 	}
 
 	render(){
