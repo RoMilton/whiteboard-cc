@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import ShapeMap from '../shapes/ShapeMap.js';
 import CanvasBase from './CanvasBase.jsx';
 
@@ -49,10 +49,10 @@ export default class DisplayBoard extends CanvasBase {
 }
 
 DisplayBoard.propTypes = {
-	shapes : React.PropTypes.array,
-	width : React.PropTypes.number,
-	height : React.PropTypes.number,
-	className : React.PropTypes.string
+	shapes : PropTypes.array,
+	width : PropTypes.number,
+	height : PropTypes.number,
+	className : PropTypes.string
 }
 
 DisplayBoard.defaultProps = {

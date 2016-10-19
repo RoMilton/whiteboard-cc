@@ -38,7 +38,7 @@ export default class ShareControls extends React.Component {
 
 
 	_handleUrlChange(galleryName){
-		this.props._handleUrlChange(galleryName).then(()=>{
+		this.props.handleUrlChange(galleryName).then(()=>{
 			this.setState({
 				nameSuccessMsg : null,
 				urlSuccessMsg : 'URL changed to '+window.location.host + '/'+galleryName,
@@ -92,7 +92,7 @@ export default class ShareControls extends React.Component {
 				/>
 				<TextControl
 					buttonClassName="item item--name"
-					buttonText={this.props.name}
+					buttonText="Change Name"
 					defaultValue={this.props.name}
 					inputDescription="Enter Your Name:"
 					handleSubmit= {this._handleNameChange}

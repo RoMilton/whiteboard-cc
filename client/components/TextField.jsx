@@ -24,7 +24,7 @@ export default class TextField extends React.Component{
 	}
 
 	_handleKeyUp(e){
-		if (e.which == 13 || e.keyCode == 13) {
+		if ((e.which == 13 || e.keyCode == 13) && this.props.handleSubmit){
 			this.props.handleSubmit(e.target.value);
 		}
 	}
@@ -77,7 +77,6 @@ TextField.propTypes = {
 }
 
 TextField.defaultProps = {
-	handleSubmit : 	()=>{},
 	submitText : 'Save',
 	readOnly : false,
 	copyToClipBoard : true

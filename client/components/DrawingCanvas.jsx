@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import CanvasBase from './CanvasBase.jsx';
 import ShapeMap from '../shapes/ShapeMap.js';
 
@@ -16,6 +16,10 @@ export default class DrawingCanvas extends CanvasBase {
 		super(props);
 		this._documentMouseDown = this._documentMouseClick.bind(this,true);
 		this._documentMouseUp = this._documentMouseClick.bind(this,false);
+		this._handleMouseMove = this._handleMouseMove.bind(this);
+		this._handleMouseUp = this._handleMouseUp.bind(this);
+		this._handleMouseDown = this._handleMouseDown.bind(this);
+		this._handleMouseEnter = this._handleMouseEnter.bind(this);
 	}
 
 	componentDidMount(){
@@ -101,10 +105,10 @@ export default class DrawingCanvas extends CanvasBase {
 		return (
 			<canvas
 				className="main-board__canvas"
-				onMouseMove = {this._handleMouseMove.bind(this)}
-				onMouseDown = {this._handleMouseDown.bind(this)}
-				onMouseUp = {this._handleMouseUp.bind(this)}
-				onMouseEnter = {this._handleMouseEnter.bind(this)}
+				onMouseMove = {this._handleMouseMove}
+				onMouseDown = {this._handleMouseDown}
+				onMouseUp = {this._handleMouseUp}
+				onMouseEnter = {this._handleMouseEnter}
 				ref = "canvas"
 				width={this.props.width}
 				height={this.props.height}
@@ -114,11 +118,11 @@ export default class DrawingCanvas extends CanvasBase {
 }
 
 DrawingCanvas.propTypes = {
-	color : React.PropTypes.string.isRequired,
-	selectedShape : React.PropTypes.string.isRequired,
-	onDrawFinish : React.PropTypes.func,
-	width: React.PropTypes.number,
-	height: React.PropTypes.number
+	color : PropTypes.string.isRequired,
+	selectedShape : PropTypes.string.isRequired,
+	onDrawFinish : PropTypes.func,
+	width: PropTypes.number,
+	height: PropTypes.number
 };
 
 DrawingCanvas.defaultProps = {

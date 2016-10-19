@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import classNames from 'classnames';
 
 /**
@@ -37,7 +37,7 @@ export default ShapePalette = class extends React.Component {
 }
 
 ShapePalette.propTypes = {
-	selectedShape : React.PropTypes.string.isRequired,
-	shapes : React.PropTypes.object.isRequired,
-	handleToolChange : React.PropTypes.func
+	selectedShape : PropTypes.string.isRequired,
+	shapes : PropTypes.object.isRequired,
+	handleToolChange : PropTypes.func
 };

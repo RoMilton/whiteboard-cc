@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import classNames from 'classnames';
 import DisplayBoard from './DisplayBoard.jsx';
 
@@ -50,9 +50,9 @@ export default class NavBoards extends React.Component {
 }
 
 NavBoards.propTypes = {
-	iSelectedBoard : React.PropTypes.number.isRequired,
-	boards : React.PropTypes.array.isRequired,
-	onItemChange : React.PropTypes.func.isRequired,
-	onItemAdd : React.PropTypes.func.isRequired,
-	maxBoardCount : React.PropTypes.number.isRequired 
+	iSelectedBoard : PropTypes.number.isRequired,
+	boards : PropTypes.array.isRequired,
+	onItemChange : PropTypes.func.isRequired,
+	onItemAdd : PropTypes.func.isRequired,
+	maxBoardCount : PropTypes.number.isRequired 
 }
