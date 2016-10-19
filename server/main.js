@@ -217,7 +217,7 @@ Meteor.methods({
 	updateNickname(nickname){
 		let sessionId = this.connection.id;
 		nickname = nickname.trim();
-		console.log('nickname',nickname);
+		//console.log('nickname',nickname);
 		if (!nickname){
 			throw new Meteor.Error(500, "You must provide a name", '');	
 		}

@@ -11,23 +11,24 @@ import classNames from 'classnames';
 export default ShapePalette = class extends React.Component {
 	render(){
 		// returns CSS class string
-		let getCSSClass = (tool) => {
+		let getCSSClass = (shapeName) => {
 			return classNames({
 				'tool-list__item' : true,
-				[`tool-list__item--${tool.name}`]  : true,
-				'is-active' : this.props.selectedTool === tool.name
+				[`tool-list__item--${shapeName}`]  : true,
+				'is-active' : this.props.selectedTool === shapeName
 			});
 		};
 		return (
 			<ul className="tool-list">
 				{
-					this.props.tools.map((tool)=>{
+					Object.keys(this.props.shapes).map((key)=>{
+						let shape = this.props.shapes[key];
 						return <li 
-							key = {tool.name}
-							className = {getCSSClass(tool)}
-							data-tip = {tool.description}
-							onClick = {()=>{this.props.handleToolChange(tool.name)}}
-						/ >
+							key = {key}
+							className = {getCSSClass(key)}
+							data-tip = {shape.description}
+							onClick = {()=>{this.props.handleToolChange(key)}}
+						/ >;
 					})
 				}
 			</ul>
@@ -36,7 +37,7 @@ export default ShapePalette = class extends React.Component {
 }
 
 ShapePalette.propTypes = {
-	selectedTool : React.PropTypes.string.isRequired,
-	tools : React.PropTypes.array.isRequired,
+	selectedShape : React.PropTypes.string.isRequired,
+	shapes : React.PropTypes.object.isRequired,
 	handleToolChange : React.PropTypes.func
 };

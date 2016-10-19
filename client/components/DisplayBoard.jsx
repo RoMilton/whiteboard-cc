@@ -1,5 +1,5 @@
 import React from 'react';
-import ShapesTemplate from '../shapes/ShapesTemplate.js';
+import ShapeMap from '../shapes/ShapeMap.js';
 
 /**
  *
@@ -15,7 +15,7 @@ export default class DisplayBoard extends React.Component {
 	}
 
 	drawOneShape(shapeModel){
-		ShapesTemplate[shapeModel.type].class.drawFromModel(
+		ShapeMap[shapeModel.type].class.drawFromModel(
 			shapeModel,
 			this.refs.canvas
 		);

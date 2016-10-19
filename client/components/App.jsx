@@ -2,7 +2,6 @@ import React from 'react';
 import TrackerReact from 'meteor/ultimatejs:tracker-react';
 import { Tracker } from 'meteor/tracker';
 import ReactTooltip from 'react-tooltip';
-import Utils from '../../universal/Utils.js';
 import Toolbar from './Toolbar.jsx';
 import DrawingCanvas from './DrawingCanvas.jsx';
 import DisplayBoard from './DisplayBoard.jsx';
@@ -10,7 +9,8 @@ import Nav from './Nav.jsx';
 import Alert from './Alert.jsx';
 import Whiteboard from '../../universal/Whiteboard.js';
 import CursorsWrapper from './CursorsWrapper.jsx';
-import Colors from '../../universal/Colors.js'
+import Colors from '../../universal/Colors.js';
+import ShapeMap from '../shapes/ShapeMap.js';
 
 Galleries = new Mongo.Collection("galleries");
 ActiveUsers = new Mongo.Collection("activeUsers");
@@ -34,40 +34,11 @@ export default class App extends TrackerReact(React.Component) {
 		return 6;
 	}
 
-
-	/**
-	 * tools used by whiteboard App
-	 *
-	 * @property COLORS
-	 * @static
-	 */
-	static get TOOLS(){
-		return [	
-			{
-				name : 'pen',
-				description : 'Pen Tool',
-				isDefault : true,
-			},
-			{
-				name : 'line',
-				description : 'Line Tool'
-			},
-			{
-				name : 'rect',
-				description : 'Rectangle Tool'
-			}
-			// {
-			// 	name : 'text',
-			// 	description : 'Insert Text'
-			// }
-		];
-	}
-
 	constructor(props){
 		super(props);
 
 		this.state = {
-			selectedTool : this.getDefaultTool(),
+			selectedShape : this.getDefaultTool(),
 			//selectedColor : App.COLORS[0],
 			boards : [this.getNewBoard()],
 			iSelectedBoard : 0,
@@ -80,7 +51,6 @@ export default class App extends TrackerReact(React.Component) {
 		};
 
 		Meteor.call('getGalleryId',this.props.source,(err,res)=>{
-			// console.log('gallery received - ',res);
 			this.state.name = res.user.nickname;
 			this.state.selectedColor = res.user.color;
 			let gallery = res.gallery;
@@ -94,6 +64,7 @@ export default class App extends TrackerReact(React.Component) {
 			};
 		});
 
+		// binding methods here to improve performance of re-renders
 		this.changeColor = this.changeColor.bind(this)
 		this.changeTool = this.changeTool.bind(this);
 		this.handleUndo = this.handleUndo.bind(this);
@@ -243,14 +214,14 @@ export default class App extends TrackerReact(React.Component) {
 	/**
 	 * Gets name of default tool (eg 'pen') that the user should start with.
 	 * This is done by by looking which tool has 'is-default' property set to
-	 * true in the TOOLS constant.
+	 * true in the ShapeMap constant.
 	 *
 	 * @method getDefaultTool
 	 */
 	getDefaultTool(){
 		//for each tool
-		for (let key in App.TOOLS){
-			if (App.TOOLS[key].isDefault) {return App.TOOLS[key].name;}
+		for (let key in ShapeMap){
+			if (ShapeMap[key].isDefault) {return key;}
 		}
 	}
 
@@ -263,13 +234,22 @@ export default class App extends TrackerReact(React.Component) {
 	 */
 	changeTool(toolName){
 		this.setState({
-			selectedTool : toolName
+			selectedShape : toolName
 		});
 	}
 
 	changeColor(newCol){
-		this.setState({
-			selectedColor : newCol
+		return new Promise((resolve,reject)=>{
+			Meteor.call('updateColor',newCol, (err,result)=>{
+				if (err){
+					reject(err.reason);
+				}else{
+					this.setState({
+						selectedColor : newCol
+					});
+					resolve(newCol)
+				}
+			});
 		});
 	}
 
@@ -421,11 +401,11 @@ export default class App extends TrackerReact(React.Component) {
 		return (
 			<div id="container">
 				<Toolbar
-					tools = {App.TOOLS}
+					shapes= {ShapeMap}
 					colors = {Colors}
 					name = {this.state.name}
 					galleryName = {this.state.galleryName}
-					selectedTool = {this.state.selectedTool}
+					selectedShape = {this.state.selectedShape}
 					selectedColor = {this.state.selectedColor}
 					handleColorClick = {this.changeColor}
 					handleToolChange = {this.changeTool}
@@ -443,7 +423,7 @@ export default class App extends TrackerReact(React.Component) {
 							/>
 							<DrawingCanvas 
 								color = {this.state.selectedColor}
-								tool = {this.state.selectedTool}
+								selectedShape = {this.state.selectedShape}
 								onDrawFinish = {this.handleNewShape}
 							/>
 							{ this.state.activeUsers.length && 

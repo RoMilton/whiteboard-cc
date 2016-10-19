@@ -2,7 +2,7 @@ import Line from '../shapes/Shape-Line.js';
 import StraightLine from '../shapes/Shape-StraightLine.js';
 import FillRect from '../shapes/Shape-FillRect.js';
 
-const ShapesTemplate = {
+const ShapeMap = {
 	'pen' : {
 		class : Line,
 		description : 'Pen Tool',
@@ -18,4 +18,4 @@ const ShapesTemplate = {
 	}
 }
 
-export default ShapesTemplate;
+export default ShapeMap;

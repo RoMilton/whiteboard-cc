@@ -63,8 +63,8 @@ export default class Toolbar extends React.Component {
 						/>
 					</div>
 					<ShapePalette
-						tools={this.props.tools}
-						selectedTool = {this.props.selectedTool}
+						shapes={this.props.shapes}
+						selectedShape = {this.props.selectedShape}
 						handleToolChange = {this.props.handleToolChange}
 					/>
 					<ShareControls 
@@ -81,11 +81,11 @@ export default class Toolbar extends React.Component {
 
 Toolbar.propTypes = {
 	colors : React.PropTypes.array.isRequired,
-	selectedTool : React.PropTypes.string.isRequired,
+	selectedShape : React.PropTypes.string.isRequired,
 	selectedColor : React.PropTypes.string.isRequired,
 	name : React.PropTypes.string,
 	url : React.PropTypes.string,
-	tools : React.PropTypes.array.isRequired,
+	shapes : React.PropTypes.object.isRequired,
 	handleToolChange : React.PropTypes.func,
 	handleUndoClick : React.PropTypes.func,
 	handleColorClick: React.PropTypes.func,

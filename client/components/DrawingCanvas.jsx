@@ -1,6 +1,6 @@
 import React from 'react';
 import CanvasBase from './CanvasBase.jsx';
-import ShapesTemplate from '../shapes/ShapesTemplate.js';
+import ShapeMap from '../shapes/ShapeMap.js';
 
 /**
  * The Whiteboard Canvas has one purpose - to allow the drawing of new shapes.
@@ -73,8 +73,8 @@ export default class DrawingCanvas extends CanvasBase {
 		let canvas = this.refs.canvas;
 
 		// create a new shape
-		this._currShape = new ShapesTemplate[this.props.tool].class({
-			shapeName : this.props.tool,
+		this._currShape = new ShapeMap[this.props.selectedShape].class({
+			shapeName : this.props.selectedShape,
 			canvas : canvas,
 			color : this.props.color,
 			onShapeSubmit : this.props.onDrawFinish
@@ -120,6 +120,6 @@ export default class DrawingCanvas extends CanvasBase {
 
 DrawingCanvas.propTypes = {
 	color : React.PropTypes.string.isRequired,
-	tool : React.PropTypes.string.isRequired,
+	selectedShape : React.PropTypes.string.isRequired,
 	onDrawFinish : React.PropTypes.func
 };

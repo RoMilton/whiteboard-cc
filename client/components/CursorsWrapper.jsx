@@ -65,12 +65,12 @@ export default class CursorsWrapper extends React.Component {
 									key={user.sessionId}
 									listenToSessionId= {user.sessionId}
 									name={user.name}
-									color={user.color}
+									bgColor={user.color}
 							/>
 						}else if (this.state.ownPointerPos.length){
 							return <OwnMousePointer 
 								key={user.sessionId}
-								color={user.color}
+								bgColor={user.color}
 								pos={this.state.ownPointerPos}
 								name={user.name}
 							/>
