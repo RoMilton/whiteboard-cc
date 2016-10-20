@@ -8,7 +8,7 @@ Galleries = new Mongo.Collection("galleries");
 ActiveUsers = new Mongo.Collection("activeUsers");
 
 let RESERVED_NAMES = [
-	'images'
+	'IMAGES'
 ];
 
 let makeGalleryName=(alphabeticLength = 5, numSuffixLength = 2)=>{
@@ -203,12 +203,12 @@ Meteor.methods({
 	},
 	updateGalleryName(names){
 		let sessionId = this.connection.id
-		names.name = names.newName.trim();
+		names.newName = names.newName.toLowerCase().trim();
 		if (!names.newName){
 			throw new Meteor.Error(500, 'You must provide a URL', '');	
 		}
 		let record = getGalleryByName(names.newName);
-		if (record){
+		if (record || RESERVED_NAMES.indexOf(names.newName.toUpperCase())>-1){
 			throw new Meteor.Error(500, "'" +names.newName +"' is already in use", '');	
 		}else{			
 			Galleries.update(

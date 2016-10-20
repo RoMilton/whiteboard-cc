@@ -177,6 +177,7 @@ export default class App extends TrackerReact(React.Component) {
 	}
 
 	_handleUrlChange(galleryName, changedBy = this._sessionId()){
+		galleryName = galleryName.toLowerCase();
 		return new Promise((resolve,reject)=>{
 			let updateState = ()=>{
 				let gallery = this.state.gallery;

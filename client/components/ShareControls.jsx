@@ -38,10 +38,10 @@ export default class ShareControls extends React.Component {
 
 
 	_handleUrlChange(galleryName){
-		this.props.handleUrlChange(galleryName).then(()=>{
+		this.props.handleUrlChange(galleryName).then((newGalleryName)=>{
 			this.setState({
 				nameSuccessMsg : null,
-				urlSuccessMsg : 'URL changed to '+window.location.host + '/'+galleryName,
+				urlSuccessMsg : 'URL changed to '+window.location.host + '/'+newGalleryName,
 				urlErrorMsg : null
 			});
 			eventService.emit('collapse-dropdowns');
