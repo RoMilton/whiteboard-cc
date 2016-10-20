@@ -60,9 +60,7 @@ export default class App extends TrackerReact(React.Component) {
 		Meteor.call('getGallery',this.props.source,(err,res)=>{
 			this.state.name = res.user.nickname;
 			this.state.selectedColor = res.user.color;
-			
 			let gallery = new Gallery(res.gallery);
-			console.log('res',res);
 			this.state.gallery = gallery;
 			this._setURL(gallery.galleryName);
 
@@ -285,13 +283,16 @@ export default class App extends TrackerReact(React.Component) {
 	}
 
 	_handleClearAll(send = true){
+		if (send){
+			Meteor.call('clearAll',{
+				galleryId : this.state.gallery.galleryId,
+				activeUsers : this._allSessionIds()
+			});
+		}
 		let boards = this.state.gallery.boards.slice();
 		boards.forEach(board=>{
 			board.clear();
 		});
-		if (send){
-			Streamy.sessions(this._allSessionIds()).emit('clear-all',{});
-		}
 		let gallery = update(this.state.gallery, { 
 			boards: { $set : boards } 
 		});
@@ -317,12 +318,12 @@ export default class App extends TrackerReact(React.Component) {
 		let itemsToRemove = history.slice(history.length - numberToRemove);
 
 		if (itemsToRemove){
-			Streamy.sessions(this._allSessionIds()).emit(
-				'remove-shapes',
-				{
-					items : itemsToRemove
-				}
-			);
+
+			Meteor.call('removeShapes',{
+				galleryId : this.state.gallery.galleryId,
+				activeUsers : this._allSessionIds(),
+				items : itemsToRemove
+			});
 
 			itemsToRemove.forEach((historyItem)=>{			
 				boards[historyItem.iBoard].removeShape(historyItem.shapeId);

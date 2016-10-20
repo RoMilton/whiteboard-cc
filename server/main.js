@@ -171,7 +171,6 @@ Meteor.methods({
 		//console.log('getGalleryId()',galleryName);
 		if (galleryName){
 			let record = getGalleryByName(galleryName)
-			console.log('record',record.boards[0]);
 			if (record){
 				let user = addActiveUser(record.galleryId,sessionId);
 				return {
@@ -181,14 +180,12 @@ Meteor.methods({
 			}
 		}
 		return createGallery(galleryName).then((galleryId)=>{
-			
 			let record = getGalleryById(galleryId);
 			let user = addActiveUser(record.galleryId,sessionId);
 			return {
 				user : user,
 				gallery : record
 			};
-			//return galleryId;
 		});
 	},
 	changeBoard(args){
@@ -257,21 +254,64 @@ Meteor.methods({
 
 		let galleryModel = getGalleryById(galleryId);
 		if (galleryModel){
-			// create gallery instance from model
-			// console.log('galleryModel',galleryModel);
 			let gallery = new Gallery(galleryModel);
 			// create board if doesn't exist
-			if (!gallery.boards[iBoard]){ gallery.addBoardAtIndex[iBoard]; }
-
+			if (!gallery.boards[iBoard]){ gallery.addBoardAtIndex(iBoard); }
 			// insert shape
 			gallery.boards[iBoard].addShape(shape);
-
 			updateGalleryRec(galleryId, {
 				boards : gallery.serialize().boards,
 				lastUpdatedBy : sessionId
 			});
 		}
 
+	},
+	removeShapes(args){
+		let sessionId = this.connection.id;
+		let {activeUsers, galleryId, items } = args;
+		activeUsers.forEach((sid)=>{
+			Streamy.sessions(sid).emit(
+				'remove-shapes',
+				{
+					items : items,
+					from: sessionId
+				}
+			);
+		});
+		let galleryModel = getGalleryById(galleryId);
+		if (galleryModel){
+			let gallery = new Gallery(galleryModel);
+			// insert shape
+			items.forEach((item)=>{
+				gallery.boards[item.iBoard].removeShape(item.shapeId);
+			});
+			
+			updateGalleryRec(galleryId, {
+				boards : gallery.serialize().boards,
+				lastUpdatedBy : sessionId
+			});
+		}
+
+	},
+	clearAll(args){
+		let sessionId = this.connection.id;
+		let {activeUsers, galleryId} = args;
+
+		activeUsers.forEach((sid)=>{
+			Streamy.sessions(sid).emit('clear-all',{});
+		});
+		let galleryModel = getGalleryById(galleryId);
+		if (galleryModel){
+			let gallery = new Gallery(galleryModel);
+			// insert shape
+			gallery.boards.forEach(board=>{
+				board.clear();
+			});
+			updateGalleryRec(galleryId, {
+				boards : gallery.serialize().boards,
+				lastUpdatedBy : sessionId
+			});
+		}
 	},
 	updateColor(color){
 		let sessionId = this.connection.id;
