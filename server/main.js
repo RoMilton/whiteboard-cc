@@ -274,7 +274,7 @@ Meteor.methods({
 				'remove-shapes',
 				{
 					items : items,
-					from: sessionId
+					__from: sessionId
 				}
 			);
 		});
@@ -298,7 +298,9 @@ Meteor.methods({
 		let {activeUsers, galleryId} = args;
 
 		activeUsers.forEach((sid)=>{
-			Streamy.sessions(sid).emit('clear-all',{});
+			Streamy.sessions(sid).emit('clear-all',{
+				__from: sessionId
+			});
 		});
 		let galleryModel = getGalleryById(galleryId);
 		if (galleryModel){

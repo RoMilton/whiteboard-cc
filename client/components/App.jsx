@@ -132,16 +132,17 @@ export default class App extends TrackerReact(React.Component) {
 
 		Streamy.on('remove-shapes',(data)=>{
 			if (data.__from !== this._sessionId()){
+				let boards = this.state.gallery.boards.slice();
 				data.items.forEach((itemToRemove)=>{
-					let boards = this.state.gallery.boards.slice();
 					if (!boards[itemToRemove.iBoard]){return;}
 					boards[itemToRemove.iBoard].removeShape(itemToRemove.shapeId);
-					let gallery = update(this.state.gallery, { 
-						boards: { $set : boards } 
-					});
-					this.setState({
-						gallery : gallery
-					});
+				});
+				let gallery = update(this.state.gallery, { 
+					boards: { $set : boards } 
+				});
+
+				this.setState({
+					gallery : gallery
 				});
 			}
 		});
