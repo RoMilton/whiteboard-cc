@@ -7,10 +7,14 @@ import DrawingCanvas from './DrawingCanvas.jsx';
 import DisplayCanvas from './DisplayCanvas.jsx';
 import Nav from './Nav.jsx';
 import Alert from './Alert.jsx';
-import Whiteboard from '../../universal/Whiteboard.js';
 import CursorsWrapper from './CursorsWrapper.jsx';
-import Colors from '../../universal/Colors.js';
+import update from 'react-addons-update';
+
+
 import ShapeMap from '../shapes/ShapeMap.js';
+import Colors from '../../universal/Colors.js';
+import Whiteboard from '../../universal/Whiteboard.js';
+import Gallery from '../../universal/Gallery.js';
 
 Galleries = new Mongo.Collection("galleries");
 ActiveUsers = new Mongo.Collection("activeUsers");
@@ -39,28 +43,32 @@ export default class App extends TrackerReact(React.Component) {
 
 		this.state = {
 			selectedShape : this._getDefaultTool(),
-			//selectedColor : App.COLORS[0],
-			boards : [new Whiteboard()],
-			iSelectedBoard : 0,
+			selectedColor : '',
 			history : [],
 			activeUsers : [],
 			alert : {
 				visible : false,
 				text : ''
+			},
+			gallery : {
+				galleryId :'',
+				galleryName : '',
+				iSelectedBoard : 0
 			}
 		};
 
-		Meteor.call('getGalleryId',this.props.source,(err,res)=>{
+		Meteor.call('getGallery',this.props.source,(err,res)=>{
 			this.state.name = res.user.nickname;
 			this.state.selectedColor = res.user.color;
-			let gallery = res.gallery;
-			this.state.iSele
-			this.state.galleryName = gallery.galleryName;
+			
+			let gallery = new Gallery(res.gallery);
+			console.log('res',res);
+			this.state.gallery = gallery;
 			this._setURL(gallery.galleryName);
-			this.state.galleryId = gallery._id;
+
 			this.state.subscription = {
-				gallery : Meteor.subscribe('galleries',[gallery._id]),
-				activeUsers : Meteor.subscribe('activeUsers',[gallery._id])
+				gallery : Meteor.subscribe('galleries',[gallery.galleryId]),
+				activeUsers : Meteor.subscribe('activeUsers',[gallery.galleryId])
 			};
 		});
 
@@ -97,13 +105,14 @@ export default class App extends TrackerReact(React.Component) {
 
 	_setUpTracker(){
 		Tracker.autorun(()=> {
-			let gallery = this._gallery();
-			console.log('received subscription',gallery);
-			console.log('my session id',this._sessionId());
-			if (gallery
-			&& (gallery.lastUpdatedBy !== this._sessionId())){
-				this.receivedData = true;
-				this.updateGallery(gallery.iSelectedBoard,gallery.galleryName,gallery.lastUpdatedBy);
+			let newGallery = this._gallery();
+			if (!newGallery) { return; }
+			if (newGallery.lastUpdatedBy === this._sessionId()){ return }
+			if (newGallery.iSelectedBoard !== this.state.gallery.iSelectedBoard){
+				this._handleBoardChange(newGallery.iSelectedBoard,newGallery.lastUpdatedBy);
+			}
+			if (newGallery.galleryName !== this.state.gallery.galleryName){
+				this._handleUrlChange(newGallery.galleryName,newGallery.lastUpdatedBy);
 			}
 		});
 
@@ -119,7 +128,6 @@ export default class App extends TrackerReact(React.Component) {
 		this._setUpTracker();
 		Streamy.on('insert-shape',(data)=>{
 			if (data.__from !== this._sessionId()){
-				// console.log('received new shape',data);
 				this._handleNewShape(data.shape,data.iBoard,false);
 			}
 		});
@@ -127,7 +135,15 @@ export default class App extends TrackerReact(React.Component) {
 		Streamy.on('remove-shapes',(data)=>{
 			if (data.__from !== this._sessionId()){
 				data.items.forEach((itemToRemove)=>{
-					this._removeShape(itemToRemove.iBoard,itemToRemove.shapeId);
+					let boards = this.state.gallery.boards.slice();
+					if (!boards[itemToRemove.iBoard]){return;}
+					boards[itemToRemove.iBoard].removeShape(itemToRemove.shapeId);
+					let gallery = update(this.state.gallery, { 
+						boards: { $set : boards } 
+					});
+					this.setState({
+						gallery : gallery
+					});
 				});
 			}
 		});
@@ -161,53 +177,32 @@ export default class App extends TrackerReact(React.Component) {
 		});
 	}
 
-	_handleUrlChange(newURL){
+	_handleUrlChange(galleryName, changedBy = this._sessionId()){
 		return new Promise((resolve,reject)=>{
-			Meteor.call('updateGalleryName', {
-				currentName : this.state.galleryName,
-				newName : newURL
-			},(err,res)=>{
-				if (err){
-					reject(err.reason);
-				}else{
-					this.setState({
-						galleryName : newURL
-					});
-					resolve(newURL);
-				}
-			});
-		});
-	}
-
-	componentDidUpdate(prevProps, prevState){
-
-		if (prevState.galleryName !== this.state.galleryName){
-			this._setURL(this.state.galleryName);
-		}
-
-		if (!this.receivedData){
-			if (this.state.iSelectedBoard !== prevState.iSelectedBoard){
-				Meteor.call('_handleBoardChange',{
-					galleryId : this.state.galleryId,
-					iBoard : this.state.iSelectedBoard
-				},(err,result)=>{
-					if (err){
-						console.log('error changing board',err);
-					}else{
-
-					}
-				 }
-				);
+			let updateState = ()=>{
+				let gallery = this.state.gallery;
+				gallery.setGalleryName(galleryName);
+				this._setURL(this.state.gallery.galleryName);
+				this.setState({
+					gallery : gallery
+				});
+				resolve(galleryName);
 			}
-			//console.log('sending user',this.state.name);
-			// if ( this.state.name !== prevState.name
-			// || this.state.selectedColor !== prevState.selectedColor){
-				
-			// }
-
-		}else{
-			this.receivedData = false;
-		}
+			if (changedBy === this._sessionId()){
+				Meteor.call('updateGalleryName', {
+					currentName : this.state.gallery.galleryName,
+					newName : galleryName
+				},(err,res)=>{
+					if (err){
+						reject(err.reason);
+					}else{
+						updateState();
+					}
+				});
+			}else{
+				updateState();
+			}
+		});
 	}
 
 
@@ -253,52 +248,56 @@ export default class App extends TrackerReact(React.Component) {
 		});
 	}
 
-	updateGallery(iSelectedBoard,galleryName,changedBy = this._sessionId()){
-		let newState = {};
-		if (galleryName){
-			newState.galleryName = galleryName;
-		}
-
-		if (iSelectedBoard !== undefined && iSelectedBoard !== this.state.iSelectedBoard){
-			
-			newState.iSelectedBoard = iSelectedBoard;
-			let name = this.state.activeUsers.find((user)=>{return user.sessionId === changedBy}).name;
-
-			newState.alert = {
-				visible : true,
-				text : 'Changed to board '+ (iSelectedBoard + 1) + ' by '+ name
-			};
-
-			if (iSelectedBoard > this.state.boards.length - 1){
-				newState.boards = this.state.boards.slice()
-				let noOfBoardsToAdd = iSelectedBoard + 1 - this.state.boards.length;
-				for (var i = 0; i<noOfBoardsToAdd; i++){
-					newState.boards.push(new Whiteboard());
-				}
+	_handleBoardChange(iBoard, changedBy = this._sessionId()){
+		return new Promise((resolve,reject)=>{
+			let updateState = ()=>{
+				let newState = {};
+				newState.gallery = this.state.gallery;
+				newState.gallery.setSelectedBoard(iBoard);			
+				let name = this.state.activeUsers.find((user)=>{return user.sessionId === changedBy}).name;
+				newState.alert = {
+					visible : true,
+					text : 'Changed to board '+ (iBoard + 1) + ' by '+ name
+				};
+				this.setState(newState);
+				resolve(iBoard);
 			}
 
-		}
-		this.setState(newState);
-	}
-
-	_handleBoardChange(iBoard){
-		this.updateGallery(iBoard);
+			if (changedBy === this._sessionId()){
+				Meteor.call('changeBoard',{
+					galleryId : this.state.gallery.galleryId,
+					iBoard : iBoard
+				},(err,result)=>{
+					if (err){
+						reject(err)
+					}else{
+						updateState();
+					}
+				});
+			}else{
+				updateState();
+			}
+		});
 	}
 
 	_handleAddBoard(){
-		this._handleBoardChange(this.state.boards.length);
+		this._handleBoardChange(this.state.gallery.boards.length);
 	}
 
 	_handleClearAll(send = true){
-		let boards = this.state.boards.slice();
+		let boards = this.state.gallery.boards.slice();
 		boards.forEach(board=>{
 			board.clear();
 		});
 		if (send){
 			Streamy.sessions(this._allSessionIds()).emit('clear-all',{});
 		}
+		let gallery = update(this.state.gallery, { 
+			boards: { $set : boards } 
+		});
+
 		this.setState({
-			boards : boards,
+			gallery : gallery,
 			history : []
 		});
 	}
@@ -310,24 +309,14 @@ export default class App extends TrackerReact(React.Component) {
 		});
 	}
 
-	_removeShape(iBoard,shapeModel){
-		let boards = this.state.boards.slice();
-		if (!boards[iBoard]){return;}
-		boards[iBoard].removeShape(shapeModel);
-		this.setState({
-			boards : boards
-		})
-	}
-
 	_handleUndo(numberToRemove = 1){
 		let history = this.state.history.slice(),
-			boards = this.state.boards.slice();
+			boards = this.state.gallery.boards.slice();
 
 		numberToRemove = numberToRemove === 'all' ? history.length : numberToRemove;
 		let itemsToRemove = history.slice(history.length - numberToRemove);
 
 		if (itemsToRemove){
-			//console.log('itemsToRemove',itemsToRemove);
 			Streamy.sessions(this._allSessionIds()).emit(
 				'remove-shapes',
 				{
@@ -337,12 +326,16 @@ export default class App extends TrackerReact(React.Component) {
 
 			itemsToRemove.forEach((historyItem)=>{			
 				boards[historyItem.iBoard].removeShape(historyItem.shapeId);
-			});		
-			
+			});
+
 			history = history.slice(0, history.length - itemsToRemove.length);
 
+			let gallery = update(this.state.gallery, { 
+				boards: { $set : boards } 
+			});
+
 			this.setState({
-				boards : boards,
+				gallery : gallery,
 				history : history
 			});
 		}
@@ -361,7 +354,7 @@ export default class App extends TrackerReact(React.Component) {
 		});
 	}
 
-	_handleNewShape(shapeModel, iBoard = this.state.iSelectedBoard, send = true ){
+	_handleNewShape(shapeModel, iBoard = this.state.gallery.iSelectedBoard, send = true ){
 		let newState = {};
 		if (send){
 			let newItemObj = {
@@ -369,10 +362,12 @@ export default class App extends TrackerReact(React.Component) {
 				shape : shapeModel
 			}
 
-			Streamy.sessions(this._allSessionIds()).emit(
-				'insert-shape',
-				newItemObj
-			);
+			Meteor.call('insertShape',{
+				galleryId : this.state.gallery.galleryId,
+				activeUsers : this._allSessionIds(),
+				iBoard : iBoard,
+				shape : shapeModel
+			});
 
 			newState.history = this.state.history.slice();
 			newState.history.push({
@@ -381,15 +376,19 @@ export default class App extends TrackerReact(React.Component) {
 			});
 		}
 
-		newState.boards = this.state.boards.slice();
-		newState.boards[iBoard].addShape(shapeModel);
+		let boards = this.state.gallery.boards.slice();
+		boards[iBoard].addShape(shapeModel);
+
+		newState.gallery = update(this.state.gallery, { 
+			boards: { $set : boards } 
+		});
 
 		this.setState(newState);
 	}
 
 	render(){
 		let sessionId = this._sessionId();
-		if (!this.state.activeUsers.length && this.state.boards.length){
+		if (!this.state.activeUsers.length || !this.state.gallery){
 			return (<div className="spinner"></div>);
 		}
 		return (
@@ -398,7 +397,7 @@ export default class App extends TrackerReact(React.Component) {
 					shapes= {ShapeMap}
 					colors = {Colors}
 					name = {this.state.name}
-					galleryName = {this.state.galleryName}
+					galleryName = {this.state.gallery.galleryName}
 					selectedShape = {this.state.selectedShape}
 					selectedColor = {this.state.selectedColor}
 					handleColorClick = {this._handleColorChange}
@@ -413,7 +412,7 @@ export default class App extends TrackerReact(React.Component) {
 					<div className="wrap">
 						<div className="main-board">
 							<DisplayCanvas 
-								shapes = {this.state.boards[this.state.iSelectedBoard].shapes}
+								board = {this.state.gallery.boards[this.state.gallery.iSelectedBoard]}
 							/>
 							<DrawingCanvas 
 								color = {this.state.selectedColor}
@@ -428,8 +427,8 @@ export default class App extends TrackerReact(React.Component) {
 							}
 						</div>
 						<Nav
-							boards = {this.state.boards}
-							iSelectedBoard = {this.state.iSelectedBoard}
+							boards = {this.state.gallery.boards}
+							iSelectedBoard = {this.state.gallery.iSelectedBoard}
 							onItemChange = {this._handleBoardChange}
 							onItemAdd = {this._handleAddBoard}
 							maxBoardCount = {App.MAX_BOARD_COUNT}

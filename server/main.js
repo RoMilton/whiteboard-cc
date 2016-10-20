@@ -1,6 +1,8 @@
 import Colors from '../universal/Colors.js';
 import Utils from '../universal/Utils.js';
 import { Meteor } from 'meteor/meteor';
+import Gallery from '../universal/Gallery.js';
+
 
 Galleries = new Mongo.Collection("galleries");
 ActiveUsers = new Mongo.Collection("activeUsers");
@@ -28,19 +30,16 @@ let makeGalleryName=(alphabeticLength = 5, numSuffixLength = 2)=>{
 }
 
 let createGallery = (galleryName) => {
-	galleryName = galleryName || makeGalleryName();
 	//console.log('new gallery name',galleryName);
 	return new Promise((resolve,reject)=>{
-		let newSession = {
-			galleryName : galleryName,
-			//boards : [[null]], // 1 empty board
-			iSelectedBoard : 0 // first board selected by default
-		};
-		Galleries.insert(newSession,(err,id)=>{
+		let gallery = new Gallery();
+		gallery.setGalleryName(galleryName || makeGalleryName());
+		let serialized = gallery.serialize();
+		Galleries.insert(serialized,(err,id)=>{
 			if (err){
 				reject(err)
 			}else{
-				resolve(id);
+				resolve(serialized.galleryId);
 			}
 		});
 	});
@@ -126,7 +125,7 @@ let getGalleryByName = (galleryName)=>{
 }
 
 let getGalleryById = (galleryId)=>{
-	let galleries = Galleries.find({_id: galleryId});
+	let galleries = Galleries.find({galleryId: galleryId});
 	let records = galleries.fetch();
 	//console.log('results length',records.length);
 	if (records.length){
@@ -136,9 +135,20 @@ let getGalleryById = (galleryId)=>{
 	}
 };
 
+let updateGalleryRec = function(galleryId, set){
+	Galleries.update(
+		{ galleryId : galleryId },
+		{ 
+			$set: set
+		},(err,result)=>{
+			//console.log('err',err);
+		}
+	);
+}
+
 Meteor.publish('galleries',function([galleryId]){
 	let galleries = Galleries.find(
-		{_id: galleryId},
+		{galleryId: galleryId},
 		{fields: { 'iSelectedBoard' : 1, 'galleryName' : 1, 'lastUpdatedBy' : 1 }}
 	);
 	//console.log('galleries',galleries.fetch()[0]);
@@ -147,22 +157,23 @@ Meteor.publish('galleries',function([galleryId]){
 
 
 Meteor.publish('activeUsers',function([galleryId]){
-	let records = Galleries.find({_id: galleryId}).fetch();
+	let records = Galleries.find({galleryId: galleryId}).fetch();
 	if (records.length){
-		let galleryId = records[0]._id;
+		let galleryId = records[0].galleryId;
 		let activeUsers = ActiveUsers.find({galleryId: galleryId});
 		return activeUsers;
 	}
 });
 
 Meteor.methods({
-	getGalleryId(galleryName){
+	getGallery(galleryName){
 		let sessionId = this.connection.id;
 		//console.log('getGalleryId()',galleryName);
 		if (galleryName){
 			let record = getGalleryByName(galleryName)
+			console.log('record',record.boards[0]);
 			if (record){
-				let user = addActiveUser(record._id,sessionId);
+				let user = addActiveUser(record.galleryId,sessionId);
 				return {
 					user : user,
 					gallery : record
@@ -170,8 +181,9 @@ Meteor.methods({
 			}
 		}
 		return createGallery(galleryName).then((galleryId)=>{
+			
 			let record = getGalleryById(galleryId);
-			let user = addActiveUser(record._id,sessionId);
+			let user = addActiveUser(record.galleryId,sessionId);
 			return {
 				user : user,
 				gallery : record
@@ -182,9 +194,8 @@ Meteor.methods({
 	changeBoard(args){
 		let sessionId = this.connection.id
 		let { galleryId, iBoard } = args;
-
 		Galleries.update(
-			{ _id : galleryId },
+			{ galleryId : galleryId },
 			{ 
 				$set: {
 						iSelectedBoard: iBoard,
@@ -216,7 +227,7 @@ Meteor.methods({
 	},
 	updateNickname(nickname){
 		let sessionId = this.connection.id;
-		nickname = nickname.trim();
+		nickname = nickname.trim(); 
 		//console.log('nickname',nickname);
 		if (!nickname){
 			throw new Meteor.Error(500, "You must provide a name", '');	
@@ -229,6 +240,38 @@ Meteor.methods({
 				}
 			}
 		);
+	},
+	insertShape(args){
+		let sessionId = this.connection.id;
+		let {activeUsers, galleryId, iBoard, shape } = args;
+		activeUsers.forEach((sid)=>{
+			Streamy.sessions(sid).emit(
+				'insert-shape',
+				{
+					iBoard : iBoard,
+					shape : shape,
+					__from : sessionId
+				}
+			);
+		});
+
+		let galleryModel = getGalleryById(galleryId);
+		if (galleryModel){
+			// create gallery instance from model
+			// console.log('galleryModel',galleryModel);
+			let gallery = new Gallery(galleryModel);
+			// create board if doesn't exist
+			if (!gallery.boards[iBoard]){ gallery.addBoardAtIndex[iBoard]; }
+
+			// insert shape
+			gallery.boards[iBoard].addShape(shape);
+
+			updateGalleryRec(galleryId, {
+				boards : gallery.serialize().boards,
+				lastUpdatedBy : sessionId
+			});
+		}
+
 	},
 	updateColor(color){
 		let sessionId = this.connection.id;

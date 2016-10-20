@@ -9,15 +9,53 @@ import CanvasBase from './CanvasBase.jsx';
  */
 export default class DisplayCanvas extends CanvasBase {
 
-	componentDidMount(){
-		this._initialiseCanvas();
-		this._drawShapes(this.props.shapes);
+	constructor(props){
+		super(props);
+		this.lastDrawnShapeId = '';
+		this.lastUpdated = 0;
 	}
 
-	componentDidUpdate(prevProps,prevState){
-		this._clear();
-		this._drawShapes(this.props.shapes);
+	componentDidMount(){
+		this._initialiseCanvas();
+		this._drawShapes(this.props.board.shapes);
 	}
+
+	_setLastUpdated(){
+		this.lastUpdated = this.props.board.lastUpdated;
+	}
+
+	componentWillReceiveProps(nextProps){
+		let shapes = nextProps.board.shapes;
+		if ((this.props.board.id !== nextProps.board.id)
+		|| nextProps.board.redrawAll){
+			console.log('clearing')
+			console.log('shapes',shapes);
+			this._clear();
+			this._drawShapes(shapes);
+		}else if (nextProps.board.lastUpdated > this.lastUpdated){
+			console.log('one shape');
+			let shapeModel = shapes[shapes.length-1];
+			this._drawOneShape(shapeModel);
+		}else{
+			console.log('skipping1',nextProps.board.lastUpdated);
+			console.log('skipping2',this.lastUpdated);
+		}
+	}
+
+	// shouldComponentUpdate(nextProps,nextState){
+	// 	console.log('this',this.props.board.shapes.length);
+	// 	console.log('this',nextProps.board.shapes.length);
+	// 	return true;
+	// 	for (let key in nextProps){
+	// 		if ( key !== 'board'
+	// 		&& nextProps[key] !== (this.props[key] )){
+	// 			// a prop other than 'board' has been updated
+	// 			return true;
+	// 		}
+	// 	}
+	// 	// only board has updated, no need to re-render
+	// 	return false;
+	
 
 	_drawShapes(shapes){
 		shapes.forEach((shapeModel)=>{
@@ -26,10 +64,12 @@ export default class DisplayCanvas extends CanvasBase {
 	}
 
 	_drawOneShape(shapeModel){
+		// console.log('drawing shape');
 		ShapeMap[shapeModel.type].class.drawFromModel(
 			shapeModel,
 			this.refs.canvas
 		);
+		this._setLastUpdated();
 	}
 
 	_clear(){
@@ -49,7 +89,7 @@ export default class DisplayCanvas extends CanvasBase {
 }
 
 DisplayCanvas.propTypes = {
-	shapes : PropTypes.array,
+	board : PropTypes.object,
 	width : PropTypes.number,
 	height : PropTypes.number,
 	className : PropTypes.string

@@ -4,22 +4,35 @@ export default class Whiteboard{
 
 	constructor(shapes){
 		this.shapes = shapes || [];
+		this.redrawAll = true;
 		this.id = Utils.guid();
+		this.setLastUpdated();
 	}
 	
 	addShape(shapeModel){
 		this.shapes.push(shapeModel);
+		this.setLastUpdated();
+		this.redrawAll = false;
 	}
 
 	removeShape(shapeId){
+		// let index = this.shapes.map(function(x) {return x.id; }).indexOf(shapeId);
 		let index = this.shapes.findIndex(item => item.id === shapeId);
 		if (index > -1){
 			this.shapes.splice(index, 1);
+			this.setLastUpdated();
+			this.redrawAll = true;
 		}
 	}
 
 	clear(){
 		this.shapes = [];
+		this.redrawAll = true;
+		this.setLastUpdated();
+	}
+
+	setLastUpdated(){
+		this.lastUpdated = Date.now();
 	}
 
 	lastShape(){

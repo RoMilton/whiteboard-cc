@@ -1,7 +1,7 @@
 export default class Utils{
 
 	static getBrightness(color){
-		var color = color.substring(1);      // strip #
+		var color = color.substring(1);	     // strip #
 		var rgb = parseInt(color, 16);   // convert rrggbb to decimal
 		var r = (rgb >> 16) & 0xff;  // extract red
 		var g = (rgb >>  8) & 0xff;  // extract green

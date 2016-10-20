@@ -180,14 +180,11 @@ $button-height: 36px;
 
 	// invite/share toolbar item
 	&--share{
-		//background-color: darken($spring-wood,5%);
-		//background-color:lighten($bright,37%);
-		//border-left:1px solid lighten($bright,34%);
-		background-color:$bright;
+		background-color:lighten($bright,10%);
 		color:#fff;
 		padding-left:47px;
 		&:hover{
-			background-color:lighten($bright,5);
+			background-color:lighten($bright,5%);
 			color:#fff;
 		}
 		&:before{
