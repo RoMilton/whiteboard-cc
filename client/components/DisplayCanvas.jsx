@@ -79,7 +79,7 @@ export default class DisplayCanvas extends CanvasBase {
 	render(){
 		return (
 			<canvas 
-				className = {"display-canvas " + this.props.className || ''}
+				className = {"display-canvas " + this.props.className}
 				ref="canvas"
 				width={this.props.width}
 				height={this.props.height}
@@ -96,6 +96,7 @@ DisplayCanvas.propTypes = {
 }
 
 DisplayCanvas.defaultProps = {
+	className: '',
 	shapes : [],
 	width : 1095,
 	height : 688

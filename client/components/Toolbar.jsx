@@ -22,51 +22,48 @@ export default class Toolbar extends React.Component {
 		};
 		return (
 			<header className="toolbar">
-				<div className="wrap wrap--toolbar">
-					<div className="toolbar__controls">
-						<DropDown 
-							anchor="left"
-							closeButton={false}
-							closeOnContentClick={true}
-							width = {267}
+				<div className="toolbar__controls">
+					<DropDown 
+						anchor="left"
+						closeButton={false}
+						closeOnContentClick={true}
+						width = {267}
+					>
+						<ToolButton
+							className="button button--filled" 
+							style={colorStyles}
 						>
-							<ToolButton
-								className="button button--filled" 
-								style={colorStyles}
-							>
-							</ToolButton>
-							<ColorSelect
-								colors={this.props.colors} 
-								selectedColor = {this.props.selectedColor}
-								handleColorClick = {this.props.handleColorClick}
-							/>
-						</DropDown>
-						<ToolButton 
-							className="button button--undo" 
-							handleClick={ this.props.handleUndoClick }
-						>
-							Undo
 						</ToolButton>
-						<ToolSelectList
-							buttonClassName="button button--clear"
-							text="Clear My Sketches"
-							handleClick={ this.props.handleClearMyClick }
-							optionNames={['Clear My Sketches','Clear Everything']}
-							optionClicks={[this.props.handleClearMyClick,this.props.handleClearAllClick]}
+						<ColorSelect
+							colors={this.props.colors} 
+							selectedColor = {this.props.selectedColor}
+							handleColorClick = {this.props.handleColorClick}
 						/>
-					</div>
-					<ShapePalette
-						shapes={this.props.shapes}
-						selectedShape = {this.props.selectedShape}
-						handleToolChange = {this.props.handleToolChange}
+					</DropDown>
+					<ToolButton 
+						className="button button--undo" 
+						handleClick={ this.props.handleUndoClick }
+						text="Undo"
 					/>
-					<ShareControls 
-						name = {this.props.name}
-						galleryName = {this.props.galleryName}
-						handleNameChange = {this.props.handleNameChange}
-						handleUrlChange = {this.props.handleUrlChange}
+					<ToolSelectList
+						buttonClassName="button button--clear"
+						text="Clear My Sketches"
+						handleClick={ this.props.handleClearMyClick }
+						optionNames={['Clear My Sketches','Clear Everything']}
+						optionClicks={[this.props.handleClearMyClick,this.props.handleClearAllClick]}
 					/>
 				</div>
+				<ShapePalette
+					shapes={this.props.shapes}
+					selectedShape = {this.props.selectedShape}
+					handleToolChange = {this.props.handleToolChange}
+				/>
+				<ShareControls 
+					name = {this.props.name}
+					galleryName = {this.props.galleryName}
+					handleNameChange = {this.props.handleNameChange}
+					handleUrlChange = {this.props.handleUrlChange}
+				/>
 			</header>
 		)
 	}

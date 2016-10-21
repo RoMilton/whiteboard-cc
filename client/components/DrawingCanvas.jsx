@@ -104,7 +104,7 @@ export default class DrawingCanvas extends CanvasBase {
 	render(){
 		return (
 			<canvas
-				className="main-board__canvas"
+				className="main-board__drawing-canvas"
 				onMouseMove = {this._handleMouseMove}
 				onMouseDown = {this._handleMouseDown}
 				onMouseUp = {this._handleMouseUp}

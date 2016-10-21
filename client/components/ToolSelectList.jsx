@@ -1,4 +1,5 @@
 import React, {PropTypes} from 'react';
+import ToolButton from './ToolButton.jsx';
 import DropDown from './DropDown.jsx';
 
 /**
@@ -15,13 +16,11 @@ export default class ToolSelectList extends React.Component {
 				className='button button--select'
 				style = {this.props.style || null}
 			>
-				<div
-					onClick={this.props.handleClick}
+				<ToolButton
 					className='button--select__text button--select__text--clear'
-				> <span>
-					{this.props.text}
-					</span>
-				</div>
+					handleClick={this.props.handleClick}
+					text={this.props.text}
+				/>
 				<div className="button--select__arrow">
 					<DropDown 
 						showArrow = {false}

@@ -11,7 +11,10 @@ export default class TextControl extends React.Component{
 			this.props.buttonText;
 		return (
 			<DropDown width={this.props.width} >
-				<div className={this.props.buttonClassName}>
+				<div 
+					data-tip={text}
+					data-class="no-1250"
+					className={this.props.buttonClassName}>
 					<span>
 						{ text }
 					</span>
