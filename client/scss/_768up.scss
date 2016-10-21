@@ -401,6 +401,7 @@ $nav-item-margin: 10px;
 	top: calc(100% - 12px);
 	min-width:200px;
 	&__text{
+		word-wrap:break-word;
 		text-transform: none;
 		text-align: center;
 		display:block;

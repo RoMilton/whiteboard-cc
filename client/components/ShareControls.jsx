@@ -28,12 +28,12 @@ export default class ShareControls extends React.Component {
 
 	_startTimer(){
 		if (this.timer){clearTimeout(this.timer);}
-		this.timer = setTimeout(()=>{
-			this.setState({
-				urlSuccessMsg : null,
-				nameSuccessMsg : null
-			});
-		},4000);
+		// this.timer = setTimeout(()=>{
+		// 	this.setState({
+		// 		urlSuccessMsg : null,
+		// 		nameSuccessMsg : null
+		// 	});
+		// },4000);
 	};
 
 
@@ -86,7 +86,6 @@ export default class ShareControls extends React.Component {
 					inputDescriptionLink={'http://' + currentURL}
 					submitText="Save"
 					handleSubmit={this._handleUrlChange}
-					width={270}
 					successMsg={this.state.urlSuccessMsg}
 					errorMsg={this.state.urlErrorMsg}
 				/>
