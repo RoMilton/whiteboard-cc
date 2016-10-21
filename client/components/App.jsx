@@ -46,29 +46,13 @@ export default class App extends TrackerReact(React.Component) {
 			selectedColor : '',
 			history : [],
 			activeUsers : [],
+			source : props.source,
 			alert : {
 				visible : false,
 				text : ''
 			},
-			gallery : {
-				galleryId :'',
-				galleryName : '',
-				iSelectedBoard : 0
-			}
+			gallery : null
 		};
-
-		Meteor.call('getGallery',this.props.source,(err,res)=>{
-			this.state.name = res.user.nickname;
-			this.state.selectedColor = res.user.color;
-			let gallery = new Gallery(res.gallery);
-			this.state.gallery = gallery;
-			this._setURL(gallery.galleryName);
-
-			this.state.subscription = {
-				gallery : Meteor.subscribe('galleries',[gallery.galleryId]),
-				activeUsers : Meteor.subscribe('activeUsers',[gallery.galleryId])
-			};
-		});
 
 		// binding methods here to improve performance of re-renders
 		this._handleColorChange = this._handleColorChange.bind(this)
@@ -104,7 +88,7 @@ export default class App extends TrackerReact(React.Component) {
 	_setUpTracker(){
 		Tracker.autorun(()=> {
 			let newGallery = this._gallery();
-			if (!newGallery) { return; }
+			if (!newGallery || !this.state.gallery) { return; }
 			if (newGallery.lastUpdatedBy === this._sessionId()){ return }
 			if (newGallery.iSelectedBoard !== this.state.gallery.iSelectedBoard){
 				this._handleBoardChange(newGallery.iSelectedBoard,newGallery.lastUpdatedBy);
@@ -123,34 +107,53 @@ export default class App extends TrackerReact(React.Component) {
 	}
 
 	componentDidMount(){
-		this._setUpTracker();
-		Streamy.on('insert-shape',(data)=>{
-			if (data.__from !== this._sessionId()){
-				this._handleNewShape(data.shape,data.iBoard,false);
-			}
-		});
 
-		Streamy.on('remove-shapes',(data)=>{
-			if (data.__from !== this._sessionId()){
-				let boards = this.state.gallery.boards.slice();
-				data.items.forEach((itemToRemove)=>{
-					if (!boards[itemToRemove.iBoard]){return;}
-					boards[itemToRemove.iBoard].removeShape(itemToRemove.shapeId);
-				});
-				let gallery = update(this.state.gallery, { 
-					boards: { $set : boards } 
-				});
+		let newState = {};
+		
+		Meteor.call('getGallery',this.state.source,(err,res)=>{
+			newState.name = res.user.nickname;
+			newState.selectedColor = res.user.color;
+			let gallery = new Gallery(res.gallery);
+			newState.gallery = gallery;
+			this._setURL(gallery.galleryName);
 
-				this.setState({
-					gallery : gallery
-				});
-			}
-		});
+			newState.subscription = {
+				gallery : Meteor.subscribe('galleries',[gallery.galleryId]),
+				activeUsers : Meteor.subscribe('activeUsers',[gallery.galleryId])
+			};
 
-		Streamy.on('clear-all',(data)=>{
-			if (data.__from !== this._sessionId()){
-				this._handleClearAll(false);
-			}
+			this.setState(newState);
+		
+			this._setUpTracker();
+			Streamy.on('insert-shape',(data)=>{
+				if (data.__from !== this._sessionId()){
+					this._handleNewShape(data.shape,data.iBoard,false);
+				}
+			});
+
+			Streamy.on('remove-shapes',(data)=>{
+				if (data.__from !== this._sessionId()){
+					let boards = this.state.gallery.boards.slice();
+					data.items.forEach((itemToRemove)=>{
+						if (!boards[itemToRemove.iBoard]){return;}
+						boards[itemToRemove.iBoard].removeShape(itemToRemove.shapeId);
+					});
+					let gallery = update(this.state.gallery, { 
+						boards: { $set : boards } 
+					});
+
+					this.setState({
+						gallery : gallery
+					});
+				}
+			});
+
+			Streamy.on('clear-all',(data)=>{
+				if (data.__from !== this._sessionId()){
+					this._handleClearAll(false);
+				}
+			});
+
 		});
 	}
 
@@ -386,7 +389,7 @@ export default class App extends TrackerReact(React.Component) {
 
 	render(){
 		let sessionId = this._sessionId();
-		if (!this.state.activeUsers.length || !this.state.gallery){
+		if (!this.state.gallery){
 			return (<div className="spinner"></div>);
 		}
 		return (
@@ -424,13 +427,7 @@ export default class App extends TrackerReact(React.Component) {
 								/>
 							}
 						</div>
-						<Nav
-							boards = {this.state.gallery.boards}
-							iSelectedBoard = {this.state.gallery.iSelectedBoard}
-							onItemChange = {this._handleBoardChange}
-							onItemAdd = {this._handleAddBoard}
-							maxBoardCount = {App.MAX_BOARD_COUNT}
-						/>
+
 					</div>
 				</main>
 				<Alert

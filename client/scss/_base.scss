@@ -93,6 +93,7 @@ a,a:visited{
     top: 0;
     left: 0;
 	&__pointer{
+		pointer-events:none;
 		position:absolute;
 		color:#fff;
 		padding:4px 10px;
