@@ -15,19 +15,20 @@ export default class ToolSelectList extends React.Component {
 				className='button button--select'
 				style = {this.props.style || null}
 			>
-				<span
+				<div
 					onClick={this.props.handleClick}
 					className='button--select__text button--select__text--clear'
-				>
+				> <span>
 					{this.props.text}
-				</span>
+					</span>
+				</div>
 				<div className="button--select__arrow">
 					<DropDown 
 						showArrow = {false}
 						width={170} 
 						closeButton={false}
 					>
-						<span className="button--select__toggle" />
+						<div className="button--select__toggle" />
 						<ul className="options-list">
 							{this.props.optionNames.map((optionName,i)=>{
 								return <li

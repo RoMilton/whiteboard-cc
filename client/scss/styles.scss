@@ -35,14 +35,31 @@ This are the mobile styles, also the foundation of the app.
 @import "base";
 
 /*********************
-TABLET, LAPTOPS & DESKTOPS
+TABLET
 This is the average viewing window. So Desktops, Laptops, and
 in general anyone not viewing on a mobile device.
 *********************/
 @media only screen and (min-width: 768px) {
-
-	// styles in 768up.scss
 	@import "768up";
+}
 
-} // end of media query
+
+/*********************
+SMALL LAPTOPS
+This is the average viewing window. So Desktops, Laptops, and
+in general anyone not viewing on a mobile device.
+*********************/
+@media only screen and (min-width: 1030px) {
+	@import "1030up";
+}
+
+/*********************
+LARGER LAPTOPS & DESKTOPS
+This is the average viewing window. So Desktops, Laptops, and
+in general anyone not viewing on a mobile device.
+*********************/
+@media only screen and (min-width: 1250px) {
+	@import "1250up";
+}
+
 

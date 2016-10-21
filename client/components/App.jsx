@@ -237,10 +237,10 @@ export default class App extends TrackerReact(React.Component) {
 	}
 
 	_handleColorChange(newCol){
-		this.setState({
-			selectedColor : newCol
-		});
 		return new Promise((resolve,reject)=>{
+			this.setState({
+				selectedColor : newCol
+			});
 			Meteor.call('updateColor',newCol, (err,result)=>{
 				if (err){
 					reject(err.reason);
@@ -427,7 +427,13 @@ export default class App extends TrackerReact(React.Component) {
 								/>
 							}
 						</div>
-
+						<Nav
+ 							boards = {this.state.gallery.boards}
+ 							iSelectedBoard = {this.state.gallery.iSelectedBoard}
+ 							onItemChange = {this._handleBoardChange}
+ 							onItemAdd = {this._handleAddBoard}
+ 							maxBoardCount = {App.MAX_BOARD_COUNT}
+ 						/>
 					</div>
 				</main>
 				<Alert

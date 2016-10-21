@@ -12,7 +12,9 @@ export default class TextControl extends React.Component{
 		return (
 			<DropDown width={this.props.width} >
 				<div className={this.props.buttonClassName}>
-					{ text }
+					<span>
+						{ text }
+					</span>
 					{
 						this.props.successMsg &&
 						<div className="msg-box msg-box--notif">	

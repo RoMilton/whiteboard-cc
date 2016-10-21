@@ -22,9 +22,7 @@ export default class ColorSelect extends React.Component {
 					return <li
 						className={getItemCSSClass(col)}
 						key={index}
-						onClick={()=>{
-							this.props.handleColorClick(col)
-						}}
+						onClick={()=>{ this.props.handleColorClick(col)}}
 						style={{backgroundColor:col}}
 					/>
 				})}

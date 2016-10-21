@@ -15,14 +15,6 @@ import ToolSelectList from './ToolSelectList.jsx';
  * @extends React.Component
  */
 export default class Toolbar extends React.Component {
-	constructor(props){
-		super(props);
-		this._handleColorClick = this._handleColorClick.bind(this);
-	}
-
-	_handleColorClick(newCol){
-		this.props.handleColorClick(newCol);
-	}
 
 	render(){
 		let colorStyles = {
@@ -46,7 +38,7 @@ export default class Toolbar extends React.Component {
 							<ColorSelect
 								colors={this.props.colors} 
 								selectedColor = {this.props.selectedColor}
-								handleColorClick = {this._handleColorClick}
+								handleColorClick = {this.props.handleColorClick}
 							/>
 						</DropDown>
 						<ToolButton 

@@ -49,7 +49,7 @@ $button-height: 36px;
 	height:18px;
 	content:"";
 	position:absolute;
-	left:9px;
+	left:20px;
 	opacity:0.34;
 }
 
@@ -60,7 +60,9 @@ $button-height: 36px;
 	border: 1px solid $ebb;
 	vertical-align: top;
 	margin: 7px 7px 0 0;
-	padding: 8px 9px 9px 35px;
+	min-width:58px;
+	padding: 8px 30px 9px 35px;
+	box-sizing:border-box;
 	position:relative;
 	text-transform:uppercase;
 	font-size:12px;
@@ -68,7 +70,9 @@ $button-height: 36px;
 	@include button;
 	@include bord_rad;
 	box-sizing: border-box;
-
+	span{
+		display:none;
+	}
 	// background image is assigned to pseudo element to its opacity can be controlled
 	&:before{
 		@include icon-image;
@@ -78,7 +82,9 @@ $button-height: 36px;
 		background-image: url('images/icon-arrow-round.png');
 	}
 	&--select{
-		padding: 0 28px 0 0;
+		padding-top: 0;
+		padding-right: 45px;
+		padding-left:0;
 		&__arrow{
 			position: absolute;
 			top: 0;
@@ -116,11 +122,6 @@ $button-height: 36px;
 			}
 		}
 	}
-
-	// button with no icon - just solid color;
-	&--filled{
-		width: 58px;
-	}
 	
 	// when hover on toolbar button
 	&:hover{
@@ -136,16 +137,19 @@ $button-height: 36px;
 // 100% height item
 .tool-link{
 	color:$grey;
-	padding:16px 15px 0 40px;
+	padding: 16px 20px 0 45px;
+	border-left:1px solid $ebb;
+	border-top:none;
+	border-bottom:none;
 	font-size:14px;
 	display:inline-block;
 	@include button;
 	height:100%;
 	position:relative;
-    text-transform: uppercase;
-    font-size: 12px;
-    letter-spacing: 0.3px;
-
+	text-transform: uppercase;
+	font-size: 12px;
+	letter-spacing: 0.3px;
+    span{display:none;}
 	&:hover{
 		//background-color: darken($spring-wood,2%);
 		color:darken($grey,15%);
@@ -163,7 +167,7 @@ $button-height: 36px;
 		width:20px;
 		height:100%;
 		position:absolute;
-		left:14px;
+		left:20px;
 		top:0;
 		opacity:0.35;
 	}
@@ -190,7 +194,7 @@ $button-height: 36px;
 		&:before{
 			background-image: url('images/icon-share.png');
 			opacity: 0.9;
-			left: 10px;
+			//left: 10px;
 			width: 29px;
 			top: -1px;
 		}

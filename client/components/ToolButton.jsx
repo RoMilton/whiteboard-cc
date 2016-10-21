@@ -18,7 +18,7 @@ export default class ToolButton extends React.Component {
 				onClick={this.props.handleClick}
 				style = {this.props.style || null}
 			>
-				{this.props.children}
+				<span>{this.props.children}</span>
 			</div>
 		)
 
