@@ -73,7 +73,7 @@ export default class DropDown extends React.Component {
 		let getCardStyles=()=>{
 			let styles = {};
 			styles[this.props.anchor] = '2px';
-			styles.width = this.props.width ? (this.props.width + 'px') : '';
+			styles.width = this.props.width ? (this.props.width + 'px') : 'auto';
 			return styles;
 		};
 		let getDropDownCSSClass=()=>{

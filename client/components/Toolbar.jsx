@@ -36,6 +36,7 @@ export default class Toolbar extends React.Component {
 							anchor="left"
 							closeButton={false}
 							closeOnContentClick={true}
+							width = {267}
 						>
 							<ToolButton
 								className="button button--filled" 
