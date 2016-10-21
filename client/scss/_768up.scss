@@ -111,7 +111,7 @@ $button-height: 36px;
 			opacity: 0.63;
 			background: url('images/icon-arrow-down.png') 50% 50% no-repeat;
 			&:hover{
-				background-color:$ebb;
+				background-color:darken($ebb,7%);
 				opacity:1;
 			}
 		}
@@ -124,7 +124,7 @@ $button-height: 36px;
 	
 	// when hover on toolbar button
 	&:hover{
-		border-color: darken($ebb,10%);
+		border-color: $grey;
 		color: darken($grey,25%);
 		&:before {
 			opacity:0.7;

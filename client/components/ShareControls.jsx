@@ -28,12 +28,12 @@ export default class ShareControls extends React.Component {
 
 	_startTimer(){
 		if (this.timer){clearTimeout(this.timer);}
-		// this.timer = setTimeout(()=>{
-		// 	this.setState({
-		// 		urlSuccessMsg : null,
-		// 		nameSuccessMsg : null
-		// 	});
-		// },4000);
+		this.timer = setTimeout(()=>{
+			this.setState({
+				urlSuccessMsg : null,
+				nameSuccessMsg : null
+			});
+		},4000);
 	};
 
 
