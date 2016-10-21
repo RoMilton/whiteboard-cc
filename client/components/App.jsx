@@ -237,14 +237,14 @@ export default class App extends TrackerReact(React.Component) {
 	}
 
 	_handleColorChange(newCol){
+		this.setState({
+			selectedColor : newCol
+		});
 		return new Promise((resolve,reject)=>{
 			Meteor.call('updateColor',newCol, (err,result)=>{
 				if (err){
 					reject(err.reason);
 				}else{
-					this.setState({
-						selectedColor : newCol
-					});
 					resolve(newCol)
 				}
 			});
