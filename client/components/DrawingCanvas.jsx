@@ -20,6 +20,7 @@ export default class DrawingCanvas extends CanvasBase {
 		this._handleMouseUp = this._handleMouseUp.bind(this);
 		this._handleMouseDown = this._handleMouseDown.bind(this);
 		this._handleMouseEnter = this._handleMouseEnter.bind(this);
+		this._calcScale = this._calcScale.bind(this);
 	}
 
 	componentDidMount(){
@@ -30,17 +31,26 @@ export default class DrawingCanvas extends CanvasBase {
 		
 		document.addEventListener('mousedown',this._documentMouseDown);
 		document.addEventListener('mouseup',this._documentMouseUp);
+		window.addEventListener('resize',this._calcScale);
+		this._calcScale();
 	}
 
 	componentWillUnmount(){
 		document.removeEventListener('mousedown',this._documentMouseDown);
 		document.removeEventListener('mouseup',this._documentMouseUp);
+		document.removeEventListener('resize',this._calcScale);
 	}
 
 	componentwillReceiveNewProps(nextProps){
 		if (this._currShape){
 			this._currShape.color = nextProps.color;
 		}
+	}
+
+	_calcScale(){
+		let canvas = this.refs.canvas;
+		let w = parseInt(canvas.offsetWidth);
+		this.scale = (w/this.props.width);
 	}
 
 	_documentMouseClick(status){
@@ -55,8 +65,8 @@ export default class DrawingCanvas extends CanvasBase {
 		let rect = canvas.getBoundingClientRect();
 		//([e.pageX - canvas.offsetLeft, e.pageY - canvas.offsetTop]);
 		return [
-			e.clientX - rect.left,
-			e.clientY - rect.top
+			(e.clientX - rect.left) / this.scale,
+			(e.clientY - rect.top) / this.scale
     	];
 	}
 
@@ -104,7 +114,7 @@ export default class DrawingCanvas extends CanvasBase {
 	render(){
 		return (
 			<canvas
-				className="main-board__drawing-canvas"
+				className="canvas-cont__drawing-canvas"
 				onMouseMove = {this._handleMouseMove}
 				onMouseDown = {this._handleMouseDown}
 				onMouseUp = {this._handleMouseUp}

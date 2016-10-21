@@ -412,14 +412,16 @@ export default class App extends TrackerReact(React.Component) {
 				<main className="main">
 					<div className="wrap">
 						<div className="main-board">
-							<DisplayCanvas 
-								board = {this.state.gallery.boards[this.state.gallery.iSelectedBoard]}
-							/>
-							<DrawingCanvas 
-								color = {this.state.selectedColor}
-								selectedShape = {this.state.selectedShape}
-								onDrawFinish = {this._handleNewShape}
-							/>
+							<div className="canvas-cont">
+								<DisplayCanvas 
+									board = {this.state.gallery.boards[this.state.gallery.iSelectedBoard]}
+								/>
+								<DrawingCanvas 
+									color = {this.state.selectedColor}
+									selectedShape = {this.state.selectedShape}
+									onDrawFinish = {this._handleNewShape}
+								/>
+							</div>
 							{ this.state.activeUsers.length && 
 								<CursorsWrapper 
 									sessionId = { sessionId }

@@ -56,10 +56,19 @@ a,a:visited{
 	background-color:#fff;
 	padding-bottom:62.83%;
 	width:100%;
+}
+
+
+.canvas-cont{
+	position:absolute;
+	top:0;left:0;bottom:0;right:0;
 	&__drawing-canvas{
 		position:absolute;
-		top:0;left:0;bottom:0;right:0;
+		width:100%;
+		height:100%;
 		z-index:10;
+		left:0;
+		top:0;
 		cursor: crosshair;
 		cursor: url(images/crosshair-pencil.png) 10 10, crosshair;
 	}
