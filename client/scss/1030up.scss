@@ -2,6 +2,10 @@
 	left:7px;
 }
 
+.wrap{
+	max-width:1095px;
+}
+
 .button{
 	padding-right:9px;
 	span{
@@ -18,4 +22,8 @@
 			}
 		}
 	}
+}
+
+.no-1030{
+	display:none !important;
 }
