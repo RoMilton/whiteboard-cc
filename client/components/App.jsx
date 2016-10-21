@@ -250,18 +250,15 @@ export default class App extends TrackerReact(React.Component) {
 
 	_handleBoardChange(iBoard, changedBy = this._sessionId()){
 		return new Promise((resolve,reject)=>{
-			let updateState = ()=>{
-				let newState = {};
-				newState.gallery = this.state.gallery;
-				newState.gallery.setSelectedBoard(iBoard);			
-				let name = this.state.activeUsers.find((user)=>{return user.sessionId === changedBy}).name;
-				newState.alert = {
-					visible : true,
-					text : 'Changed to board '+ (iBoard + 1) + ' by '+ name
-				};
-				this.setState(newState);
-				resolve(iBoard);
-			}
+			let newState = {};
+			newState.gallery = this.state.gallery;
+			newState.gallery.setSelectedBoard(iBoard);			
+			let name = this.state.activeUsers.find((user)=>{return user.sessionId === changedBy}).name;
+			newState.alert = {
+				visible : true,
+				text : 'Changed to board '+ (iBoard + 1) + ' by '+ name
+			};
+			this.setState(newState);
 
 			if (changedBy === this._sessionId()){
 				Meteor.call('changeBoard',{
@@ -271,11 +268,9 @@ export default class App extends TrackerReact(React.Component) {
 					if (err){
 						reject(err)
 					}else{
-						updateState();
+						resolve();
 					}
 				});
-			}else{
-				updateState();
 			}
 		});
 	}
