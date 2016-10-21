@@ -2,6 +2,10 @@ import Utils from './Utils.js';
 import Whiteboard from './Whiteboard.js';
 
 export default class Gallery{
+
+	static get MAX_BOARDS(){
+		return 6;
+	}
 	
 	constructor(galleryModel = {}){
 		this.galleryId = galleryModel.galleryId || Utils.guid();
@@ -27,6 +31,7 @@ export default class Gallery{
 	}
 
 	addBoardAtIndex(iBoard){
+		if (this.boards[iBoard] || this.boards.length >= Gallery.MAX_BOARDS ) return;
 		let noOfBoardsToAdd = iBoard + 1 - this.boards.length;
 		for (var i = 0; i<noOfBoardsToAdd; i++){
 			this.boards.push(new Whiteboard());

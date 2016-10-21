@@ -334,7 +334,7 @@ Meteor.methods({
 
 Meteor.startup(() => {
 	// code to run on server at startup
-
+	console.log('server starting up');
 	//Clear Active Users
 	ActiveUsers.remove({});
 
