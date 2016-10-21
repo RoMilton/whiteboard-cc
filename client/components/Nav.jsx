@@ -36,14 +36,14 @@ export default class NavBoards extends React.Component {
 							);
 						})
 					}
+					{
+						(this.props.boards.length < this.props.maxBoardCount) &&
+						<div 
+							className="nav__item nav__item--add"
+							onClick={()=>{this.props.onItemAdd()}}
+						/>
+					}
 				</ol>
-				{
-					(this.props.boards.length < this.props.maxBoardCount) &&
-					<div 
-						className="nav__item nav__item--add"
-						onClick={()=>{this.props.onItemAdd()}}
-					/>
-				}
 			</nav>
 		)
 	}

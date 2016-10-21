@@ -28,7 +28,7 @@ $button-height: 36px;
 	&__controls{
 		position:absolute;
 		left:0;
-		padding-left: 10px;
+		padding: 7px 0 0 10px;
 	}
 
 	// container for Share, Username and change URL buttons
@@ -59,7 +59,7 @@ $button-height: 36px;
 	height: $button-height;
 	border: 1px solid $ebb;
 	vertical-align: top;
-	margin: 7px 7px 0 0;
+	margin-right: 7px;
 	min-width:58px;
 	padding: 8px 30px 9px 35px;
 	box-sizing:border-box;
@@ -250,70 +250,6 @@ $button-height: 36px;
 	}
 }
 
-// whiteboard navigation
-$nav-item-margin: 10px;
-.nav{
-	margin:15px 0 20px;
-	counter-reset: section;
-    list-style-type: none;
-    &__list{
-    	margin:0;
-    	display:inline-block;
-    	vertical-align: top;
-    }
-	&__item{
-		position:relative;
-		display:inline-block;
-		width:174px;
-		height:111px;
-		background-color:#fff;
-		margin-right:$nav-item-margin;
-		border: 2px solid transparent;
-		box-sizing: border-box;
-		vertical-align: top;
-		&:hover{
-			border-color: lighten($lunar-green,10%);
-		}
-		@include button;
-		&:before{
-			counter-increment: section;
-    		content: counters(section,".") " ";
-    		font-size:34px;
-    		line-height:109px;
-    		text-align:center;
-    		position:absolute;
-    		left:0;top:0;right:0;bottom:0;
-    		color:$lunar-green;
-    		text-shadow: 0 0 3px #fff;
-		}
-		&.is-active{
-			border-color:$bright;
-		}
-		&--add {
-			margin-left:$nav-item-margin;
-			border:2px dashed lighten($grey,15%);
-			background-color:rgba(255,255,255,0.6);
-			@include bord_rad;
-			&:before{
-				content:"+";
-				font-size:52px;
-				line-height:106px;
-			}
-			&:hover{
-				border-color: $lunar-green;
-			}
-		}
-		&:last-child{
-			margin-right:0;
-		}
-	}
-	&__image{
-		width:100%;
-		height:100%;
-	}
-
-}
-
 .dropdown{
 	display: inline-block;
 	position: relative;
@@ -439,4 +375,7 @@ $nav-item-margin: 10px;
 	}
 }
 
+.alert{
+	height: 83px;
+}
 
