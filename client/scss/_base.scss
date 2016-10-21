@@ -211,6 +211,7 @@ $nav-all-margins: $nav-item-margin * ($nav-max-items - 1);
 	margin:15px 0 20px;
 	counter-reset: section;
     list-style-type: none;
+    display:flex;
     &__list{
     	margin:0;
     	display:inline-block;
@@ -220,7 +221,6 @@ $nav-all-margins: $nav-item-margin * ($nav-max-items - 1);
 		position:relative;
 		display:inline-block;
 		width: calc((100% - 50px) / 6);
-		//height:111px;
 		background-color:#fff;
 		margin-right:$nav-item-margin;
 		border: 2px solid transparent;
