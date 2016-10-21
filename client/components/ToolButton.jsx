@@ -16,7 +16,7 @@ export default class ToolButton extends React.Component {
 				data-tip={this.props.text}
 				data-class="no-1030"
 				className={this.props.className || 'button'} 
-				onClick={()=>{ this.props.handleClick();  }}
+				onClick={this.props.handleClick}
 				style = {this.props.style || null}
 			>
 				<span>{this.props.text}</span>
