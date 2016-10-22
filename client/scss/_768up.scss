@@ -83,15 +83,9 @@ $button-height: 36px;
 	}
 	&--select{
 		padding-top: 0;
-		padding-right: 45px;
+		//padding-right: 45px;
+		padding-right: 78px;
 		padding-left:0;
-		&__arrow{
-			position: absolute;
-			top: 0;
-			right: 0;
-			height: 100%;
-			width:25px;
-		}
 		&__text{
 			padding: 8px 0 9px 33px;
 			display:block;
@@ -107,11 +101,21 @@ $button-height: 36px;
 				}
 			}
 		}
+		&__arrow,
+		&__toggle{
+			width: 44px;
+			height: 100%;
+		}
+		&__arrow{
+			position: absolute;
+			top: 0;
+			right: 0;
+			background-color:$ebb;
+		}
 		&__toggle{
 			position: relative;
 			top: 50%;
 			transform: translate(0, -50%);
-			width: 25px;
 			height: 100%;
 			display: inline-block;
 			opacity: 0.63;

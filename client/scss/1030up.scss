@@ -23,6 +23,10 @@
 				@include icon-image;
 			}
 		}
+		&__arrow,&__toggle{
+			background-color:transparent;
+			width:25px;
+		}
 	}
 }
 
