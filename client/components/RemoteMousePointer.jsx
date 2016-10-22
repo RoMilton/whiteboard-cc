@@ -50,6 +50,7 @@ export default class RemoteMousePointer extends MousePointer {
 	}
 
 	render(){
+		if (!this.state.pos.length){ return null; }
 		return (
 			<div
 				ref = "pointer"
