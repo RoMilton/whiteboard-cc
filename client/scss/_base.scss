@@ -41,15 +41,16 @@ a,a:visited{
 	display:none;
 }
 
+.main{
+	padding-top:10px;
+}
+
 .wrap{
 	position:relative;
 	height:100%;
 	margin: 0 auto;
 }
 
-.whiteboard{
-	
-}
 
 .main-board{
 	position:relative;
@@ -226,14 +227,15 @@ $nav-all-margins: $nav-item-margin * ($nav-max-items - 1);
 		border: 2px solid transparent;
 		box-sizing: border-box;
 		vertical-align: top;
-		&:hover{
+		&:hover,&:active{
 			border-color: lighten($lunar-green,10%);
 		}
 		@include button;
 		&:before{
 			counter-increment: section;
     		content: counters(section,".") " ";
-    		font-size:34px;
+    		//font-size:34px;
+    		font-size:20px;
     		text-align:center;
     		position:absolute;
     		left:0;top:50%;right:0;
@@ -251,10 +253,11 @@ $nav-all-margins: $nav-item-margin * ($nav-max-items - 1);
 			@include bord_rad;
 			&:before{
 				content:"+";
-				font-size:52px;
+				font-size:30px;
+				//font-size:52px;
 				line-height:106px;
 			}
-			&:hover{
+			&:hover,&:active{
 				border-color: $lunar-green;
 			}
 		}

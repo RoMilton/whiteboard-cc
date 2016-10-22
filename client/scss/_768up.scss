@@ -208,7 +208,7 @@ $button-height: 36px;
 .main{
 	margin-top:$toolbar-height;
 	height: calc(100% - #{$toolbar-height});
-	padding-top:25px;
+	padding-top:20px;
 }
 
 // list of modes (pen, line, rectangle etc)
@@ -375,6 +375,19 @@ $button-height: 36px;
 		top:100%;
 		.msg-box__text{
 			@include bord_rad;
+		}
+	}
+}
+
+.nav{
+	&__item{
+		&:before{
+			font-size:34px;
+		}
+		&--add{
+			&:before{
+				font-size:52px;
+			}
 		}
 	}
 }
