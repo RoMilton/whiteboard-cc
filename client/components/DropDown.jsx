@@ -28,6 +28,7 @@ export default class DropDown extends React.Component {
 	componentDidMount() {
 		// Hide dropdown block on click outside the block
 		document.addEventListener('click', this._documentClick, false);
+		document.addEventListener('touchstart', this._documentClick, false);
 		eventService.on('collapse-dropdowns',this._hide);
 	}
 
@@ -35,6 +36,7 @@ export default class DropDown extends React.Component {
 	componentWillUnmount() {
 		// Remove click event listener on component unmount
 		document.removeEventListener('click', this._documentClick, false);
+		document.removeEventListener('touchstart', this._documentClick, false);
 		eventService.removeListener('collapse-dropdowns',this._hide);
 	}
 
@@ -49,6 +51,7 @@ export default class DropDown extends React.Component {
 
 	_clickedToggle(e){
 		let toggle = this.refs.toggle;
+		console.log('target',e.target);
 		return (toggle && toggle.contains(e.target));	
 	}
 
