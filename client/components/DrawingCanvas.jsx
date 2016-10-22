@@ -25,7 +25,6 @@ export default class DrawingCanvas extends CanvasBase {
 
 	componentDidMount(){
 		this._initialiseCanvas();
-		
 		this._clickPos = [];
 		this._prevClickPos = [];
 		
@@ -63,11 +62,12 @@ export default class DrawingCanvas extends CanvasBase {
 	_getMouseCoords(e){
 		let canvas = this.refs.canvas;
 		let rect = canvas.getBoundingClientRect();
-		//([e.pageX - canvas.offsetLeft, e.pageY - canvas.offsetTop]);
+		let x = e.changedTouches ? e.changedTouches[0].clientX : e.clientX ;
+		let y = e.changedTouches ? e.changedTouches[0].clientY : e.clientY ;
 		return [
-			(e.clientX - rect.left) / this.scale,
-			(e.clientY - rect.top) / this.scale
-    	];
+			(x - rect.left) / this.scale,
+			(y - rect.top) / this.scale
+		];
 	}
 
 	_handleMouseMove(e){
@@ -92,7 +92,6 @@ export default class DrawingCanvas extends CanvasBase {
 			color : this.props.color,
 			onShapeSubmit : this.props.onDrawFinish
 		});
-
 		this._currShape.mouseDown(this._getMouseCoords(e));
 	}
 
@@ -115,13 +114,16 @@ export default class DrawingCanvas extends CanvasBase {
 		return (
 			<canvas
 				className="canvas-cont__drawing-canvas"
+				ref = "canvas"
+				width={this.props.width}
+				height={this.props.height}
 				onMouseMove = {this._handleMouseMove}
 				onMouseDown = {this._handleMouseDown}
 				onMouseUp = {this._handleMouseUp}
 				onMouseEnter = {this._handleMouseEnter}
-				ref = "canvas"
-				width={this.props.width}
-				height={this.props.height}
+				onTouchStart = {this._handleMouseDown}
+				onTouchMove = {this._handleMouseMove}
+				onTouchEnd = {this._handleMouseUp}
 			/>
 		)
 	}
