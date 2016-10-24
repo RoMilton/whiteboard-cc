@@ -9,22 +9,28 @@ import React, {PropTypes} from 'react';
  */
 export default class Alert extends React.Component {
 
+	constructor(props){
+		super(props);
+	}
+
 	componentDidMount(){
-		this._startTimer();
+		if (this.props.visible){
+			this._startTimer();
+		}
 	}
 
 	componentDidUpdate(){
-		this._startTimer();
+		if (this.props.visible){
+			this._startTimer();
+		}
 	}
 
 	_startTimer(){
-		if (!this.props.handleFinish) return;
-		if (this.props.visible){
-			if (this.timer){
-				clearTimeout(this.timer);
-			}
+		if (!this.props.visible){return;}
+		if (this.props.handleFinish){
+			if (this.timer){ clearTimeout(this.timer); }
 			this.timer = setTimeout(()=>{
-				this.props.handleFinish();
+				if (this.props.visible){ this.props.handleFinish(); }
 			},this.props.duration);
 		}
 	}

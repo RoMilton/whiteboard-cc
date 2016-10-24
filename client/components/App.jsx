@@ -3,11 +3,13 @@ import TrackerReact from 'meteor/ultimatejs:tracker-react';
 import { Tracker } from 'meteor/tracker';
 import ReactTooltip from 'react-tooltip';
 import Toolbar from './Toolbar.jsx';
+
 import DrawingCanvas from './DrawingCanvas.jsx';
 import DisplayCanvas from './DisplayCanvas.jsx';
+import CursorsWrapper from './CursorsWrapper.jsx';
 import Nav from './Nav.jsx';
 import Alert from './Alert.jsx';
-import CursorsWrapper from './CursorsWrapper.jsx';
+
 import update from 'react-addons-update';
 
 
@@ -150,7 +152,7 @@ export default class App extends TrackerReact(React.Component) {
 
 			Streamy.on('clear-all',(data)=>{
 				if (data.__from !== this._sessionId()){
-					this._handleClearAll(false);
+					this._handleClearAll(data.__from);
 				}
 			});
 
@@ -282,8 +284,10 @@ export default class App extends TrackerReact(React.Component) {
 		this._handleBoardChange(this.state.gallery.boards.length);
 	}
 
-	_handleClearAll(send = true){
-		if (send){
+
+	_handleClearAll(sessionId = this.sessionId()){		
+		
+		if (sessionId === this.sessionId()){
 			Meteor.call('clearAll',{
 				galleryId : this.state.gallery.galleryId,
 				activeUsers : this._allSessionIds()
@@ -347,17 +351,20 @@ export default class App extends TrackerReact(React.Component) {
 	}
 
 	_handleAlertFinish(){
-		this.setState({
-			alert : {
-				visible : false,
-				text : ''
-			}
-		});
+		if (this.state.alert.visible){
+			this.setState({
+				alert : {
+					visible : false,
+					text : ''
+				}
+			});
+		}
 	}
 
-	_handleNewShape(shapeModel, iBoard = this.state.gallery.iSelectedBoard, send = true ){
+	_handleNewShape(shapeModel, iBoard = this.state.gallery.iSelectedBoard, sessionId = this._sessionId()){
 		let newState = {};
-		if (send){
+		
+		if (sessionId === this._sessionId()){
 			let newItemObj = {
 				iBoard : iBoard,
 				shape : shapeModel
@@ -420,6 +427,7 @@ export default class App extends TrackerReact(React.Component) {
 									color = {this.state.selectedColor}
 									selectedShape = {this.state.selectedShape}
 									onDrawFinish = {this._handleNewShape}
+									onDrawStart = {this._handleAlertFinish}
 								/>
 							</div>
 							{ this.state.activeUsers.length && 

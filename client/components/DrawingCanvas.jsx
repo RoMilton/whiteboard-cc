@@ -83,8 +83,8 @@ export default class DrawingCanvas extends CanvasBase {
 	}
 
 	_handleMouseDown(e){
+		if (this.props.onDrawStart) {this.props.onDrawStart();}
 		let canvas = this.refs.canvas;
-
 		// create a new shape
 		this._currShape = new ShapeMap[this.props.selectedShape].class({
 			shapeName : this.props.selectedShape,
@@ -132,6 +132,7 @@ export default class DrawingCanvas extends CanvasBase {
 DrawingCanvas.propTypes = {
 	color : PropTypes.string.isRequired,
 	selectedShape : PropTypes.string.isRequired,
+	onDrawStart : PropTypes.func,
 	onDrawFinish : PropTypes.func,
 	width: PropTypes.number,
 	height: PropTypes.number
