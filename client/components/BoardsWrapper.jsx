@@ -17,8 +17,8 @@ export default class BoardsWrapper extends React.Component {
 						<DrawingCanvas 
 							color = {this.props.selectedColor}
 							selectedShape = {this.props.selectedShape}
-							onDrawFinish = {this.props.handleDrawFinish}
-							onDrawStart = {this.props.handleDrawStart}
+							handleDrawFinish = {this.props.handleDrawFinish}
+							handleDrawStart = {this.props.handleDrawStart}
 						/>
 					</div>
 					{	!this.props.activeUsers.length ? null : 

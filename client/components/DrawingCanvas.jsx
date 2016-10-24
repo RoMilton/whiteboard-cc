@@ -83,14 +83,14 @@ export default class DrawingCanvas extends CanvasBase {
 	}
 
 	_handleMouseDown(e){
-		if (this.props.onDrawStart) {this.props.onDrawStart();}
+		if (this.props.handleDrawStart) {this.props.handleDrawStart();}
 		let canvas = this.refs.canvas;
 		// create a new shape
 		this._currShape = new ShapeMap[this.props.selectedShape].class({
 			shapeName : this.props.selectedShape,
 			canvas : canvas,
 			color : this.props.color,
-			onShapeSubmit : this.props.onDrawFinish
+			onShapeSubmit : this.props.handleDrawFinish
 		});
 		this._currShape.mouseDown(this._getMouseCoords(e));
 	}
@@ -132,8 +132,8 @@ export default class DrawingCanvas extends CanvasBase {
 DrawingCanvas.propTypes = {
 	color : PropTypes.string.isRequired,
 	selectedShape : PropTypes.string.isRequired,
-	onDrawStart : PropTypes.func,
-	onDrawFinish : PropTypes.func,
+	handleDrawStart : PropTypes.func,
+	handleDrawFinish : PropTypes.func,
 	width: PropTypes.number,
 	height: PropTypes.number
 };
