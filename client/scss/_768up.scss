@@ -57,7 +57,7 @@ $button-height: 36px;
 .button{
 	display:inline-block;
 	height: $button-height;
-	border: 1px solid $ebb;
+	border: 1px solid darken($ebb,3%);
 	vertical-align: top;
 	margin-right: 7px;
 	min-width:58px;
@@ -142,7 +142,7 @@ $button-height: 36px;
 .tool-link{
 	color:$grey;
 	padding: 16px 20px 0 45px;
-	border-left:1px solid $ebb;
+	border-left:1px solid darken($ebb,3%);
 	border-top:none;
 	border-bottom:none;
 	font-size:14px;
@@ -155,7 +155,7 @@ $button-height: 36px;
 	letter-spacing: 0.3px;
     span{display:none;}
 	&:hover{
-		//background-color: darken($spring-wood,2%);
+		background-color: darken($spring-wood,5%);
 		color:darken($grey,15%);
 		&:before{
 			opacity:0.9;
@@ -191,8 +191,9 @@ $button-height: 36px;
 		background-color:lighten($bright,10%);
 		color:#fff;
 		padding-left:47px;
+		border-left:none;
 		&:hover{
-			background-color:lighten($bright,5%);
+			background-color:darken($bright,5%);
 			color:#fff;
 		}
 		&:before{

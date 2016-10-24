@@ -1,19 +1,18 @@
 .tool-link{
 	padding-right: 14px;
 	padding-left: 39px;
-    border:none;
-    span{display:block;}
-    
-    &:before{
-    	left:14px;
-    }
+	span{display:block;}
 
-    &--share{
-    	padding-left:42px;
-    	&:before{
-    		left: 10px;
-    	}
-    }
+	&:before{
+		left:14px;
+	}
+
+	&--share{
+		padding-left:42px;
+		&:before{
+			left: 10px;
+		}
+	}
 }
 
 .no-1250{
