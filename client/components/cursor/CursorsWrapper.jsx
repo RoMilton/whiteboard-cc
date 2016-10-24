@@ -21,6 +21,9 @@ export default class CursorsWrapper extends React.Component {
 	}
 
 	_handleMouseMove(e){
+		//if this is a touchscreen swipe, ignore
+		if (e.changedTouches){return;}
+
 		let wrapper = this.refs.wrapper;
 		let rect = wrapper.getBoundingClientRect();
 		
