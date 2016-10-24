@@ -48,7 +48,7 @@ export default class App extends TrackerReact(React.Component) {
 		this._handleUndo = this._handleUndo.bind(this);
 		this._handleClearMy = this._handleClearMy.bind(this);
 		this._handleClearAll = this._handleClearAll.bind(this);
-		this._handleNameChange = this._handleNameChange.bind(this);
+		this._handleNicknameChange = this._handleNicknameChange.bind(this);
 		this._handleUrlChange = this._handleUrlChange.bind(this);
 		this._handleNewShape = this._handleNewShape.bind(this);
 		this._handleBoardAdd = this._handleBoardAdd.bind(this);
@@ -57,7 +57,7 @@ export default class App extends TrackerReact(React.Component) {
 
 	}
 
-	_setURL(galleryName){
+	_setBrowserUrl(galleryName){
 		if (galleryName) { history.pushState(null, null,galleryName); }
 	}
 
@@ -91,11 +91,11 @@ export default class App extends TrackerReact(React.Component) {
 		let newState = {};
 		
 		Meteor.call('getGallery',this.defaultSource,(err,res)=>{
-			newState.name = res.user.nickname;
+			newState.nickname = res.user.nickname;
 			newState.selectedColor = res.user.color;
 			let gallery = new Gallery(res.gallery);
 			newState.gallery = gallery;
-			this._setURL(gallery.galleryName);
+			this._setBrowserUrl(gallery.galleryName);
 
 			newState.subscription = {
 				gallery : Meteor.subscribe('galleries',[gallery.galleryId]),
@@ -144,14 +144,14 @@ export default class App extends TrackerReact(React.Component) {
 		}
 	}
 
-	_handleNameChange(newName){
+	_handleNicknameChange(newName){
 		return new Promise((resolve,reject)=>{
 			Meteor.call('updateNickname',newName, (err,result)=>{
 				if (err){
 					reject(err.reason);
 				}else{
 					this.setState({
-						name : newName
+						nickname : newName
 					});
 					resolve(newName)
 				}
@@ -165,7 +165,7 @@ export default class App extends TrackerReact(React.Component) {
 			let updateState = ()=>{
 				let gallery = this.state.gallery;
 				gallery.setGalleryName(galleryName);
-				this._setURL(this.state.gallery.galleryName);
+				this._setBrowserUrl(this.state.gallery.galleryName);
 				this.setState({
 					gallery : gallery
 				});
@@ -237,7 +237,7 @@ export default class App extends TrackerReact(React.Component) {
 			let newState = {};
 			newState.gallery = this.state.gallery;
 			newState.gallery.setSelectedBoard(iBoard);			
-			let name = this.state.activeUsers.find((user)=>{return user.sessionId === changedBy}).name;
+			let name = this.state.activeUsers.find((user)=>{return user.sessionId === changedBy}).nickname;
 			newState.alert = {
 				visible : true,
 				text : 'Changed to board '+ (iBoard + 1) + ' by '+ name
@@ -383,7 +383,7 @@ export default class App extends TrackerReact(React.Component) {
 				<Toolbar
 					shapes= {ShapeMap}
 					colors = {Colors}
-					name = {this.state.name}
+					name = {this.state.nickname}
 					galleryName = {this.state.gallery.galleryName}
 					selectedShape = {this.state.selectedShape}
 					selectedColor = {this.state.selectedColor}
@@ -392,7 +392,7 @@ export default class App extends TrackerReact(React.Component) {
 					handleUndoClick = {()=>{this._handleUndo(1)}}
 					handleClearMyClick = {this._handleClearMy}
 					handleClearAllClick = {this._handleClearAll}
-					handleNameChange = {this._handleNameChange}
+					handleNicknameChange = {this._handleNicknameChange}
 					handleUrlChange = {this._handleUrlChange}
 				/>
 				<main className="main">

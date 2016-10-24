@@ -61,7 +61,7 @@ export default class Toolbar extends React.Component {
 				<ShareControls 
 					name = {this.props.name}
 					galleryName = {this.props.galleryName}
-					handleNameChange = {this.props.handleNameChange}
+					handleNicknameChange = {this.props.handleNicknameChange}
 					handleUrlChange = {this.props.handleUrlChange}
 				/>
 			</header>
@@ -79,7 +79,7 @@ Toolbar.propTypes = {
 	handleToolChange : React.PropTypes.func,
 	handleUndoClick : React.PropTypes.func,
 	handleColorClick: React.PropTypes.func,
-	handleNameChange: React.PropTypes.func,
+	handleNicknameChange: React.PropTypes.func,
 	handleUrlChange : React.PropTypes.func,
 	handleClearMyClick : React.PropTypes.func,
 	handleClearAllClick : React.PropTypes.func

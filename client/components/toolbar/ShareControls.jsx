@@ -23,7 +23,7 @@ export default class ShareControls extends React.Component {
 			nameErrorMsg : null
 		}
 		this._handleUrlChange = this._handleUrlChange.bind(this);
-		this._handleNameChange = this._handleNameChange.bind(this);
+		this._handleNicknameChange = this._handleNicknameChange.bind(this);
 	}
 
 	_startTimer(){
@@ -55,8 +55,8 @@ export default class ShareControls extends React.Component {
 	}
 
 
-	_handleNameChange(nickname){
-		this.props.handleNameChange(nickname).then(()=>{
+	_handleNicknameChange(nickname){
+		this.props.handleNicknameChange(nickname).then(()=>{
 			this.setState({
 				nameSuccessMsg : null,
 				nameSuccessMsg : 'Name changed to '+nickname,
@@ -94,7 +94,7 @@ export default class ShareControls extends React.Component {
 					buttonText="Change Name"
 					defaultValue={this.props.name}
 					inputDescription="Enter Your Name:"
-					handleSubmit= {this._handleNameChange}
+					handleSubmit= {this._handleNicknameChange}
 					submitText="Save"
 					width={270}
 					successMsg={this.state.nameSuccessMsg}
@@ -117,7 +117,7 @@ export default class ShareControls extends React.Component {
 
 ShareControls.propTypes = {
 	name : PropTypes.string,
-	handleNameChange : PropTypes.func,
+	handleNicknameChange : PropTypes.func,
 	galleryName :  PropTypes.string,
 	handleUrlChange : PropTypes.func
 }
