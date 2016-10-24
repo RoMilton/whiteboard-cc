@@ -85,7 +85,12 @@ export default class App extends TrackerReact(React.Component) {
 		});
 	}
 
+	_preventDefault(event){
+		e.preventDefault();
+	}
+
 	componentDidMount(){
+		document.body.addEventListener('touchmove', this._preventDefault);
 
 		let newState = {};
 		
@@ -132,7 +137,7 @@ export default class App extends TrackerReact(React.Component) {
 					this._handleClearAll(false);
 				}
 			});
-
+			console.log('streamy',Streamy);
 		});
 	}
 
@@ -141,6 +146,7 @@ export default class App extends TrackerReact(React.Component) {
 			this.state.subscription.gallery.stop();
 			this.state.subscription.activeUsers.stop();
 		}
+		document.body.removeEventListener('touchmove', this._preventDefault);
 	}
 
 	_handleNicknameChange(newName){
