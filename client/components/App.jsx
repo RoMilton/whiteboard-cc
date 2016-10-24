@@ -2,12 +2,11 @@ import React from 'react';
 import TrackerReact from 'meteor/ultimatejs:tracker-react';
 import { Tracker } from 'meteor/tracker';
 import ReactTooltip from 'react-tooltip';
-import Toolbar from './Toolbar.jsx';
-
-import BoardsWrapper from './BoardsWrapper.jsx';
-import Alert from './Alert.jsx';
-
 import update from 'react-addons-update';
+
+import Toolbar from './toolbar/Toolbar.jsx';
+import BoardsWrapper from './board/BoardsWrapper.jsx';
+import Alert from './alert/Alert.jsx';
 
 import ShapeMap from '../shapes/ShapeMap.js';
 import Colors from '../../universal/Colors.js';
@@ -52,7 +51,7 @@ export default class App extends TrackerReact(React.Component) {
 		this._handleNameChange = this._handleNameChange.bind(this);
 		this._handleUrlChange = this._handleUrlChange.bind(this);
 		this._handleNewShape = this._handleNewShape.bind(this);
-		this._handleAddBoard = this._handleAddBoard.bind(this);
+		this._handleBoardAdd = this._handleBoardAdd.bind(this);
 		this._handleBoardChange = this._handleBoardChange.bind(this);
 		this._handleAlertFinish = this._handleAlertFinish.bind(this);
 
@@ -233,6 +232,7 @@ export default class App extends TrackerReact(React.Component) {
 	}
 
 	_handleBoardChange(iBoard, changedBy = this._sessionId()){
+		console.log('handleItemClick()');
 		return new Promise((resolve,reject)=>{
 			let newState = {};
 			newState.gallery = this.state.gallery;
@@ -259,14 +259,14 @@ export default class App extends TrackerReact(React.Component) {
 		});
 	}
 
-	_handleAddBoard(){
+	_handleBoardAdd(){
 		this._handleBoardChange(this.state.gallery.boards.length);
 	}
 
 
-	_handleClearAll(sessionId = this.sessionId()){		
+	_handleClearAll(sessionId = this._sessionId()){		
 		
-		if (sessionId === this.sessionId()){
+		if (sessionId === this._sessionId()){
 			Meteor.call('clearAll',{
 				galleryId : this.state.gallery.galleryId,
 				activeUsers : this._allSessionIds()

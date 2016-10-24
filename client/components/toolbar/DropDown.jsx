@@ -1,6 +1,6 @@
 import React, {PropTypes} from 'react';
 import classNames from 'classnames';
-import eventService from '../eventService.js';
+import eventService from '../../eventService.js';
 
 /**
  *

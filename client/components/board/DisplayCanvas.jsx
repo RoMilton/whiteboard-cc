@@ -1,5 +1,5 @@
 import React, {PropTypes} from 'react';
-import ShapeMap from '../shapes/ShapeMap.js';
+import ShapeMap from '../../shapes/ShapeMap.js';
 import CanvasBase from './CanvasBase.jsx';
 
 /**

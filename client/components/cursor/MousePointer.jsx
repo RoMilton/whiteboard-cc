@@ -1,6 +1,6 @@
 import React, {PropTypes} from 'react';
 import classNames from 'classnames';
-import Utils from '../../universal/Utils.js';
+import Utils from '../../../universal/Utils.js';
 
 /**
  * Toolbar allows users to perform actions (undo, share, change color) on the

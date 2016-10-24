@@ -2,7 +2,7 @@ import React, {PropTypes} from 'react';
 import DropDown from './DropDown.jsx';
 import TextField from './TextField.jsx';
 import TextControl from './TextControl.jsx';
-import eventService from '../eventService.js';
+import eventService from '../../eventService.js';
 
 
 /**

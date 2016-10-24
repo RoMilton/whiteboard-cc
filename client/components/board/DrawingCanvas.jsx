@@ -1,6 +1,6 @@
 import React, {PropTypes} from 'react';
 import CanvasBase from './CanvasBase.jsx';
-import ShapeMap from '../shapes/ShapeMap.js';
+import ShapeMap from '../../shapes/ShapeMap.js';
 
 /**
  * The Whiteboard Canvas has one purpose - to allow the drawing of new shapes.

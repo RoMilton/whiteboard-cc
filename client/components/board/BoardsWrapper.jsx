@@ -1,7 +1,7 @@
 import React, {PropTypes} from 'react';
 import DrawingCanvas from './DrawingCanvas.jsx';
 import DisplayCanvas from './DisplayCanvas.jsx';
-import CursorsWrapper from './CursorsWrapper.jsx';
+import CursorsWrapper from '../cursor/CursorsWrapper.jsx';
 import Nav from './Nav.jsx';
 
 export default class BoardsWrapper extends React.Component {

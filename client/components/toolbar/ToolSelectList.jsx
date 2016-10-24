@@ -23,6 +23,7 @@ export default class ToolSelectList extends React.Component {
 				/>
 				<div className="button--select__arrow">
 					<DropDown 
+						closeOnContentClick = {true}
 						showArrow = {false}
 						width={170} 
 						closeButton={false}
