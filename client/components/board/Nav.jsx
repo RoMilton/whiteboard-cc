@@ -42,7 +42,8 @@ export default class NavBoards extends React.Component {
 									onClick={()=>{ this.props.handleItemClick(index);}}
 								>
 									<DisplayCanvas
-										board={board}
+										shapes={board.shapes}
+										id={this.props.iSelectedBoard}
 									/>
 								</li>
 							);

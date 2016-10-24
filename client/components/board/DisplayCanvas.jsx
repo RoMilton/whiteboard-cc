@@ -11,50 +11,62 @@ export default class DisplayCanvas extends CanvasBase {
 
 	constructor(props){
 		super(props);
-		this.lastDrawnShapeId = '';
-		this.lastUpdated = 0;
+		this.drawLastShapeOnly = false;
 	}
 
 	componentDidMount(){
 		this._initialiseCanvas();
-		this._drawShapes(this.props.board.shapes);
+		this._drawShapes(this.props.shapes);
 	}
 
-	_setLastUpdated(){
-		this.lastUpdated = this.props.board.lastUpdated;
-	}
-
-	componentWillReceiveProps(nextProps){
-		let shapes = nextProps.board.shapes;
-		if ((this.props.board.id !== nextProps.board.id)
-		|| nextProps.board.redrawAll){
-			console.log('clearing')
-			console.log('shapes',shapes);
-			this._clear();
-			this._drawShapes(shapes);
-		}else if (nextProps.board.lastUpdated > this.lastUpdated){
-			console.log('one shape');
-			let shapeModel = shapes[shapes.length-1];
+	componentDidUpdate(prevProps,prevState){
+		if (this.drawLastShapeOnly){
+			let shapeModel = this.props.shapes[this.props.shapes.length-1];
 			this._drawOneShape(shapeModel);
+			// console.log('	one shape');
 		}else{
-			console.log('skipping1',nextProps.board.lastUpdated);
-			console.log('skipping2',this.lastUpdated);
+			this._clear();
+			this._drawShapes(this.props.shapes);
 		}
 	}
 
-	// shouldComponentUpdate(nextProps,nextState){
-	// 	console.log('this',this.props.board.shapes.length);
-	// 	console.log('this',nextProps.board.shapes.length);
-	// 	return true;
-	// 	for (let key in nextProps){
-	// 		if ( key !== 'board'
-	// 		&& nextProps[key] !== (this.props[key] )){
-	// 			// a prop other than 'board' has been updated
-	// 			return true;
-	// 		}
-	// 	}
-	// 	// only board has updated, no need to re-render
-	// 	return false;
+
+	shouldComponentUpdate(nextProps,nextState){
+		let lastDrawnShapeId,
+			currNumberOfShapes = this.props.shapes.length,
+			nextNumberOfShapes = nextProps.shapes.length;
+
+		// if no previous shapes
+		if (!currNumberOfShapes){
+			//draw all shapes
+			this.drawLastShapeOnly = false;
+			//render
+			return true;
+		}else{
+			//get last drawn shape's id
+			lastDrawnShapeId = this.props.shapes[currNumberOfShapes -1].id;
+		}
+
+		//by default, all shapes will be drawn
+		this.drawLastShapeOnly = false;
+
+		// if board id is same as before
+		if (this.props.id === nextProps.id){
+			// if number of shapes is unchanged and last shape's id unchanged
+			if (currNumberOfShapes === nextNumberOfShapes && 
+			lastDrawnShapeId === nextProps.shapes[nextNumberOfShapes - 1].id){
+				// skip render
+				return false;
+			// if only 1 shape has been added
+			}else if (currNumberOfShapes + 1 === nextNumberOfShapes){
+				// draw final shape only
+				this.drawLastShapeOnly = true;
+			}
+		}
+
+		// render
+		return true;
+	}
 	
 
 	_drawShapes(shapes){
@@ -69,7 +81,7 @@ export default class DisplayCanvas extends CanvasBase {
 			shapeModel,
 			this.refs.canvas
 		);
-		this._setLastUpdated();
+		//this._setLastUpdated();
 	}
 
 	_clear(){
@@ -89,10 +101,11 @@ export default class DisplayCanvas extends CanvasBase {
 }
 
 DisplayCanvas.propTypes = {
-	board : PropTypes.object,
+	shapes : PropTypes.array,
 	width : PropTypes.number,
 	height : PropTypes.number,
-	className : PropTypes.string
+	className : PropTypes.string,
+	id : PropTypes.number
 }
 
 DisplayCanvas.defaultProps = {

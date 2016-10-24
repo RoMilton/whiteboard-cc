@@ -45,7 +45,7 @@ export default class Gallery{
 	serialize(){
 		return {
 			galleryId : this.galleryId,
-			boards : this.boards.map((board)=>{ return board.shapes; }),
+			boards : this.boards.map((board)=>{ return board.shapes.slice(); }),
 			iSelectedBoard : this.iSelectedBoard,
 			galleryName : this.galleryName
 		};

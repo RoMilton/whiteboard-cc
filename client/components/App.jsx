@@ -129,7 +129,7 @@ export default class App extends TrackerReact(React.Component) {
 
 			Streamy.on('clear-all',(data)=>{
 				if (data.__from !== this._sessionId()){
-					this._handleClearAll(data.__from);
+					this._handleClearAll(false);
 				}
 			});
 
@@ -261,11 +261,10 @@ export default class App extends TrackerReact(React.Component) {
 		this._handleBoardChange(this.state.gallery.boards.length);
 	}
 
-
-	_handleClearAll(sessionId = this._sessionId()){		
+	_handleClearAll(send = true){		
 		let gallery = this.state.gallery.clone();
 
-		if (sessionId === this._sessionId()){
+		if (send){
 			Meteor.call('clearAll',{
 				galleryId : this.state.gallery.galleryId,
 				activeUsers : this._allSessionIds()
@@ -356,7 +355,6 @@ export default class App extends TrackerReact(React.Component) {
 				shapeId : shapeModel.id
 			});
 		}
-
 		gallery.boards[iBoard].addShape(shapeModel);
 		newState.gallery = gallery;
 		this.setState(newState);
