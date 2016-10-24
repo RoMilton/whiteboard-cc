@@ -231,7 +231,6 @@ export default class App extends TrackerReact(React.Component) {
 	}
 
 	_handleBoardChange(iBoard, changedBy = this._sessionId()){
-		console.log('handleItemClick()');
 		return new Promise((resolve,reject)=>{
 			let newState = {};
 			newState.gallery = this.state.gallery;

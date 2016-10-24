@@ -64,7 +64,7 @@ export default class CursorsWrapper extends React.Component {
 							return <RemoteMousePointer
 									key={user.sessionId}
 									listenToSessionId= {user.sessionId}
-									name={user.name}
+									name={user.nickname}
 									bgColor={user.color}
 							/>
 						}else if (this.state.ownPointerPos.length){
@@ -72,7 +72,7 @@ export default class CursorsWrapper extends React.Component {
 								key={user.sessionId}
 								bgColor={user.color}
 								pos={this.state.ownPointerPos}
-								name={user.name}
+								name={user.nickname}
 							/>
 						}else{
 							return false;

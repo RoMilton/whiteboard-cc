@@ -84,7 +84,7 @@ let addActiveUser = (galleryId,sessionId,defaultName)=>{
 			{
 				$set: {
 					galleryId : galleryId,
-					name : nickname,
+					nickname : nickname,
 					color : color
 				}
 			}
@@ -94,7 +94,7 @@ let addActiveUser = (galleryId,sessionId,defaultName)=>{
 		ActiveUsers.insert({
 			sessionId : sessionId,
 			galleryId : galleryId,
-			name : nickname,
+			nickname : nickname,
 			color : color
 		});
 	}
@@ -233,7 +233,7 @@ Meteor.methods({
 			{ sessionId : sessionId},
 			{
 				$set: {
-					name : nickname
+					nickname : nickname
 				}
 			}
 		);
