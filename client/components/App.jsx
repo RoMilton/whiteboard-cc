@@ -4,14 +4,10 @@ import { Tracker } from 'meteor/tracker';
 import ReactTooltip from 'react-tooltip';
 import Toolbar from './Toolbar.jsx';
 
-import DrawingCanvas from './DrawingCanvas.jsx';
-import DisplayCanvas from './DisplayCanvas.jsx';
-import CursorsWrapper from './CursorsWrapper.jsx';
-import Nav from './Nav.jsx';
+import BoardsWrapper from './BoardsWrapper.jsx';
 import Alert from './Alert.jsx';
 
 import update from 'react-addons-update';
-
 
 import ShapeMap from '../shapes/ShapeMap.js';
 import Colors from '../../universal/Colors.js';
@@ -30,16 +26,6 @@ ActiveUsers = new Mongo.Collection("activeUsers");
 export default class App extends TrackerReact(React.Component) {
 
 
-	/**
-	 * The maximum number of boards in a gallery
-	 *
-	 * @property MAX_BOARD_COUNT
-	 * @static
-	 */
-	static get MAX_BOARD_COUNT(){
-		return 6;
-	}
-
 	constructor(props){
 		super(props);
 
@@ -48,7 +34,6 @@ export default class App extends TrackerReact(React.Component) {
 			selectedColor : '',
 			history : [],
 			activeUsers : [],
-			source : props.source,
 			alert : {
 				visible : false,
 				text : ''
@@ -56,7 +41,9 @@ export default class App extends TrackerReact(React.Component) {
 			gallery : null
 		};
 
-		// binding methods here to improve performance of re-renders
+		this.defaultSource = props.source;
+
+		// binding methods here instead of render() speeds up re-renders
 		this._handleColorChange = this._handleColorChange.bind(this)
 		this._handleToolChange = this._handleToolChange.bind(this);
 		this._handleUndo = this._handleUndo.bind(this);
@@ -71,14 +58,6 @@ export default class App extends TrackerReact(React.Component) {
 
 	}
 
-	_gallery(){
-		return Galleries.find().fetch()[0];
-	}
-
-	_activeUsers(){
-		return ActiveUsers.find().fetch();
-	}
-
 	_setURL(galleryName){
 		if (galleryName) { history.pushState(null, null,galleryName); }
 	}
@@ -89,7 +68,7 @@ export default class App extends TrackerReact(React.Component) {
 
 	_setUpTracker(){
 		Tracker.autorun(()=> {
-			let newGallery = this._gallery();
+			let newGallery = Galleries.find().fetch()[0];
 			if (!newGallery || !this.state.gallery) { return; }
 			if (newGallery.lastUpdatedBy === this._sessionId()){ return }
 			if (newGallery.iSelectedBoard !== this.state.gallery.iSelectedBoard){
@@ -101,7 +80,7 @@ export default class App extends TrackerReact(React.Component) {
 		});
 
 		Tracker.autorun(()=> {
-			let activeUsers = this._activeUsers();
+			let activeUsers = ActiveUsers.find().fetch();
 			let newState = {}
 			newState.activeUsers = activeUsers;
 			this.setState(newState);
@@ -112,7 +91,7 @@ export default class App extends TrackerReact(React.Component) {
 
 		let newState = {};
 		
-		Meteor.call('getGallery',this.state.source,(err,res)=>{
+		Meteor.call('getGallery',this.defaultSource,(err,res)=>{
 			newState.name = res.user.nickname;
 			newState.selectedColor = res.user.color;
 			let gallery = new Gallery(res.gallery);
@@ -417,34 +396,18 @@ export default class App extends TrackerReact(React.Component) {
 					handleUrlChange = {this._handleUrlChange}
 				/>
 				<main className="main">
-					<div className="wrap">
-						<div className="main-board">
-							<div className="canvas-cont">
-								<DisplayCanvas 
-									board = {this.state.gallery.boards[this.state.gallery.iSelectedBoard]}
-								/>
-								<DrawingCanvas 
-									color = {this.state.selectedColor}
-									selectedShape = {this.state.selectedShape}
-									onDrawFinish = {this._handleNewShape}
-									onDrawStart = {this._handleAlertFinish}
-								/>
-							</div>
-							{ this.state.activeUsers.length && 
-								<CursorsWrapper 
-									sessionId = { sessionId }
-									activeUsers = {this.state.activeUsers}
-								/>
-							}
-						</div>
-						<Nav
- 							boards = {this.state.gallery.boards}
- 							iSelectedBoard = {this.state.gallery.iSelectedBoard}
- 							onItemChange = {this._handleBoardChange}
- 							onItemAdd = {this._handleAddBoard}
- 							maxBoardCount = {App.MAX_BOARD_COUNT}
- 						/>
-					</div>
+					<BoardsWrapper
+						boards={this.state.gallery.boards}
+						iSelectedBoard = {this.state.gallery.iSelectedBoard}
+						sessionId = { this._sessionId() }
+						activeUsers = {this.state.activeUsers}
+						selectedShape = {this.state.selectedShape}
+						selectedColor = {this.state.selectedColor}
+						handleDrawStart = {this._handleAlertFinish }
+						handleDrawFinish = {this._handleNewShape }
+						handleBoardChange = {this._handleBoardChange}
+						handleBoardAdd = {this._handleBoardAdd}
+					/>
 				</main>
 				<Alert
 					visible = {this.state.alert.visible}

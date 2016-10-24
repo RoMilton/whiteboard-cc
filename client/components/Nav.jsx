@@ -11,6 +11,17 @@ import DisplayCanvas from './DisplayCanvas.jsx';
  * @extends React.Component
  */
 export default class NavBoards extends React.Component {
+
+	/**
+	 * The maximum number of boards in a gallery
+	 *
+	 * @property MAX_BOARD_COUNT
+	 * @static
+	 */
+	static get MAX_BOARD_COUNT(){
+		return 6;
+	}
+
 	render(){
 		let getCSSClass = (iBoard) => {
 			return classNames({
@@ -27,7 +38,7 @@ export default class NavBoards extends React.Component {
 								<li 
 									key={index}
 									className={getCSSClass(index)}
-									onClick={()=>this.props.onItemChange(index)}
+									onClick={()=>this.props.handleItemClick(index)}
 								>
 									<DisplayCanvas
 										board={board}
@@ -37,10 +48,10 @@ export default class NavBoards extends React.Component {
 						})
 					}
 					{
-						(this.props.boards.length < this.props.maxBoardCount) &&
+						(this.props.boards.length < NavBoards.MAX_BOARD_COUNT) &&
 						<div 
 							className="nav__item nav__item--add"
-							onClick={()=>{this.props.onItemAdd()}}
+							onClick={ this.props.handleNewClick }
 						/>
 					}
 				</ol>
@@ -52,7 +63,6 @@ export default class NavBoards extends React.Component {
 NavBoards.propTypes = {
 	iSelectedBoard : PropTypes.number.isRequired,
 	boards : PropTypes.array.isRequired,
-	onItemChange : PropTypes.func.isRequired,
-	onItemAdd : PropTypes.func.isRequired,
-	maxBoardCount : PropTypes.number.isRequired 
+	handleItemClick : PropTypes.func,
+	handleNewClick : PropTypes.func
 }
