@@ -51,7 +51,6 @@ export default class DropDown extends React.Component {
 
 	_clickedToggle(e){
 		let toggle = this.refs.toggle;
-		console.log('target',e.target);
 		return (toggle && toggle.contains(e.target));	
 	}
 

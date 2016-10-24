@@ -12,7 +12,6 @@ export default class Whiteboard{
 	addShape(shapeModel){
 		this.shapes.push(shapeModel);
 		this.setLastUpdated();
-		this.redrawAll = false;
 	}
 
 	removeShape(shapeId){
@@ -21,13 +20,11 @@ export default class Whiteboard{
 		if (index > -1){
 			this.shapes.splice(index, 1);
 			this.setLastUpdated();
-			this.redrawAll = true;
 		}
 	}
 
 	clear(){
 		this.shapes = [];
-		this.redrawAll = true;
 		this.setLastUpdated();
 	}
 
