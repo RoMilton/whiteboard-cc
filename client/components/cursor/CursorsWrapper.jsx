@@ -34,8 +34,8 @@ export default class CursorsWrapper extends React.Component {
 		Streamy.sessions(allSessions).emit(
 			'pointer-pos-'+this.props.sessionId, 
 			{ 
-				x : xPos,
-				y : yPos
+				x : xPos / this.props.scale,
+				y : yPos / this.props.scale
 			}
 		);
 
@@ -66,6 +66,7 @@ export default class CursorsWrapper extends React.Component {
 									listenToSessionId= {user.sessionId}
 									name={user.nickname}
 									bgColor={user.color}
+									scale={this.props.scale}
 							/>
 						}else if (this.state.ownPointerPos.length){
 							return <OwnMousePointer 
@@ -88,5 +89,10 @@ export default class CursorsWrapper extends React.Component {
 
 CursorsWrapper.propTypes = {
 	sessionId : PropTypes.string,
-	activeUsers : PropTypes.array
+	activeUsers : PropTypes.array,
+	scale : PropTypes.number
+}
+
+CursorsWrapper.defaultProps = {
+	scale : 1
 }

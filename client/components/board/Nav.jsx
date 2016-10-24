@@ -38,12 +38,8 @@ export default class NavBoards extends React.Component {
 								<li 
 									key={index}
 									className={getCSSClass(index)}
-									onClick={()=>
-										{
-											console.log('test');
-											this.props.handleItemClick(index);
-										}
-									}
+									onTouchStart={()=>{ this.props.handleItemClick(index);}}
+									onClick={()=>{ this.props.handleItemClick(index);}}
 								>
 									<DisplayCanvas
 										board={board}
@@ -57,6 +53,7 @@ export default class NavBoards extends React.Component {
 						<div 
 							className="nav__item nav__item--add"
 							onClick={ this.props.handleNewClick }
+							onTouchStart = { this.props.handleNewClick }
 						/>
 					}
 				</ol>

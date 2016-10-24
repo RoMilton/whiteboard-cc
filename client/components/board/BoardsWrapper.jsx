@@ -6,15 +6,43 @@ import Nav from './Nav.jsx';
 
 export default class BoardsWrapper extends React.Component {
 
+	static get DEFAULT_WIDTH(){
+		return 1095;
+	}
+
+	constructor(props){
+		super(props);
+		this.state = { scale : 1 }
+
+		this._calcScale = this._calcScale.bind(this);
+	}
+
+	componentDidMount(){
+		this._calcScale();
+		window.addEventListener('resize',this._calcScale);
+	}
+
+	componentWillUnmount(){
+		window.removeEventListener('resize',this._calcScale);
+	}
+
+	_calcScale(){
+		let mainBoardDiv = this.refs.mainBoard,
+			w = parseInt(mainBoardDiv.offsetWidth),
+			scale = (w/BoardsWrapper.DEFAULT_WIDTH);
+		this.setState({ scale : scale });
+	}
+
 	render(){
 		return (
 			<div className="wrap">
-				<div className="main-board">
+				<div className="main-board" ref="mainBoard">
 					<div className="canvas-cont">
 						<DisplayCanvas 
 							board = {this.props.boards[this.props.iSelectedBoard]}
 						/>
 						<DrawingCanvas 
+							scale = {this.state.scale}
 							color = {this.props.selectedColor}
 							selectedShape = {this.props.selectedShape}
 							handleDrawFinish = {this.props.handleDrawFinish}
@@ -23,6 +51,7 @@ export default class BoardsWrapper extends React.Component {
 					</div>
 					{	!this.props.activeUsers.length ? null : 
 							<CursorsWrapper 
+								scale = {this.state.scale}
 								sessionId = { this.props.sessionId }
 								activeUsers = {this.props.activeUsers}
 							/>

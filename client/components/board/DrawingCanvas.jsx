@@ -20,7 +20,6 @@ export default class DrawingCanvas extends CanvasBase {
 		this._handleMouseUp = this._handleMouseUp.bind(this);
 		this._handleMouseDown = this._handleMouseDown.bind(this);
 		this._handleMouseEnter = this._handleMouseEnter.bind(this);
-		this._calcScale = this._calcScale.bind(this);
 	}
 
 	componentDidMount(){
@@ -30,26 +29,17 @@ export default class DrawingCanvas extends CanvasBase {
 		
 		document.addEventListener('mousedown',this._documentMouseDown);
 		document.addEventListener('mouseup',this._documentMouseUp);
-		window.addEventListener('resize',this._calcScale);
-		this._calcScale();
 	}
 
 	componentWillUnmount(){
 		document.removeEventListener('mousedown',this._documentMouseDown);
 		document.removeEventListener('mouseup',this._documentMouseUp);
-		document.removeEventListener('resize',this._calcScale);
 	}
 
 	componentwillReceiveNewProps(nextProps){
 		if (this._currShape){
 			this._currShape.color = nextProps.color;
 		}
-	}
-
-	_calcScale(){
-		let canvas = this.refs.canvas;
-		let w = parseInt(canvas.offsetWidth);
-		this.scale = (w/this.props.width);
 	}
 
 	_documentMouseClick(status){
@@ -65,8 +55,8 @@ export default class DrawingCanvas extends CanvasBase {
 		let x = e.changedTouches ? e.changedTouches[0].clientX : e.clientX ;
 		let y = e.changedTouches ? e.changedTouches[0].clientY : e.clientY ;
 		return [
-			(x - rect.left) / this.scale,
-			(y - rect.top) / this.scale
+			(x - rect.left) / this.props.scale,
+			(y - rect.top) / this.props.scale
 		];
 	}
 
@@ -135,10 +125,12 @@ DrawingCanvas.propTypes = {
 	handleDrawStart : PropTypes.func,
 	handleDrawFinish : PropTypes.func,
 	width: PropTypes.number,
-	height: PropTypes.number
+	height: PropTypes.number,
+	scale : PropTypes.number
 };
 
 DrawingCanvas.defaultProps = {
 	width : 1095,
-	height : 688
+	height : 688,
+	scale : 1
 }

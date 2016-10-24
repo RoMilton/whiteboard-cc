@@ -42,7 +42,10 @@ export default class RemoteMousePointer extends MousePointer {
 			this.receivedCount++;
 			if (pos){
 				this.setState({
-					pos : [pos.x, pos.y],
+					pos : [
+						pos.x * this.props.scale,
+						pos.y * this.props.scale
+					],
 					updatedCount : this.state.updatedCount++ 
 				});
 			}
@@ -68,5 +71,10 @@ export default class RemoteMousePointer extends MousePointer {
 RemoteMousePointer.propTypes = {
 	name : PropTypes.string,
 	bgColor : PropTypes.string,
-	listenToSessionId : PropTypes.string
+	listenToSessionId : PropTypes.string,
+	scale : PropTypes.number
+}
+
+RemoteMousePointer.defaultProps = {
+	scale : 1
 }
