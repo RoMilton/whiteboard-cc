@@ -20,7 +20,7 @@ export default class Gallery{
 			});
 		}
 		this.galleryName = galleryModel.galleryName || '';
-		this.setSelectedBoard(0);
+		this.setSelectedBoard(galleryModel.iSelectedBoard || 0);
 	}
 
 	setSelectedBoard(iSelectedBoard){

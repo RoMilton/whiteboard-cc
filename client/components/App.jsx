@@ -2,7 +2,6 @@ import React from 'react';
 import TrackerReact from 'meteor/ultimatejs:tracker-react';
 import { Tracker } from 'meteor/tracker';
 import ReactTooltip from 'react-tooltip';
-import update from 'react-addons-update';
 
 import Toolbar from './toolbar/Toolbar.jsx';
 import BoardsWrapper from './board/BoardsWrapper.jsx';
@@ -113,13 +112,13 @@ export default class App extends TrackerReact(React.Component) {
 
 			Streamy.on('remove-shapes',(data)=>{
 				if (data.__from !== this._sessionId()){
-					let boards = this.state.gallery.boards.slice();
+
+					let gallery = this.state.gallery.clone();
+					let boards = gallery.boards;
+
 					data.items.forEach((itemToRemove)=>{
 						if (!boards[itemToRemove.iBoard]){return;}
 						boards[itemToRemove.iBoard].removeShape(itemToRemove.shapeId);
-					});
-					let gallery = update(this.state.gallery, { 
-						boards: { $set : boards } 
 					});
 
 					this.setState({
@@ -237,10 +236,10 @@ export default class App extends TrackerReact(React.Component) {
 			let newState = {};
 			newState.gallery = this.state.gallery;
 			newState.gallery.setSelectedBoard(iBoard);			
-			let name = this.state.activeUsers.find((user)=>{return user.sessionId === changedBy}).nickname;
+			let nickname = this.state.activeUsers.find((user)=>{return user.sessionId === changedBy}).nickname;
 			newState.alert = {
 				visible : true,
-				text : 'Changed to board '+ (iBoard + 1) + ' by '+ name
+				text : 'Changed to board '+ (iBoard + 1) + ' by '+ nickname
 			};
 			this.setState(newState);
 
@@ -265,19 +264,17 @@ export default class App extends TrackerReact(React.Component) {
 
 
 	_handleClearAll(sessionId = this._sessionId()){		
-		
+		let gallery = this.state.gallery.clone();
+
 		if (sessionId === this._sessionId()){
 			Meteor.call('clearAll',{
 				galleryId : this.state.gallery.galleryId,
 				activeUsers : this._allSessionIds()
 			});
 		}
-		let boards = this.state.gallery.boards.slice();
-		boards.forEach(board=>{
+
+		gallery.boards.forEach(board=>{
 			board.clear();
-		});
-		let gallery = update(this.state.gallery, { 
-			boards: { $set : boards } 
 		});
 
 		this.setState({
@@ -295,7 +292,8 @@ export default class App extends TrackerReact(React.Component) {
 
 	_handleUndo(numberToRemove = 1){
 		let history = this.state.history.slice(),
-			boards = this.state.gallery.boards.slice();
+			gallery = this.state.gallery.clone(),
+			boards = gallery.boards;
 
 		numberToRemove = numberToRemove === 'all' ? history.length : numberToRemove;
 		let itemsToRemove = history.slice(history.length - numberToRemove);
@@ -313,10 +311,6 @@ export default class App extends TrackerReact(React.Component) {
 			});
 
 			history = history.slice(0, history.length - itemsToRemove.length);
-
-			let gallery = update(this.state.gallery, { 
-				boards: { $set : boards } 
-			});
 
 			this.setState({
 				gallery : gallery,
@@ -341,7 +335,8 @@ export default class App extends TrackerReact(React.Component) {
 	}
 
 	_handleNewShape(shapeModel, iBoard = this.state.gallery.iSelectedBoard, sessionId = this._sessionId()){
-		let newState = {};
+		let newState = {},
+			gallery = this.state.gallery.clone();
 		
 		if (sessionId === this._sessionId()){
 			let newItemObj = {
@@ -363,13 +358,8 @@ export default class App extends TrackerReact(React.Component) {
 			});
 		}
 
-		let boards = this.state.gallery.boards.slice();
-		boards[iBoard].addShape(shapeModel);
-
-		newState.gallery = update(this.state.gallery, { 
-			boards: { $set : boards } 
-		});
-
+		gallery.boards[iBoard].addShape(shapeModel);
+		newState.gallery = gallery;
 		this.setState(newState);
 	}
 
