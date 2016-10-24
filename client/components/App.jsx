@@ -86,7 +86,7 @@ export default class App extends TrackerReact(React.Component) {
 	}
 
 	_preventDefault(event){
-		e.preventDefault();
+		event.preventDefault();
 	}
 
 	componentDidMount(){
@@ -137,7 +137,7 @@ export default class App extends TrackerReact(React.Component) {
 					this._handleClearAll(false);
 				}
 			});
-			console.log('streamy',Streamy);
+
 		});
 	}
 
