@@ -27,17 +27,27 @@ PARTIALS
 // @import "partials/functions";
 
 /*********************
-BASE (MOBILE) SIZE
+BASE (MOBILE PORTRAIT)
 This are the mobile styles, also the foundation of the app.
 *********************/
 
 // styles in base.scss
 @import "base";
 
+
+
 /*********************
-TABLET
-This is the average viewing window. So Desktops, Laptops, and
-in general anyone not viewing on a mobile device.
+MOBILE LANDSCAPE
+*********************/
+@media only screen and (orientation: landscape) and (max-device-width:768px) {
+	@import 'mob-landscape';
+}
+
+
+
+/*********************
+TABLETS
+This is a typical ipad held in 
 *********************/
 @media only screen and (min-width: 768px) {
 	@import "768up";

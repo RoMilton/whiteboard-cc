@@ -8,6 +8,15 @@ These Styles should be applied to screens 768px and above only
 
 ******************************************************************/
 
+html, body {
+  overflow: auto;
+}
+
+.wrap{
+	padding-right:10px;
+	padding-left:10px;
+}
+
 $toolbar-height : 50px;
 $button-height: 36px;
 
@@ -395,5 +404,8 @@ $button-height: 36px;
 
 .alert{
 	height: 83px;
+	font-size: 37px;
+    top:50%;
+    transform: translateY(-50%);
 }
 

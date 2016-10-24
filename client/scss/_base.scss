@@ -12,20 +12,17 @@ html{
 	font-family: 'Open Sans', 'Arial', sans-serif;
 }
 
-//hide images without src
-img {
-	display: none;
-}
-img[src] {
-	display: block;
-}
-
-html,body,#whiteboard-app,#container{
-//	height:100%;
+html, body {
+	overflow: hidden;
 }
 
 body{
 	background-color: $ebb;
+	position: relative
+}
+
+html,body,#whiteboard-app,#container{
+	height:100%;
 }
 
 a,a:visited{
@@ -42,12 +39,13 @@ a,a:visited{
 }
 
 .main{
-	padding-top:10px;
+	padding-top:2px;
 }
 
 .wrap{
 	position:relative;
 	height:100%;
+	padding: 0 2px;
 	margin: 0 auto;
 }
 
@@ -123,14 +121,13 @@ input{
 	position: fixed;
 	z-index: 30;
 	pointer-events:none;
-    top: 50%;
+    top: 120px;
     height: auto;
     width: 100%;
-    transform: translateY(-50%);
     color: #fff;
     text-align: center;
     padding: 15px;
-    font-size: 37px;
+    font-size: 20px;
     background: linear-gradient(-90deg, rgba(6,6,6,0.05) 6%, rgba(70,70,70,0.50) 26%, rgba(69,72,71,0.81) 42%, rgba(68,75,73,0.80) 60%, rgba(67,77,73,0.50) 75%, rgba(0,0,0,0.05) 97%);
 }
 
@@ -215,7 +212,7 @@ $nav-all-margins: $nav-item-margin * ($nav-max-items - 1);
     display:flex;
     &__list{
     	margin:0;
-    	display:inline-block;
+    	display:flex;
     	vertical-align: top;
     }
 	&__item{
