@@ -8,11 +8,13 @@ Mobile and Tablet Landscape styles for Whiteboard App
 
 ******************************************************************/
 
+// main body container (everything except header)
 .main{
     padding-top:0;
     height:100%;
 }
 
+// container for boards and cursors
 .main-board{
     display:inline-block;
     width:85%;
@@ -26,6 +28,7 @@ Mobile and Tablet Landscape styles for Whiteboard App
     padding-left:5px;
 }
 
+// whiteboard navigation
 .nav{
     height:100%;
     vertical-align: top;
@@ -34,10 +37,14 @@ Mobile and Tablet Landscape styles for Whiteboard App
     margin-bottom:1%;
     margin-top:0;
     margin-bottom:0;
+
+    // navigation list
     &__list{
         height:100%;
         display:inline-block;
     }
+
+    // nav item
 	&__item{
         display:block;
         width:100%;

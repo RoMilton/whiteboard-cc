@@ -1,0 +1,48 @@
+/******************************************************************
+Site Name: Whiteboard-cc
+Author: Rohan Milton
+
+Stylesheet: Medium Screen stylesheet
+
+These Styles should be applied to screens 1030px width and above only
+
+******************************************************************/
+
+// wrap to keep things centered
+.wrap{
+	padding-right:10px;
+	padding-left:10px;
+	max-width:1115px;
+}
+
+// override icon-image position
+@mixin icon-image{
+	left:7px;
+}
+
+// generic button element
+.button{
+	padding-right:9px;
+	span{
+		display:block;
+	}
+	&:before{
+		@include icon-image;
+	}
+	&--select{
+		padding-right:28px;
+		&__text{
+			&:before{
+				@include icon-image;
+			}
+		}
+		&__arrow,&__toggle{
+			background-color:transparent;
+			width:25px;
+		}
+	}
+}
+
+.no-1030{
+	display:none !important;
+}

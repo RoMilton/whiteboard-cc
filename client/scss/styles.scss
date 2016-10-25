@@ -3,73 +3,66 @@
 Site Name: Whiteboard-cc
 Author: Rohan Milton
 
-Stylesheet: Main Stylesheet
+Stylesheet: Main Stylesheet. No styles are in this file, it just imports
+styles from other .scss files.
+
+Uses BEM (Block Element Modifier) code conventions. See http://getbem.com/
 
 ******************************************************************/
 
-/*********************
-PARTIALS
-*********************/
-
-// normalize: http://necolas.github.io/normalize.css/
+// normalize
 @import "normalize";
 
 // Sass variables
 @import "variables";
 
-// import mixins
+// Sass mixins
 @import "mixins";
 
-// import mixins
-@import "_tooltip";
+// react-tooltip styles
+@import "tooltip";
 
-// // Sass functions
-// @import "partials/functions";
+// Sass functions
+@import "functions";
 
-/*********************
-BASE (MOBILE PORTRAIT)
-This are the mobile styles, also the foundation of the app.
-*********************/
-
-// styles in base.scss
-@import "base";
+/**
+* BASE (MOBILE PORTRAIT)
+* This are the mobile styles, also the foundation of the app.
+*/
+@import "breakpoints/base";
 
 
-
-/*********************
-MOBILE LANDSCAPE
-*********************/
+/**
+* MOBILE LANDSCAPE
+*/
 @media only screen and (orientation: landscape) and (max-device-width:768px) {
-	@import 'mob-landscape';
+	@import 'breakpoints/mob-landscape';
 }
 
 
-
-/*********************
-TABLETS
-This is a typical ipad held in 
-*********************/
+/**
+* TABLETS
+* Tablet sized screen
+*/
 @media only screen and (min-width: 768px) {
-	@import "768up";
+	@import "breakpoints/768up";
 }
 
 
-/*********************
-SMALL LAPTOPS
-This is the average viewing window. So Desktops, Laptops, and
-in general anyone not viewing on a mobile device.
-*********************/
+/**
+* SMALL LAPTOPS
+* This is the average viewing window. So Desktops, Laptops, and
+* in general anyone not viewing on a mobile device.
+*/
 @media only screen and (min-width: 1030px) {
-	@import "1030up";
+	@import "breakpoints/1030up";
 }
 
-/*********************
-LARGER LAPTOPS & DESKTOPS
-This is the average viewing window. So Desktops, Laptops, and
-in general anyone not viewing on a mobile device.
-*********************/
+/**
+* LARGER LAPTOPS & DESKTOPS
+* This is the average viewing window. So Desktops, Laptops, and
+* in general anyone not viewing on a mobile device.
+*/
 @media only screen and (min-width: 1250px) {
-	@import "1250up";
+	@import "breakpoints/1250up";
 }
-
-

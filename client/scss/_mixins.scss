@@ -8,33 +8,59 @@ Sass mixins intended to be used by CSS classes via @include functionality
 
 ******************************************************************/
 
+
+// button mixin, inlude with all links
 @mixin button{
     cursor: pointer;
 }
 
+// border radius amount
 $rad: 5px;
 
+// border radius on all sides
 @mixin bord_rad{
     border-radius:5px;
 }
 
+// border radius on right side only
 @mixin bord_rad_right{
     border-top-right-radius:$rad;
     border-bottom-right-radius:$rad;
 }
 
-@mixin bord_rad_bottom{
-    border-bottom-right-radius:$rad;
-    border-bottom-left-radius:$rad;
-}
-
+// border radius on left side only
 @mixin bord_rad_left{
     border-top-left-radius:$rad;
     border-bottom-left-radius:$rad;
 }
 
+// border radius on bottom side only
+@mixin bord_rad_bottom{
+    border-bottom-right-radius:$rad;
+    border-bottom-left-radius:$rad;
+}
+
+// border radius on bottom side only
+@mixin bord_rad_bottom{
+    border-top-right-radius:$rad;
+    border-top-left-radius:$rad;
+}
+
+// positions a background icon image at left side of element
+@mixin icon_image{
+    background-position: 50% 50%;
+    background-repeat:no-repeat;
+    background-size:100%;
+    width: 18px;
+    height:18px;
+    content:"";
+    position:absolute;
+    left:20px;
+    opacity:0.34;
+}
+
 /**
- * Adds shadow to gives an element perceived elevation according to the Google Material Design spec:
+ * Adds shadow to element, giving it a sense of elevation according to the Google Material Design spec:
  * http://www.google.com/design/spec/layout/layout-principles.html#layout-principles-dimensionality
  *
  * @param {Level} $level - Number from 1 to 5 (5 being the most elevated and 1 being least elevated)
@@ -53,15 +79,13 @@ $rad: 5px;
     }
 }
 
-/**
- * Gives element a coloured shadow for emphasis.
- */
+// Gives element a coloured shadow for emphasis.
 @mixin highlight_shadow () {
     box-shadow: 0 0 3px 3px lighten($bright,7%);
 }
 
 /**
-* Triangle helper mixin
+* Triangle shape
 *
 * @param {Direction} $direction - Triangle direction, either `top`, `right`, `bottom` or `left`
 * @param {Color} $color - Triangle color 
@@ -88,39 +112,12 @@ $rad: 5px;
     }
 }
 
-/**
-* Returns the opposite direction of each direction in a list
-* Source: https://css-tricks.com/snippets/sass/opposite-direction-function/
-*
-* @author Hugo Giraudel
-* @param {List} $directions - List of initial directions
-* @return {List} - List of opposite directions
-*/
-@function opposite_direction($directions) {
-  $opposite-directions: ();
-  $direction-map: (
-    'top':    'bottom',
-    'right':  'left',
-    'bottom': 'top',
-    'left':   'right',
-    'center': 'center',
-    'ltr':    'rtl',
-    'rtl':    'ltr'
-  );
- 
-  @each $direction in $directions {
-    $direction: to-lower-case($direction);
-    
-    @if map-has-key($direction-map, $direction) { 
-      $opposite-directions: append($opposite-directions, unquote(map-get($direction-map, $direction)));
-    } @else {
-      @warn "No opposite direction can be found for `#{$direction}`. Direction omitted.";
-    }
-  }
- 
-  @return $opposite-directions;
-}
 
+/**
+* Spins an element clockwise indefinitely.
+*
+* @param {$duration} duration of each revolution in milliseconds.
+*/
 @mixin spin-anim($duration : 1000ms){
     -webkit-animation-name: spin;
     -webkit-animation-duration: $duration;
@@ -141,7 +138,6 @@ $rad: 5px;
     animation-timing-function: linear;
 
 }
-
 @-ms-keyframes spin {
     from { -ms-transform: rotate(0deg); }
     to { -ms-transform: rotate(360deg); }

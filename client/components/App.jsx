@@ -372,7 +372,7 @@ export default class App extends TrackerReact(React.Component) {
 			return (<div className="spinner"></div>);
 		}
 		return (
-			<div id="container">
+			<div id="container" className="container">
 				<Toolbar
 					shapes= {ShapeMap}
 					colors = {Colors}

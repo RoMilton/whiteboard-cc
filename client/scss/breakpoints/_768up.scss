@@ -12,60 +12,78 @@ html, body {
   overflow: auto;
 }
 
+$toolbar-height : 50px;
+// main body (everything excluding header)
+.main{
+	margin-top:$toolbar-height;
+	height: calc(100% - #{$toolbar-height});
+	padding-top:20px;
+}
+
 .wrap{
 	padding-right:10px;
 	padding-left:10px;
 }
 
-$toolbar-height : 50px;
-$button-height: 36px;
 
-// Toolbar Header
-.toolbar{
-	position:fixed;
-	z-index:15;
-	top:0;
-	left:0;
-	right:0;
-	display:block;
-	text-align: center;
-	height: $toolbar-height;
-	background-color: $spring-wood;
-	@include box-shadow(2);
-
-	// container for Color & Undo buttons
-	&__controls{
-		position:absolute;
-		left:0;
-		padding: 7px 0 0 10px;
+// list of colors displayed as a grid
+.color-palette{
+	text-align: left;
+	display: flex;
+	flex-wrap: wrap;
+	li{
+		height: 30px;
+		border: 1px solid rgba(0, 0, 0, 0.19);
+		border-radius: 2px;
+		width: 32px;
+		display: block;
+		margin: 4px;
+		@include button;
+		&.is-active{
+			@include highlight_shadow;
+		}
 	}
-
-	// container for Share, Username and change URL buttons
-	&__share{
-		position:absolute;
-		right:0;
-		top:0;
-		height:100%;
-	}
-
 }
 
-@mixin icon_image{
-	background-position: 50% 50%;
-	background-repeat:no-repeat;
-	background-size:100%;
-	width: 18px;
-	height:18px;
-	content:"";
-	position:absolute;
-	left:20px;
-	opacity:0.34;
+// menu list of actions that user can lick on
+.options-list{
+	li{
+		font-size: 13px;
+		padding: 10px 0;
+		text-align: center;
+		@include button
+		&:hover{
+			background-color:$grey;
+			color:#fff;
+		}
+	}
+}
+// Whiteboard Navigation
+.nav{
+	&__item{
+		&:before{
+			font-size:34px;
+		}
+		&--add{
+			&:before{
+				font-size:52px;
+			}
+		}
+	}
 }
 
-// traditional button for use anywhere on page
+// Alert displayed across centre of screen
+.alert{
+	height: 83px;
+	font-size: 37px;
+    top:50%;
+    transform: translateY(-50%);
+}
+
+// generic traditional-looking button
 .button{
 	display:inline-block;
-	height: $button-height;
+	height: 36px;
 	border: 1px solid darken($ebb,3%);
 	vertical-align: top;
 	margin-right: 7px;
@@ -82,25 +100,33 @@ $button-height: 36px;
 	span{
 		display:none;
 	}
+
 	// background image is assigned to pseudo element to its opacity can be controlled
 	&:before{
 		@include icon-image;
 	}
 
+	// undo button
 	&--undo:before{
 		background-image: url('images/icon-arrow-round.png');
 	}
+
+	// select list button
 	&--select{
 		padding-top: 0;
 		//padding-right: 45px;
 		padding-right: 78px;
 		padding-left:0;
+
+		// text span inside select list
 		&__text{
 			padding: 8px 0 9px 33px;
 			display:block;
 			&:before{
 				@include icon-image;
 			}
+
+			//clear my sketches button
 			&--clear{
 				&:before{
 					background-image: url('images/icon-cross.png');
@@ -110,6 +136,8 @@ $button-height: 36px;
 				}
 			}
 		}
+
+		// expand button on right of select list
 		&__arrow,
 		&__toggle{
 			width: 44px;
@@ -136,7 +164,7 @@ $button-height: 36px;
 		}
 	}
 	
-	// when hover on toolbar button
+	// hover on generic button
 	&:hover{
 		border-color: $grey;
 		color: darken($grey,25%);
@@ -147,7 +175,7 @@ $button-height: 36px;
 
 }
 
-// 100% height item
+// tool-link is similar to button, but is full height.
 .tool-link{
 	color:$grey;
 	padding: 16px 20px 0 45px;
@@ -173,19 +201,10 @@ $button-height: 36px;
 
 	// background image is assigned to pseudo element to its opacity can be controlled
 	&:before{
-		background-position:0px 50%;
-		background-repeat:no-repeat;
-		background-size:100%;
-		content:"";
-		width:20px;
-		height:100%;
-		position:absolute;
-		left:20px;
-		top:0;
-		opacity:0.35;
+		@include icon-image;
 	}
 
-	// change url toolbaritem
+	// change url toolbar item
 	&--url-change:before{
 		background-image: url('images/icon-chain.png');
 	}
@@ -208,26 +227,62 @@ $button-height: 36px;
 		&:before{
 			background-image: url('images/icon-share.png');
 			opacity: 0.9;
+			height:27px;
 			//left: 10px;
 			width: 29px;
-			top: -1px;
+			top: 11px;
 		}
 	}
 }
 
-.main{
-	margin-top:$toolbar-height;
-	height: calc(100% - #{$toolbar-height});
-	padding-top:20px;
+
+/*
+* Header Toolbar Block
+*
+* Toolbar containing shapes, buttons and actions for the user.
+*/
+// Header
+.toolbar{
+	position:fixed;
+	z-index:15;
+	top:0;
+	left:0;
+	right:0;
+	display:block;
+	text-align: center;
+	height: $toolbar-height;
+	background-color: $spring-wood;
+	@include box-shadow(2);
+
+	// section for buttons
+	&__controls{
+		position:absolute;
+		left:0;
+		padding: 7px 0 0 10px;
+	}
+
+	// section for links
+	&__share{
+		position:absolute;
+		right:0;
+		top:0;
+		height:100%;
+	}
+
 }
 
-// list of modes (pen, line, rectangle etc)
-.tool-list{
+/*
+* Shape Palette Block
+*
+* Palette of possible shapes (tools) such as pen, line, rectangle etc.
+*/
+.tool-list{ 
 	height:100%;
 	display:inline-block;
 	margin:0;
 	background-color:#FAF8F7;
-	// mode button
+	
+	// shape item
 	&__item{
 		@include button;
 		display:inline-block;
@@ -254,8 +309,10 @@ $button-height: 36px;
 			opacity:0.8;
 		}
 
-		// Since each icon contains both the unhilighted and highlighted stacked on top
-		// of each other, we can highlight a button simply by changing background position
+		/**
+		* We can highlight a button simply by changing background position. This is because the background image
+		* is actually two images, stacked vertically and twice the size of the element.
+		*/
 		&.is-active{
 			background-position:50% -50px;
 			opacity:1;
@@ -264,6 +321,12 @@ $button-height: 36px;
 	}
 }
 
+/*
+* Dropdown Block
+*
+* Generic dropdown element, displays when clicked on links in the toolbar
+*/
+//container
 .dropdown{
 	display: inline-block;
 	position: relative;
@@ -271,9 +334,13 @@ $button-height: 36px;
 	&:focus{
 		outline: none;
 	}
+
+	// toggle button that triggers dropdown
 	&__toggle{
 		height: 100%;
 	}
+
+	// the actual dropdown
 	&__card{
 		position: absolute;
 		background-color: $spring-wood;
@@ -283,6 +350,8 @@ $button-height: 36px;
 		top: $toolbar-height + 8px;
 		@include box_shadow(3);
 	}
+
+	// X button on top right that closes dropdown
 	&__btnClose {
 		position: absolute;
 		right: 8px;
@@ -294,7 +363,11 @@ $button-height: 36px;
 		}
 		@include button;
 	}
+
+	// when dropdown is open
 	&.is-active{
+
+		//small triangle that appears as pertruding from dropdown card
 		.dropdown__toggle:before{
 			content:"";
 			display:block;
@@ -310,37 +383,14 @@ $button-height: 36px;
 	}
 }
 
-.color-palette{
-	text-align: left;
-	display: flex;
-	flex-wrap: wrap;
-	li{
-		height: 30px;
-		border: 1px solid rgba(0, 0, 0, 0.19);
-		border-radius: 2px;
-		width: 32px;
-		display: block;
-		margin: 4px;
-		@include button;
-		&.is-active{
-			@include highlight_shadow;
-		}
-	}
-}
 
-.options-list{
-	li{
-		font-size: 13px;
-		padding: 10px 0;
-		text-align: center;
-		@include button
-		&:hover{
-			background-color:$grey;
-			color:#fff;
-		}
-	}
-}
 
+/**
+* Message Box Block
+*
+* Generic messages that are displayed in green or red. Can be used
+* for notifications or for input validation.
+*/
 .msg-box{
 	padding-top: 8px;
 	position: absolute;
@@ -349,6 +399,16 @@ $button-height: 36px;
     transform: translate(50%,0);
 	top: calc(100% - 12px);
 	min-width:200px;
+
+	// notification message box
+	&--notif{
+		top:100%;
+		.msg-box__text{
+			@include bord_rad;
+		}
+	}
+
+	// text message element
 	&__text{
 		word-wrap:break-word;
 		text-transform: none;
@@ -360,6 +420,8 @@ $button-height: 36px;
 		font-size:14px;
 		position:relative;
 		@include bord_rad_bottom;
+
+		//success message
 		&--success{
 			background-color: darken($bright,8%);
 			&:before{
@@ -370,6 +432,8 @@ $button-height: 36px;
 				@include triangle(top,darken($bright,8%),8px);
 			}
 		}
+
+		//error message
 		&--error{
 			background-color: lighten($grenadier,25%);
 			&:before{
@@ -381,35 +445,15 @@ $button-height: 36px;
 			}
 		}
 	}
-	&--notif{
-		top:100%;
-		.msg-box__text{
-			@include bord_rad;
-		}
-	}
 }
 
-.nav{
-	&__item{
-		&:before{
-			font-size:34px;
-		}
-		&--add{
-			&:before{
-				font-size:52px;
-			}
-		}
-	}
-}
-
-.alert{
-	height: 83px;
-	font-size: 37px;
-    top:50%;
-    transform: translateY(-50%);
-}
-
+/**
+* Canvas Container Block
+*
+* Contains both large drawing and display canvases in centre of page
+*/
 .canvas-cont{
+	// canvas used to draw new shapes
 	&__drawing-canvas{
 		cursor:crosshair;
 		&--pen{
