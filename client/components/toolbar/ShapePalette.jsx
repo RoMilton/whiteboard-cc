@@ -3,7 +3,7 @@ import classNames from 'classnames';
 
 /**
  * List of Tool Options, presented side by side. When clicked on, fires 
- * a callback provided by prop handleToolChange.
+ * a callback provided by prop handleShapeChange.
  *
  * @class App
  * @extends React.Component
@@ -27,7 +27,7 @@ export default ShapePalette = class extends React.Component {
 							key = {key}
 							className = {getCSSClass(key)}
 							data-tip = {shape.description}
-							onClick = {()=>{this.props.handleToolChange(key)}}
+							onClick = {()=>{this.props.handleShapeChange(key)}}
 						/ >;
 					})
 				}
@@ -39,5 +39,5 @@ export default ShapePalette = class extends React.Component {
 ShapePalette.propTypes = {
 	selectedShape : PropTypes.string.isRequired,
 	shapes : PropTypes.object.isRequired,
-	handleToolChange : PropTypes.func
+	handleShapeChange : PropTypes.func
 };

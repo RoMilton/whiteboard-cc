@@ -56,7 +56,7 @@ export default class Toolbar extends React.Component {
 				<ShapePalette
 					shapes={this.props.shapes}
 					selectedShape = {this.props.selectedShape}
-					handleToolChange = {this.props.handleToolChange}
+					handleShapeChange = {this.props.handleShapeChange}
 				/>
 				<ShareControls 
 					name = {this.props.name}
@@ -76,7 +76,7 @@ Toolbar.propTypes = {
 	name : React.PropTypes.string,
 	url : React.PropTypes.string,
 	shapes : React.PropTypes.object.isRequired,
-	handleToolChange : React.PropTypes.func,
+	handleShapeChange : React.PropTypes.func,
 	handleUndoClick : React.PropTypes.func,
 	handleColorClick: React.PropTypes.func,
 	handleNicknameChange: React.PropTypes.func,
