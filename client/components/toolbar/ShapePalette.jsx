@@ -13,13 +13,13 @@ export default ShapePalette = class extends React.Component {
 		// returns CSS class string
 		let getCSSClass = (shapeName) => {
 			return classNames({
-				'tool-list__item' : true,
-				[`tool-list__item--${shapeName}`]  : true,
+				'shape-list__item' : true,
+				[`shape-list__item--${shapeName}`]  : true,
 				'is-active' : this.props.selectedShape === shapeName
 			});
 		};
 		return (
-			<ul className="tool-list">
+			<ul className="shape-list">
 				{
 					Object.keys(this.props.shapes).map((key)=>{
 						let shape = this.props.shapes[key];
