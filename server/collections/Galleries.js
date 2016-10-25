@@ -32,31 +32,18 @@ Galleries.createGallery = (galleryName)=>{
 	return galleryModel;
 };
 
-Galleries.getGalleryByName=(galleryName)=>{
-	//console.log('getGalleryByName',galleryName);
-	let galleries = Galleries.find({galleryName: galleryName});
-	let records = galleries.fetch();
-	if (records.length){
-		return records[0];
-	}else{
-		return null;
-	}
-};
-
 Galleries.isNameInUse = (galleryName)=>{
-	let record = Galleries.getGalleryByName(galleryName);
+	let record = Galleries.findOne({galleryName: galleryName});
 	return (record || RESERVED_NAMES.indexOf(galleryName.toUpperCase()) > -1);
 };
 
-Galleries.updateGalleryRec = (galleryId, set)=>{
-	Galleries.update(
-		{ galleryId : galleryId },
-		{ 
-			$set: set
-		},(err,result)=>{
-			//console.log('err',err);
+Galleries.updateBoards = (galleryId, boards, lastUpdatedBy)=>{
+	Galleries.update({ galleryId : galleryId },{ 
+		$set: {
+			boards : boards,
+			lastUpdatedBy : lastUpdatedBy
 		}
-	);
-}
+	});
+};
 
 export default Galleries;

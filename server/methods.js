@@ -4,16 +4,21 @@ import ActiveUsers from './collections/ActiveUsers.js';
 
 Meteor.methods({
 	initialiseSession(galleryName){
-		let sessionId = this.connection.id;
+		let sessionId = this.connection.id,
+			galleryModel;
 
-		let gallery = galleryName ? 
-			Galleries.getGalleryByName(galleryName) :
-			Galleries.createGallery(galleryName);
-		let user = ActiveUsers.addUser(gallery.galleryId,sessionId);
+		if (galleryName){
+			galleryModel = Galleries.findOne({galleryName: galleryName});
+		}
+		if (!galleryModel){
+			galleryModel = Galleries.createGallery(galleryName);
+		} 
+
+		let user = ActiveUsers.addUser(galleryModel.galleryId,sessionId);
 
 		return {
 			user : user,
-			gallery : gallery
+			gallery : galleryModel
 		};
 	},
 	changeBoard(args){
@@ -91,10 +96,12 @@ Meteor.methods({
 			if (!gallery.boards[iBoard]){ gallery.addBoardAtIndex(iBoard); }
 			// insert shape
 			gallery.boards[iBoard].addShape(shape);
-			Galleries.updateGalleryRec(galleryId, {
-				boards : gallery.serialize().boards,
-				lastUpdatedBy : sessionId
-			});
+			
+			Galleries.updateBoards(
+				galleryId,
+				gallery.serialize().boards,
+				sessionId
+			);
 		}
 
 	},
@@ -118,10 +125,11 @@ Meteor.methods({
 				gallery.boards[item.iBoard].removeShape(item.shapeId);
 			});
 			
-			Galleries.updateGalleryRec(galleryId, {
-				boards : gallery.serialize().boards,
-				lastUpdatedBy : sessionId
-			});
+			Galleries.updateBoards(
+				galleryId,
+				gallery.serialize().boards,
+				sessionId
+			);
 		}
 
 	},
@@ -141,10 +149,11 @@ Meteor.methods({
 			gallery.boards.forEach(board=>{
 				board.clear();
 			});
-			Galleries.updateGalleryRec(galleryId, {
-				boards : gallery.serialize().boards,
-				lastUpdatedBy : sessionId
-			});
+			Galleries.updateBoards(
+				galleryId,
+				gallery.serialize().boards,
+				sessionId
+			);
 		}
 	},
 	updateColor(color){
