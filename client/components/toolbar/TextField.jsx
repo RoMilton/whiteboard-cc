@@ -35,8 +35,10 @@ export default class TextField extends React.Component{
 		}
 	}
 
-	_getVal(){
-		return this.refs.input.value;
+	_handleSubmit(){
+		if (this.props.handleSubmit){
+			this.props.handleSubmit(this.state.text);
+		}
 	}
 
 	render(){
@@ -54,7 +56,7 @@ export default class TextField extends React.Component{
 					onClick={this._handleInputClick}
 				/>
 				<div
-					onClick={()=>{ this.props.handleSubmit(this.state.text);}}
+					onClick={ this._handleSubmit }
 					className="text__submit"
 				>
 					{ this.props.copyToClipBoard ? 
