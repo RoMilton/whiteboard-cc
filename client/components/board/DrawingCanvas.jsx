@@ -1,4 +1,5 @@
 import React, {PropTypes} from 'react';
+import classNames from 'classnames';
 import CanvasBase from './CanvasBase.jsx';
 import ShapeMap from '../../shapes/ShapeMap.js';
 
@@ -11,6 +12,10 @@ import ShapeMap from '../../shapes/ShapeMap.js';
  * @extends React.Component
  */
 export default class DrawingCanvas extends CanvasBase {
+
+	static get cssClass(){
+		return 'canvas-cont__drawing-canvas';
+	}
 
 	constructor(props){
 		super(props);
@@ -101,9 +106,15 @@ export default class DrawingCanvas extends CanvasBase {
 	}
 
 	render(){
+		let getCSSClass = ()=>{
+			return classNames(
+				DrawingCanvas.cssClass,
+				DrawingCanvas.cssClass + '--' + this.props.selectedShape
+			);
+		}
 		return (
 			<canvas
-				className="canvas-cont__drawing-canvas"
+				className = {getCSSClass()}
 				ref = "canvas"
 				width={this.props.width}
 				height={this.props.height}

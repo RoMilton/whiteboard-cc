@@ -409,3 +409,18 @@ $button-height: 36px;
     transform: translateY(-50%);
 }
 
+.canvas-cont{
+	&__drawing-canvas{
+		cursor:crosshair;
+		&--pen{
+			cursor: url(images/crosshair-pen.png) 10 22, crosshair;
+		}
+		&--line{
+			cursor: url(images/crosshair-line.png) 10 22, crosshair;
+		}
+		&--rect{
+			cursor: url(images/crosshair-rect.png) 10 22, crosshair;
+		}
+	}
+}
+
