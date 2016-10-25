@@ -6,27 +6,36 @@ import eventService from '../../eventService.js';
 
 
 /**
- * Toolbar allows users to perform actions (undo, share, change color) on the
- * main whiteboard.
+ * Colletion of buttons dedicated to social actions such as inviting other people and changing own name
  *
- * @class Toolbar
+ * @class ShareControls
  * @extends React.Component
  */
 export default class ShareControls extends React.Component {
 
 	constructor(props){
 		super(props);
+
+		// set initial state
 		this.state = {
 			urlSuccessMsg : null,
 			urlErrorMsg : null,
 			nameSuccessMsg : null,
 			nameErrorMsg : null
 		}
+
+		// bind methods here to speed up re-render
 		this._handleUrlChange = this._handleUrlChange.bind(this);
 		this._handleNicknameChange = this._handleNicknameChange.bind(this);
 	}
 
-	_startTimer(){
+	/**
+	* Starts a timer, then clears all success messages upon its completion.
+	*
+	* @memberOf ShareControls
+	* @method clearAfterTimer
+	*/
+	_clearAfterTimer(){
 		if (this.timer){clearTimeout(this.timer);}
 		this.timer = setTimeout(()=>{
 			this.setState({
@@ -37,6 +46,14 @@ export default class ShareControls extends React.Component {
 	};
 
 
+	/**
+	* Changes gallery address by firing the handleUrlChange callback, then displays an 
+	* appropriate notification showing whether the change was successful.
+	*
+	* @memberOf ShareControls
+	* @method _handleUrlChange
+	* @param {String} galleryName - new gallery name to change the address to.
+	*/
 	_handleUrlChange(galleryName){
 		this.props.handleUrlChange(galleryName).then((newGalleryName)=>{
 			this.setState({
@@ -45,7 +62,7 @@ export default class ShareControls extends React.Component {
 				urlErrorMsg : null
 			});
 			eventService.emit('collapse-dropdowns');
-			this._startTimer();
+			this._clearAfterTimer();
 		},(err)=>{
 			this.setState({
 				urlSuccessMsg : null,
@@ -55,6 +72,14 @@ export default class ShareControls extends React.Component {
 	}
 
 
+	/**
+	* Changes current user's nickname firing the handleNicknameChange callback, then displays an 
+	* appropriate notification showing whether the change was successful.
+	*
+	* @memberOf ShareControls
+	* @method _handleNicknameChange
+	* @param {String} nickname - new nickname to change to
+	*/
 	_handleNicknameChange(nickname){
 		this.props.handleNicknameChange(nickname).then(()=>{
 			this.setState({
@@ -64,7 +89,7 @@ export default class ShareControls extends React.Component {
 				nameErrorMsg : null
 			});
 			eventService.emit('collapse-dropdowns');
-			this._startTimer();
+			this._clearAfterTimer();
 		},(err)=>{
 			this.setState({
 				nameSuccessMsg : null,
@@ -92,7 +117,7 @@ export default class ShareControls extends React.Component {
 				<TextControl
 					buttonClassName="tool-link tool-link--name"
 					buttonText="Change Name"
-					defaultValue={this.props.name}
+					defaultValue={this.props.nickname}
 					inputDescription="Enter Your Name:"
 					handleSubmit= {this._handleNicknameChange}
 					submitText="Save"
@@ -116,8 +141,7 @@ export default class ShareControls extends React.Component {
 }
 
 ShareControls.propTypes = {
-	name : PropTypes.string,
-	handleNicknameChange : PropTypes.func,
-	galleryName :  PropTypes.string,
-	handleUrlChange : PropTypes.func
+	nickname : PropTypes.string,  // current user's nickname
+	galleryName :  PropTypes.string, // current gallery name
+	handleUrlChange : PropTypes.func // fired when gallery name is changed
 }

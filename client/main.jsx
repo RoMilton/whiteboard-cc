@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './components/App.jsx';
 
+// remove Meteor debug messages
 Meteor._debug = (function (super_meteor_debug) {
 	return function (error, info) {
 	if (!(info && _.has(info, 'msg')))
@@ -9,11 +10,14 @@ Meteor._debug = (function (super_meteor_debug) {
 	}
 })(Meteor._debug);
 
+// when Meteor starts
 Meteor.startup(function(){
 
-	Router.route('/:source?', function(){
-		let source = this.params.source;
-		ReactDOM.render(<App source = {source} />, document.getElementById('whiteboard-app'));
+	// get galleryName from URL, if any
+	Router.route('/:galleryName?', function(){
+		let galleryName = this.params.galleryName;
+		// render app into div
+		ReactDOM.render(<App defGalleryName = {galleryName} />, document.getElementById('whiteboard-app'));
 	});
 
 });

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import ShapePalette from './ShapePalette.jsx';
 import ColorSelect from './ColorSelect.jsx';
 import ToolButton from './ToolButton.jsx';
@@ -8,8 +8,9 @@ import ToolSelectList from './ToolSelectList.jsx';
 
 
 /**
- * Toolbar allows users to perform actions (undo, share, change color) on the
- * main whiteboard.
+ * Toolbar containing actions that manipulate settings and whiteboards.
+ * 
+ * Also contains social actions such as Invite/Share and change name
  *
  * @class Toolbar
  * @extends React.Component
@@ -59,7 +60,7 @@ export default class Toolbar extends React.Component {
 					handleShapeChange = {this.props.handleShapeChange}
 				/>
 				<ShareControls 
-					name = {this.props.name}
+					nickname = {this.props.nickname}
 					galleryName = {this.props.galleryName}
 					handleNicknameChange = {this.props.handleNicknameChange}
 					handleUrlChange = {this.props.handleUrlChange}
@@ -70,19 +71,19 @@ export default class Toolbar extends React.Component {
 }
 
 Toolbar.propTypes = {
-	colors : React.PropTypes.array.isRequired,
-	selectedShape : React.PropTypes.string.isRequired,
-	selectedColor : React.PropTypes.string.isRequired,
-	name : React.PropTypes.string,
-	url : React.PropTypes.string,
-	shapes : React.PropTypes.object.isRequired,
-	handleShapeChange : React.PropTypes.func,
-	handleUndoClick : React.PropTypes.func,
-	handleColorClick: React.PropTypes.func,
-	handleNicknameChange: React.PropTypes.func,
-	handleUrlChange : React.PropTypes.func,
-	handleClearMyClick : React.PropTypes.func,
-	handleClearAllClick : React.PropTypes.func
+	colors : PropTypes.array.isRequired, // array of all possible colors in hex format
+	shapes : PropTypes.object.isRequired, // object with shape types (such as 'pen','line') as properties
+	selectedShape : PropTypes.string.isRequired, // selected shape, must be property of prop shapes
+	selectedColor : PropTypes.string.isRequired, // selected color in hex format
+	galleryName : PropTypes.string, // current gallery name
+	nickname : PropTypes.string, // current user's nickname
+	handleShapeChange : PropTypes.func, // fired when new shape is clicked
+	handleUndoClick : PropTypes.func, // fired when undo is clicked
+	handleColorClick: PropTypes.func, //fired when new color is clicked
+	handleNicknameChange: PropTypes.func, //fired when new nickname is submitted
+	handleUrlChange : PropTypes.func, //fired when new gallery name is submitted
+	handleClearMyClick : PropTypes.func, // fired when Clear My sketches is clicked
+	handleClearAllClick : PropTypes.func // fired when Clear Everything is clicked
 };
 
 Toolbar.defaultProps = {

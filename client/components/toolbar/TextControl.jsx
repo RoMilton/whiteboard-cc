@@ -2,13 +2,25 @@ import React, {PropTypes} from 'react';
 import DropDown from './DropDown.jsx';
 import TextField from './TextField.jsx';
 
+/**
+ * Renders a Button that when clicked, displays a dropdown underneath it.
+ *
+ * The dropdown contains an arbitrary text description and a TextField that 
+ * can be submitted.
+ *
+ * Also displays success/error notifications provided in the props.
+ *
+ * @class ShareControls
+ * @extends React.Component
+ */
 export default class TextControl extends React.Component{
 
-	render(){
-		let textLim = 16
-		let text = this.props.buttonText.length > textLim ? 
-			(this.props.buttonText.substr(0,textLim) + '...') :
+	render(){ 
+		// strip button text if it's too long
+		let text = this.props.buttonText.length > this.props.buttonTextLimit ? 
+			(this.props.buttonText.substr(0,this.props.buttonTextLimit) + '...') :
 			this.props.buttonText;
+
 		return (
 			<DropDown width={this.props.width} >
 				<div 
@@ -56,19 +68,20 @@ export default class TextControl extends React.Component{
 }
 
 TextControl.propTypes = {
-	buttonClassName : PropTypes.string,
-	submitText : PropTypes.string,
-	inputDescription : PropTypes.string,
-	inputDesciptionLink : PropTypes.string,
-	defaultValue : PropTypes.string,
-	width : PropTypes.number,
-	handleSubmit : PropTypes.func,
-	successMsg :  PropTypes.string,
-	errorMsg :  PropTypes.string,
-	closeOnSubmit : PropTypes.bool
+	buttonClassName : PropTypes.string, // css class name added to button
+	buttonTextLimit : PropTypes.number, // Limit to the amount of characters in the button. Any characters past this will be removed
+	submitText : PropTypes.string, // text displayed in Textfield's submit button
+	inputDescription : PropTypes.string, // Description to appear in dropdown
+	inputDesciptionLink : PropTypes.string, // Hyperlink that user is sent to to when clicking on description
+	defaultValue : PropTypes.string, // default value of TextField
+	width : PropTypes.number, // width of dropdown
+	handleSubmit : PropTypes.func, // fired when user submits TextField
+	successMsg :  PropTypes.string, // Success message. If provided, a success notification will display with this text
+	errorMsg :  PropTypes.string // Error message. If provided, an error notification will display with this text
 }
 
 TextControl.defaultProps = {
 	buttonClassName : 'item',
-	closeOnSubmit : true
+	submitText : 'Save',
+	buttonTextLimit : 16
 }

@@ -14,16 +14,16 @@ Galleries = new Mongo.Collection("galleries");
 ActiveUsers = new Mongo.Collection("activeUsers");
 
 /**
- * Whiteboard App Component
+ * Whiteboard App
  *
- * Displays a large whiteboard that user can draw shapes on using mouse or touch.
- * These drawings are are synced to remote users who are viewing the same URL. 
+ * App that displays a gallery of whiteboards on which local and remote users can draw
+ * on in real time.
  *
- * Up to 6 boards can be used per session. When one user switches to a new board,
+ * Up to 6 boards can be added per gallery. When one user switches to a new board,
  * remote users will switch to the new board as well.
  *
- * If a default URL link is not provided as @prop source, a suitable wone will be
- * retrieved from the server.
+ * If a default URL link is not provided as @prop defGalleryName, a suitable defalt link will
+ * be retrieved from the server.
  *
  * @class App
  * @extends React.Component
@@ -46,7 +46,8 @@ export default class App extends TrackerReact(React.Component) {
 			},
 			gallery : null
 		};
-		this.defaultSource = props.source;
+
+		this.defGalleryName = props.defGalleryName;
 
 		// binding methods here instead of render() speeds up re-renders
 		this._handleColorChange = this._handleColorChange.bind(this)
@@ -71,11 +72,9 @@ export default class App extends TrackerReact(React.Component) {
 
 		let newState = {};
 		
-		// retrieve the initial gallery and user data for this session
-		Meteor.call('initialiseSession',this.defaultSource,(err,res)=>{
-			if (err){
-				return;
-			}
+		// retrieve gallery and user data for this session, providing the default defGalleryName
+		Meteor.call('initialiseSession',this.defGalleryName,(err,res)=>{
+			if (err){ return; }
 			newState.nickname = res.user.nickname;
 			newState.selectedColor = res.user.color;
 
@@ -86,7 +85,7 @@ export default class App extends TrackerReact(React.Component) {
 			// set browser url to gallery name
 			this._setBrowserUrl(gallery.galleryName);
 
-			// subscribe to Meteor server publications for relevant mongo collections
+			// subscribe to Meteor server publications to be informed of DB updates
 			newState.subscription = {
 				gallery : Meteor.subscribe('galleries',[gallery.galleryId]),
 				activeUsers : Meteor.subscribe('activeUsers',[gallery.galleryId])
@@ -97,7 +96,7 @@ export default class App extends TrackerReact(React.Component) {
 			// when remote user inserts shape
 			Streamy.on('insert-shape',(data)=>{
 				if (data.__from !== this._sessionId()){
-					this._handleNewShape(data.shape,data.iBoard,false);
+					this._handleNewShape(data.shape,data.iBoard,data.__from);
 				}
 			});
 
@@ -119,7 +118,7 @@ export default class App extends TrackerReact(React.Component) {
 				}
 			});
 
-			// when remote user clears all whiteboards in session
+			// when remote user clears all whiteboards
 			Streamy.on('clear-all',(data)=>{
 				if (data.__from !== this._sessionId()){
 					this._handleClearAll(false);
@@ -144,7 +143,7 @@ export default class App extends TrackerReact(React.Component) {
 	/**
 	* Manipulates the browser URL so it will contain a given string after the domain.
 	*
-	* For example, calling this method passing 'abc' will result in browser changin
+	* For example, calling this method passing 'abc' will result in browser changing
 	* address to http://domain.com/abc
 	*
 	* @memberof App
@@ -163,7 +162,7 @@ export default class App extends TrackerReact(React.Component) {
 	* @method _sessionId
 	*/
 	_sessionId(){
-		// even though it's called _lastSessionId, this is Meteor's standard place for current session id
+		// even though it's called _lastSessionId, this is Meteor's standard place for current session id.
 		return Meteor.default_connection._lastSessionId;
 	}
 
@@ -215,6 +214,7 @@ export default class App extends TrackerReact(React.Component) {
 		event.preventDefault();
 	}
 
+
 	/**
 	* Changes users's own nickname. 
 	* 
@@ -245,7 +245,7 @@ export default class App extends TrackerReact(React.Component) {
 
 
 	/**
-	* Changes user's own nickname by calling the server and returning the result
+	* Changes user's own nickname by calling the server and returning the result.
 	* 
 	* @memberof App
 	* @method _handleNicknameChange
@@ -313,7 +313,7 @@ export default class App extends TrackerReact(React.Component) {
 
 
 	/**
-	 * Changes the user's selected color. This change is sent to the server
+	 * Changes the user's selected color and notifies the server.
 	 *
 	 * @method _handleColorChange
 	 * @param {String} toolName - Hex string representing color.
@@ -378,14 +378,100 @@ export default class App extends TrackerReact(React.Component) {
 		});
 	}
 
+
+	/**
+	* Adds a new, blank whiteboard.
+	* 
+	* @memberof App
+	* @method _handleBoardAdd
+	*/
 	_handleBoardAdd(){
 		this._handleBoardChange(this.state.gallery.boards.length);
 	}
 
-	_handleClearAll(send = true){		
+
+	/**
+	* Returns an array containing all active users' session IDs.
+	* 
+	* @memberof App
+	* @method _allSessionIds
+	* @param {Array[String]} Array of session IDs
+	*/
+	_allSessionIds(){
+		return this.state.activeUsers.map((user)=>{
+			return user.sessionId;
+		});
+	}
+
+	/**
+	* Undoes drawing of shapes performed by current user. 
+	*
+	* Can remove a given number of actions or all actions, depending on argument provided.
+	* 
+	* @memberof App
+	* @method _handleUndo
+	* @param {Number||String} numberToRemove - the count of actions to undo or 'all' to remove all.
+	*/
+	_handleUndo(numberToRemove = 1){
+		let history = this.state.history.slice(),
+			gallery = this.state.gallery.clone(),
+			boards = gallery.boards;
+
+		numberToRemove = numberToRemove === 'all' ? history.length : numberToRemove;
+		
+		// get shapes from history
+		let itemsToRemove = history.slice(history.length - numberToRemove);
+
+		if (itemsToRemove){
+			// notify server
+			Meteor.call('removeShapes',{
+				galleryId : this.state.gallery.galleryId,
+				activeUsers : this._allSessionIds(),
+				items : itemsToRemove
+			});
+
+			// for each shape
+			itemsToRemove.forEach((historyItem)=>{			
+				// remove shape from board
+				boards[historyItem.iBoard].removeShape(historyItem.shapeId);
+			});
+
+			// remove item from history
+			history = history.slice(0, history.length - itemsToRemove.length);
+
+			this.setState({
+				gallery : gallery,
+				history : history
+			});
+		}
+	}
+
+
+	/**
+	* Clears all shapes on every whiteboard drawn by current user
+	* 
+	* @memberof App
+	* @method _handleClearAll
+	*/
+	_handleClearMy(){
+		this._handleUndo('all');
+	}
+
+
+	/**
+	* Clears all shapes on every whiteboard drawn by any user.
+	*
+	* This will return all whiteboards to a blank slate.
+	* 
+	* @memberof App
+	* @method _handleClearAll
+	* @param {Boolean} sendToServer - if true, the server's will be notified of change
+	*/
+	_handleClearAll(sendToServer = true){		
 		let gallery = this.state.gallery.clone();
 
-		if (send){
+		if (sendToServer){
+			// call meteor method
 			Meteor.call('clearAll',{
 				galleryId : this.state.gallery.galleryId,
 				activeUsers : this._allSessionIds()
@@ -403,46 +489,14 @@ export default class App extends TrackerReact(React.Component) {
 	}
 
 
-	_allSessionIds(){
-		return this.state.activeUsers.map((user)=>{
-			return user.sessionId;
-		});
-	}
-
-	_handleUndo(numberToRemove = 1){
-		let history = this.state.history.slice(),
-			gallery = this.state.gallery.clone(),
-			boards = gallery.boards;
-
-		numberToRemove = numberToRemove === 'all' ? history.length : numberToRemove;
-		let itemsToRemove = history.slice(history.length - numberToRemove);
-
-		if (itemsToRemove){
-
-			Meteor.call('removeShapes',{
-				galleryId : this.state.gallery.galleryId,
-				activeUsers : this._allSessionIds(),
-				items : itemsToRemove
-			});
-
-			itemsToRemove.forEach((historyItem)=>{			
-				boards[historyItem.iBoard].removeShape(historyItem.shapeId);
-			});
-
-			history = history.slice(0, history.length - itemsToRemove.length);
-
-			this.setState({
-				gallery : gallery,
-				history : history
-			});
-		}
-	}
-
-	_handleClearMy(){
-		this._handleUndo('all');
-	}
-
+	/**
+	* Hides main alert by setting the alert.visible state property to false.
+	* 
+	* @memberof App
+	* @method _handleAlertFinish
+	*/
 	_handleAlertFinish(){
+		// if alert is visible
 		if (this.state.alert.visible){
 			this.setState({
 				alert : {
@@ -453,16 +507,31 @@ export default class App extends TrackerReact(React.Component) {
 		}
 	}
 
-	_handleNewShape(shapeModel, iBoard = this.state.gallery.iSelectedBoard, sessionId = this._sessionId()){
+
+	/**
+	* Inserts a given shape into one of the whiteboards. The given shape must be in the form of 
+	* serialized Shape object.
+	*
+	* If a board index is not provided, the currently selected whiteboard will be used.
+	
+	* 
+	* @memberof App
+	* @method _handleNewShape
+	* @param {Object} shapeModel - A serialized Shape. See @class Shape.js
+	* @param {Number} iBoard - index of the board to insert into
+	* @param {String} createdBy - the sessionId of the person who created the shape
+	*/
+	_handleNewShape(shapeModel, iBoard = this.state.gallery.iSelectedBoard, createdBy = this._sessionId()){
 		let newState = {},
 			gallery = this.state.gallery.clone();
 		
-		if (sessionId === this._sessionId()){
+		// if the current user created the shape
+		if (createdBy === this._sessionId()){
 			let newItemObj = {
 				iBoard : iBoard,
 				shape : shapeModel
 			}
-
+			// send shape to server
 			Meteor.call('insertShape',{
 				galleryId : this.state.gallery.galleryId,
 				activeUsers : this._allSessionIds(),
@@ -470,13 +539,17 @@ export default class App extends TrackerReact(React.Component) {
 				shape : shapeModel
 			});
 
+			// add to history
 			newState.history = this.state.history.slice();
 			newState.history.push({
 				iBoard : iBoard,
 				shapeId : shapeModel.id
 			});
 		}
+
+		// add shape to whiteboard
 		gallery.boards[iBoard].addShape(shapeModel);
+
 		newState.gallery = gallery;
 		this.setState(newState);
 	}
@@ -491,7 +564,7 @@ export default class App extends TrackerReact(React.Component) {
 				<Toolbar
 					shapes= {ShapeMap}
 					colors = {Colors}
-					name = {this.state.nickname}
+					nickname = {this.state.nickname}
 					galleryName = {this.state.gallery.galleryName}
 					selectedShape = {this.state.selectedShape}
 					selectedColor = {this.state.selectedColor}
@@ -532,5 +605,9 @@ export default class App extends TrackerReact(React.Component) {
 }
 
 App.propTypes = {
-	source : PropTypes.string
+	// Default gallery name. 
+	// If provided and a gallery exists with that name, it will be retrieved. 
+	// If provided and no gallery exists with that name, a new one will be created using at that name.
+	// If not provided, a gallery will be created with a random name instead.
+	defGalleryName : PropTypes.string 
 }

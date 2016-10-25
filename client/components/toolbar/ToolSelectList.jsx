@@ -3,8 +3,9 @@ import ToolButton from './ToolButton.jsx';
 import DropDown from './DropDown.jsx';
 
 /**
+ * A button, that when clicked that displays a dropdown list of items.
  *
- * @class Dropdown
+ * @class ToolSelectList
  * @extends React.Component
  */
 
@@ -30,7 +31,7 @@ export default class ToolSelectList extends React.Component {
 					>
 						<div className="button--select__toggle" />
 						<ul className="options-list">
-							{this.props.optionNames.map((optionName,i)=>{
+							{ this.props.optionNames.map((optionName,i)=>{
 								return <li
 									key={i}
 									onClick={this.props.optionClicks[i] || null}
@@ -47,10 +48,10 @@ export default class ToolSelectList extends React.Component {
 }
 
 ToolSelectList.propTypes = {
-	text : PropTypes.string,
-	description : PropTypes.string,
-	handleClick : PropTypes.func,
-	style : PropTypes.object,
-	optionNames : PropTypes.arrayOf(PropTypes.string),
-	optionClicks : PropTypes.arrayOf(PropTypes.func)
+	text : PropTypes.string, // text to display in button
+	description : PropTypes.string, // description. If provided tooltip will display this when hovering button
+	handleClick : PropTypes.func, //fires when button (not dropdown item) is clicked
+	style : PropTypes.object, // object containing style properties and values, assigned to button
+	optionNames : PropTypes.arrayOf(PropTypes.string), // list of items to appear in dropdown list
+	optionClicks : PropTypes.arrayOf(PropTypes.func) // list of functions to fire when clicking on respective list items, must correspond with order of items in optionNames
 }
