@@ -94,7 +94,7 @@ export default class App extends TrackerReact(React.Component) {
 
 		let newState = {};
 		
-		Meteor.call('getGallery',this.defaultSource,(err,res)=>{
+		Meteor.call('initialiseSession',this.defaultSource,(err,res)=>{
 			newState.nickname = res.user.nickname;
 			newState.selectedColor = res.user.color;
 			let gallery = new Gallery(res.gallery);
