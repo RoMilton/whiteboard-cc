@@ -22,7 +22,7 @@ export default class CursorsWrapper extends React.Component {
 		};
 
 		// extract session IDs 
-		this._cacheSessionIds(props.activeUsers);
+		this._cacheSessionIds(this.props.activeUsers);
 
 		//bind mouse move callback so 'this' can be used inside it
 		this._handleMouseMove = this._handleMouseMove.bind(this);
@@ -32,6 +32,7 @@ export default class CursorsWrapper extends React.Component {
 	// after component mounts
 	componentDidMount(){
 		document.addEventListener('mousemove',this._handleMouseMove);
+		console.log('this.props.activeUsers',this.props.activeUsers);
 	}
 
 
@@ -39,6 +40,7 @@ export default class CursorsWrapper extends React.Component {
 	componentWillUnmount(){
 		document.removeEventListener('mousemove',this._handleMouseMove);
 	}
+
 
 	// when props are received
 	componentWillReceiveProps(nextProps,nextState){
@@ -56,7 +58,7 @@ export default class CursorsWrapper extends React.Component {
 	* @param {Array[Object]} Array of Objects, each one representing an active Users with an assigned sessionId property
 	*/
 	_cacheSessionIds(activeUsers){
-		this.allSessionIds = this.props.activeUsers.map((user)=>{
+		this.allSessionIds = activeUsers.map((user)=>{
 			return user.sessionId;
 		});
 	}
@@ -64,13 +66,14 @@ export default class CursorsWrapper extends React.Component {
 
 	/**
 	* Method to be called when user's mouse moves. The mouse pointer co-ordinates will
-	* be calculated in respect to the container element. For example, if the pointer
-	* is outside the container div, 50px above the container and 20px to the left, the 
+	* be calculated in relation to the container div. For example, if the pointer
+	* is outside the container div by 50 pixels to the left and 20px to the top, the 
 	* co-ordinates will be -50 and 20 for the x and y respectively. 
 	*
 	* If a scale is provided, then it will be multiplied to both the x and y co-ordinates
+	* before sending them to remote users.
 	* 
-	* These co-ordinates are streamed to all remote users the array prop activeUsers. 
+	* The session Ids of users that are sent to are provided the prop activeUsers. 
 	*
 	* @method _handleMouseMove
 	* @param {Event} Mouse move event
@@ -98,6 +101,7 @@ export default class CursorsWrapper extends React.Component {
 			ownPointerPos : [xPos,yPos]
 		});
 	}
+
 
 	render(){
 		return (
@@ -135,11 +139,12 @@ export default class CursorsWrapper extends React.Component {
 }
 
 CursorsWrapper.propTypes = {
-	sessionId : PropTypes.string, // user's own session id
+	sessionId : PropTypes.string.isRequired, // local session id
 	activeUsers : PropTypes.array, // array containing objects representing remote users. Each object must have sessionId property
 	scale : PropTypes.number // scale that will be multiplied to x and y co-ordinates
 }
 
 CursorsWrapper.defaultProps = {
-	scale : 1
+	activeUsers : [],
+	scale : 1,
 }
