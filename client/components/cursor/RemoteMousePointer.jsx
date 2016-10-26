@@ -21,6 +21,9 @@ export default class RemoteMousePointer extends MousePointerBase {
 		this.state = {
 			pos : [] // position of pointer
 		}
+
+		this.receivedCount = 0; // count of times new co-ords have been received
+		this.updatedCount = 0; // number of times component has updated
 	}
 
 
@@ -33,13 +36,22 @@ export default class RemoteMousePointer extends MousePointerBase {
 	}
 
 
-	//before component updates
+	// before component updates
 	componentWillUpdate(nextProps,nextState){
 		// if session id has changed
 		if (nextProps.sessionId !== this.props.sessionId){
 			// update stream
 			this._listenToStream(nextProps.sessionId);
 		}
+	}
+
+	// whether component should update
+	shouldComponentUpdate(nextProps,nextState){
+		// An influx of received co-ordinates happens when a remote user's connection
+		// goes back to normal after experiencing some temporary lag or disconnection.
+		// To deal with this, we skip re-render until the last 4 received co-ordinates,
+		// allowing this component to catch up with the remote user
+		return (this.receivedCount > nextState.updatedCount - 5);
 	}
 
 
@@ -55,12 +67,15 @@ export default class RemoteMousePointer extends MousePointerBase {
 		if (!sessionId) {return;}
 		Streamy.on('pointer-pos-'+sessionId, (pos)=>{
 			if (pos){
+				this.receivedCount++;
 				this.setState({
 					// update position after multiplying by scale
 					pos : [
 						pos.x * this.props.scale, 
-						pos.y * this.props.scale 
-					]
+						pos.y * this.props.scale
+					],
+					// increment update count
+					updatedCount : this.updatedCount ++
 				});
 			}
 		});
@@ -83,10 +98,10 @@ export default class RemoteMousePointer extends MousePointerBase {
 }
 
 RemoteMousePointer.propTypes = {
-	name : PropTypes.string,
-	bgColor : PropTypes.string,
-	sessionId : PropTypes.string,
-	scale : PropTypes.number
+	name : PropTypes.string, // content to display inside label
+	bgColor : PropTypes.string, // background color of component (used by base class)
+	sessionId : PropTypes.string, // remote user's session id
+	scale : PropTypes.number // scale to be applied to x and y co-ordinates
 }
 
 RemoteMousePointer.defaultProps = {
