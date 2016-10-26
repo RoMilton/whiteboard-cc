@@ -19,11 +19,11 @@ export default class RemoteMousePointer extends MousePointerBase {
 
 		// initial state
 		this.state = {
-			pos : [] // position of pointer
+			pos : [] // position of pointer,
 		}
 
-		this.receivedCount = 0; // count of times new co-ords have been received
-		this.updatedCount = 0; // number of times component has updated
+		this.receivedCount = 0; // number of times new co-ords have been received
+		this.updatedCount = 0 // number of times component has updated
 	}
 
 
@@ -50,8 +50,8 @@ export default class RemoteMousePointer extends MousePointerBase {
 		// An influx of received co-ordinates happens when a remote user's connection
 		// goes back to normal after experiencing some temporary lag or disconnection.
 		// To deal with this, we skip re-render until the last 4 received co-ordinates,
-		// allowing this component to catch up with the remote user
-		return (this.receivedCount > nextState.updatedCount - 5);
+		// allowing this component to catch up with the remote user.
+		return (this.receivedCount > this.updatedCount - 5);
 	}
 
 
@@ -74,9 +74,8 @@ export default class RemoteMousePointer extends MousePointerBase {
 						pos.x * this.props.scale, 
 						pos.y * this.props.scale
 					],
-					// increment update count
-					updatedCount : this.updatedCount ++
 				});
+				this.updatedCount ++ // increment update count
 			}
 		});
 	}
