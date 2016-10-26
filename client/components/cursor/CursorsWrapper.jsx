@@ -4,37 +4,89 @@ import RemoteMousePointer from './RemoteMousePointer.jsx';
 import OwnMousePointer from './OwnMousePointer.jsx';
 
 /**
- * Toolbar allows users to perform actions (undo, share, change color) on the
- * main whiteboard.
+ * Tracks the user's own mouse pointer, and streams its co-ordinates to other users
+ * This component does not have any UI of its own, instead its children components
+ * are responsible for displaying UI to show where every user's mouse pointer is.
  *
- * @class Toolbar
+ * @class CursorsWrapper
  * @extends React.Component
  */
 export default class CursorsWrapper extends React.Component {
 
 	constructor(props){
 		super(props);
-		this._handleMouseMove = this._handleMouseMove.bind(this);
+		
+		// initial state
 		this.state = {
-			ownPointerPos : []
+			ownPointerPos : [] // stores x and y co-ordinates respectively
 		};
+
+		// extract session IDs 
+		this._cacheSessionIds(props.activeUsers);
+
+		//bind mouse move callback so 'this' can be used inside it
+		this._handleMouseMove = this._handleMouseMove.bind(this);
 	}
 
-	_handleMouseMove(e){
-		//if this is a touchscreen swipe, ignore
-		if (e.changedTouches){return;}
 
-		let wrapper = this.refs.wrapper;
-		let rect = wrapper.getBoundingClientRect();
-		
-		let allSessions = this.props.activeUsers.map((user)=>{
+	// after component mounts
+	componentDidMount(){
+		document.addEventListener('mousemove',this._handleMouseMove);
+	}
+
+
+	// before component unmounts
+	componentWillUnmount(){
+		document.removeEventListener('mousemove',this._handleMouseMove);
+	}
+
+	// when props are received
+	componentWillReceiveProps(nextProps,nextState){
+		this._cacheSessionIds(nextProps.activeUsers);
+	}
+
+
+	/**
+	* Inspects given activeUsers and creates a new array just with its session Ids.
+	* Calling this method only when props are updated prevents the mapping from being done every
+	* time the mouse moves.
+	*
+	* @memberOf CursorsWrapper
+	* @method _cacheSessionIds
+	* @param {Array[Object]} Array of Objects, each one representing an active Users with an assigned sessionId property
+	*/
+	_cacheSessionIds(activeUsers){
+		this.allSessionIds = this.props.activeUsers.map((user)=>{
 			return user.sessionId;
 		});
+	}
 
+
+	/**
+	* Method to be called when user's mouse moves. The mouse pointer co-ordinates will
+	* be calculated in respect to the container element. For example, if the pointer
+	* is outside the container div, 50px above the container and 20px to the left, the 
+	* co-ordinates will be -50 and 20 for the x and y respectively. 
+	*
+	* If a scale is provided, then it will be multiplied to both the x and y co-ordinates
+	* 
+	* These co-ordinates are streamed to all remote users the array prop activeUsers. 
+	*
+	* @method _handleMouseMove
+	* @param {Event} Mouse move event
+	*/
+	_handleMouseMove(e){
+		// if this is a touchscreen swipe, ignore
+		if (e.changedTouches){ return; }
+		let wrapper = this.refs.wrapper,
+			rect = wrapper.getBoundingClientRect();
+
+		// get mouse position in relation to container div
 		let xPos = e.clientX - rect.left;
 		let yPos = e.clientY - rect.top;
 
-		Streamy.sessions(allSessions).emit(
+		// stream mouse position to remote users after applying scale
+		Streamy.sessions(this.allSessionIds).emit(
 			'pointer-pos-'+this.props.sessionId, 
 			{ 
 				x : xPos / this.props.scale,
@@ -44,15 +96,7 @@ export default class CursorsWrapper extends React.Component {
 
 		this.setState({
 			ownPointerPos : [xPos,yPos]
-		})
-	}
-
-	componentDidMount(){
-		document.addEventListener('mousemove',this._handleMouseMove);
-	}
-
-	componentWillUnmount(){
-		document.removeEventListener('mousemove',this._handleMouseMove);
+		});
 	}
 
 	render(){
@@ -66,7 +110,7 @@ export default class CursorsWrapper extends React.Component {
 						if (user.sessionId !== this.props.sessionId) {
 							return <RemoteMousePointer
 									key={user.sessionId}
-									listenToSessionId= {user.sessionId}
+									sessionId= {user.sessionId}
 									name={user.nickname}
 									bgColor={user.color}
 									scale={this.props.scale}
@@ -91,9 +135,9 @@ export default class CursorsWrapper extends React.Component {
 }
 
 CursorsWrapper.propTypes = {
-	sessionId : PropTypes.string,
-	activeUsers : PropTypes.array,
-	scale : PropTypes.number
+	sessionId : PropTypes.string, // user's own session id
+	activeUsers : PropTypes.array, // array containing objects representing remote users. Each object must have sessionId property
+	scale : PropTypes.number // scale that will be multiplied to x and y co-ordinates
 }
 
 CursorsWrapper.defaultProps = {

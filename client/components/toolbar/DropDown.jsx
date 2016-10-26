@@ -25,6 +25,7 @@ export default class DropDown extends React.Component {
 			isVisible: false,
 		};
 
+		// bind mouse click callback so 'this' can be used inside it
 		this._documentClick = this._documentClick.bind(this);
 		// bind methods here to speed up re-render
 		this._hide = this._hide.bind(this);

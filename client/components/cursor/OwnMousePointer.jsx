@@ -1,15 +1,16 @@
 import React, {PropTypes} from 'react';
 import classNames from 'classnames';
-import MousePointer from './MousePointer.jsx';
+import MousePointerBase from './MousePointerBase.jsx';
 
 /**
- * Toolbar allows users to perform actions (undo, share, change color) on the
- * main whiteboard.
+ * A label that floats around the screen that indicates where the user's own cursor is. 
  *
- * @class Toolbar
+ * The labels background and content are provided via props.
+ *
+ * @class OwnMousePointer
  * @extends React.Component
  */
-export default class OwnMousePointer extends MousePointer {
+export default class OwnMousePointer extends MousePointerBase {
 	render(){
 		return (this.props.pos[1] < 0) ? null : (
 			<div
@@ -24,8 +25,6 @@ export default class OwnMousePointer extends MousePointer {
 }
 
 OwnMousePointer.propTypes = {
-	name : PropTypes.string,
-	bgColor : PropTypes.string,
-	tool : PropTypes.string
-	
+	name : PropTypes.string, // text to display inside component
+	bgColor : PropTypes.string, // // background color of component (used by base class)
 }

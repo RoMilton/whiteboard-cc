@@ -1,52 +1,66 @@
 import React, {PropTypes} from 'react';
 import classNames from 'classnames';
-import MousePointer from './MousePointer.jsx';
+import MousePointerBase from './MousePointerBase.jsx';
 
 /**
- * Toolbar allows users to perform actions (undo, share, change color) on the
- * main whiteboard.
+ * Fetches a remote user's mouse cursor position via a stream, and renders a 
+ * floating label at this position. When the position updates, the label will
+ * move to the new position.
  *
- * @class Toolbar
+ * The label's background and content are provided via props.
+ *
+ * @class OwnMousePointer
  * @extends React.Component
  */
-export default class RemoteMousePointer extends MousePointer {
+export default class RemoteMousePointer extends MousePointerBase {
 
 	constructor(props){
 		super(props);
+
+		// initial state
 		this.state = {
-			pos : [],
-			updatedCount : 0
+			pos : [] // position of pointer
 		}
-		this.receivedCount = 0;
 	}
 
+
+	// after component mounts
 	componentDidMount(){
-		if (this.props.listenToSessionId){
-			this._listenToStream(this.props.listenToSessionId);
+		if (this.props.sessionId){
+			// update stream
+			this._listenToStream(this.props.sessionId);
 		}
 	}
 
-	shouldComponentUpdate(nextProps,nextState){
-		return (this.receivedCount > nextState.updatedCount - 5);
-	}
 
+	//before component updates
 	componentWillUpdate(nextProps,nextState){
-		if (nextProps.listenToSessionId !== this.props.listenToSessionId){
-			this._listenToStream(nextProps.listenToSessionId);
+		// if session id has changed
+		if (nextProps.sessionId !== this.props.sessionId){
+			// update stream
+			this._listenToStream(nextProps.sessionId);
 		}
 	}
 
-	_listenToStream(listenToSessionId){
-		if (!listenToSessionId) {return;}
-		Streamy.on('pointer-pos-'+listenToSessionId, (pos)=>{
-			this.receivedCount++;
+
+	/**
+	* Sets up event handler, to listen to remote user's update of mouse position co-ordinates
+	* When the event is heard, a function is executed that updates state with the new position
+	* co-ordinates
+	*
+	* @method _listenToStream
+	* @param {String} sessionId - remote user's session Id to listen to
+	*/
+	_listenToStream(sessionId){
+		if (!sessionId) {return;}
+		Streamy.on('pointer-pos-'+sessionId, (pos)=>{
 			if (pos){
 				this.setState({
+					// update position after multiplying by scale
 					pos : [
-						pos.x * this.props.scale,
-						pos.y * this.props.scale
-					],
-					updatedCount : this.state.updatedCount++ 
+						pos.x * this.props.scale, 
+						pos.y * this.props.scale 
+					]
 				});
 			}
 		});
@@ -71,7 +85,7 @@ export default class RemoteMousePointer extends MousePointer {
 RemoteMousePointer.propTypes = {
 	name : PropTypes.string,
 	bgColor : PropTypes.string,
-	listenToSessionId : PropTypes.string,
+	sessionId : PropTypes.string,
 	scale : PropTypes.number
 }
 
