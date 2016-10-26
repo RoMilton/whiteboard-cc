@@ -43,7 +43,7 @@ export default class NavBoards extends React.Component {
 								>
 									<DisplayCanvas
 										shapes={board.shapes}
-										id={this.props.iSelectedBoard}
+										id={index}
 									/>
 								</li>
 							);

@@ -11,7 +11,7 @@ export default class DisplayCanvas extends CanvasBase {
 
 	constructor(props){
 		super(props);
-		this.drawLastShapeOnly = false;
+		this.lastDrawnShapeId = '';
 	}
 
 	componentDidMount(){
@@ -20,11 +20,13 @@ export default class DisplayCanvas extends CanvasBase {
 	}
 
 	componentDidUpdate(prevProps,prevState){
-		if (this.drawLastShapeOnly){
-			let shapeModel = this.props.shapes[this.props.shapes.length-1];
-			this._drawOneShape(shapeModel);
-			// console.log('	one shape');
+		// check if only 1 shape has been added
+		if (this.props.shapes.length > 1
+		&& this.lastDrawnShapeId === this.props.shapes[this.props.shapes.length - 2].id){
+			// console.log('		drawing last shape only');
+			this._drawOneShape(this.props.shapes[this.props.shapes.length-1]);
 		}else{
+			// console.log('		drawing all shapes');
 			this._clear();
 			this._drawShapes(this.props.shapes);
 		}
@@ -33,38 +35,35 @@ export default class DisplayCanvas extends CanvasBase {
 
 	shouldComponentUpdate(nextProps,nextState){
 		let lastDrawnShapeId,
-			currNumberOfShapes = this.props.shapes.length,
+			oldNumberOfShapes = this.props.shapes.length,
 			nextNumberOfShapes = nextProps.shapes.length;
+		// console.log('checking whether to update canvas: ',this.props.id);
 
-		// if no previous shapes
-		if (!currNumberOfShapes){
-			//draw all shapes
-			this.drawLastShapeOnly = false;
-			//render
-			return true;
-		}else{
-			//get last drawn shape's id
-			lastDrawnShapeId = this.props.shapes[currNumberOfShapes -1].id;
+		// if both canvases are blank
+		if (!oldNumberOfShapes && !nextNumberOfShapes){
+			// console.log('	both canvases are blank');
+			return false; // skip render
 		}
 
-		//by default, all shapes will be drawn
-		this.drawLastShapeOnly = false;
-
-		// if board id is same as before
-		if (this.props.id === nextProps.id){
-			// if number of shapes is unchanged and last shape's id unchanged
-			if (currNumberOfShapes === nextNumberOfShapes && 
-			lastDrawnShapeId === nextProps.shapes[nextNumberOfShapes - 1].id){
-				// skip render
-				return false;
-			// if only 1 shape has been added
-			}else if (currNumberOfShapes + 1 === nextNumberOfShapes){
-				// draw final shape only
-				this.drawLastShapeOnly = true;
-			}
+		// if canvas has been cleared
+		if (oldNumberOfShapes && !nextNumberOfShapes){
+			// console.log('	UPDATING: canvas has been cleared');
+			return true; // render
 		}
 
-		// render
+		// if at least one shape has been removed
+		if (nextNumberOfShapes < oldNumberOfShapes){
+			// console.log('	UPDATING: at least one shape removed');
+			return true; //render
+		}
+
+		// check if no shapes have been added
+		if (nextNumberOfShapes === oldNumberOfShapes
+		&& this.lastDrawnShapeId === nextProps.shapes[nextNumberOfShapes-1].id){
+			// console.log('	no shapes added');
+			return false;
+		}
+		// console.log('	UPDATING: at least one shape has been added');
 		return true;
 	}
 	
@@ -81,7 +80,7 @@ export default class DisplayCanvas extends CanvasBase {
 			shapeModel,
 			this.refs.canvas
 		);
-		//this._setLastUpdated();
+		this.lastDrawnShapeId = shapeModel.id;
 	}
 
 	_clear(){

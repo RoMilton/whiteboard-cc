@@ -33,19 +33,25 @@ export default class BoardsWrapper extends React.Component {
 		this.setState({ scale : scale });
 	}
 
-	componentWillReceiveProps(nextProps){
-		
-	}
 
 	render(){
 		return (
 			<div className="wrap">
 				<div className="main-board" ref="mainBoard">
 					<div className="canvas-cont">
-						<DisplayCanvas 
-							shapes = {this.props.boards[this.props.iSelectedBoard].shapes}
-							id = {this.props.iSelectedBoard}
-						/>
+						<ul className='main-board__display-list'>
+							{ this.props.boards.map((board,index)=>{
+								return <li
+									key = {index}
+									style = { {display : index === this.props.iSelectedBoard ? '' : 'none'} }
+								>	
+									<DisplayCanvas 
+										shapes = {board.shapes}
+										id = {index}
+									/>
+								</li>
+							})}
+						</ul>
 						<DrawingCanvas 
 							scale = {this.state.scale}
 							color = {this.props.selectedColor}
