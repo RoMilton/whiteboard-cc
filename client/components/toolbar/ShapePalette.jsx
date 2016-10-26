@@ -2,7 +2,7 @@ import React, {PropTypes} from 'react';
 import classNames from 'classnames';
 
 /**
- * List of Tool Options, presented side by side. When clicked on, fires 
+ * List of Shape (such as 'Pen', 'Rect'), presented side by side. When clicked on, fires 
  * a callback provided by prop handleShapeChange.
  *
  * @class App
@@ -32,12 +32,12 @@ export default ShapePalette = class extends React.Component {
 					})
 				}
 			</ul>
-		)
+		);
 	}
 }
 
 ShapePalette.propTypes = {
-	selectedShape : PropTypes.string.isRequired,
-	shapes : PropTypes.object.isRequired,
-	handleShapeChange : PropTypes.func
+	shapes : PropTypes.object.isRequired, // object containing with shape names as properties.
+	selectedShape : PropTypes.string.isRequired, // selected shape, must exist as property in above prop shapes
+	handleShapeChange : PropTypes.func // fired when shape button is clicked
 };
