@@ -36,17 +36,18 @@ export default class App extends TrackerReact(React.Component) {
 
 		// default state
 		this.state = {
-			selectedShape : this._getDefaultTool(),
-			selectedColor : '',
-			history : [],
-			activeUsers : [],
-			alert : {
-				visible : false,
-				text : ''
+			selectedShape : this._getDefaultTool(), // currently selected shape, must be property in ShapeMap object
+			selectedColor : '', // currently selected color in hex format
+			history : [], // array of actions performed by local user
+			activeUsers : [], // array of all users currently active in this gallery
+			alert : {  
+				visible : false, // whether to show alert 
+				text : '' // alert text
 			},
-			gallery : null
+			gallery : null // gallery object, contains all whiteboard shapes. Must be instance of Gallery.js
 		};
 
+		// store default gallery name as instance property because will never change
 		this.defGalleryName = props.defGalleryName;
 
 		// binding methods here instead of render() speeds up re-renders
@@ -60,7 +61,7 @@ export default class App extends TrackerReact(React.Component) {
 		this._handleNewShape = this._handleNewShape.bind(this);
 		this._handleBoardAdd = this._handleBoardAdd.bind(this);
 		this._handleBoardChange = this._handleBoardChange.bind(this);
-		this._handleAlertFinish = this._handleAlertFinish.bind(this);
+		this._closeAlert = this._closeAlert.bind(this);
 	}
 
 
@@ -348,7 +349,6 @@ export default class App extends TrackerReact(React.Component) {
 		return new Promise((resolve,reject)=>{
 			let newState = {};
 			newState.gallery = this.state.gallery.clone();
-
 			// set selected board
 			newState.gallery.setSelectedBoard(iBoard);
 			// get nickname of user responsible for name		
@@ -360,9 +360,8 @@ export default class App extends TrackerReact(React.Component) {
 			};
 			this.setState(newState);
 
-			// if current user is responsible for this change
+			// if local user is responsible for this change
 			if (changedBy === this._sessionId()){
-				
 				// notify server
 				Meteor.call('changeBoard',{
 					galleryId : this.state.gallery.galleryId,
@@ -404,7 +403,7 @@ export default class App extends TrackerReact(React.Component) {
 	}
 
 	/**
-	* Undoes drawing of shapes performed by current user. 
+	* Undoes drawing of shapes performed by local user. 
 	*
 	* Can remove a given number of actions or all actions, depending on argument provided.
 	* 
@@ -434,6 +433,7 @@ export default class App extends TrackerReact(React.Component) {
 			itemsToRemove.forEach((historyItem)=>{			
 				// remove shape from board
 				boards[historyItem.iBoard].removeShape(historyItem.shapeId);
+				console.log('shape removed');
 			});
 
 			// remove item from history
@@ -448,7 +448,7 @@ export default class App extends TrackerReact(React.Component) {
 
 
 	/**
-	* Clears all shapes on every whiteboard drawn by current user
+	* Clears all shapes on every whiteboard drawn by local user
 	* 
 	* @memberof App
 	* @method _handleClearAll
@@ -495,7 +495,7 @@ export default class App extends TrackerReact(React.Component) {
 	* @memberof App
 	* @method _handleAlertFinish
 	*/
-	_handleAlertFinish(){
+	_closeAlert(){
 		// if alert is visible
 		if (this.state.alert.visible){
 			this.setState({
@@ -525,7 +525,7 @@ export default class App extends TrackerReact(React.Component) {
 		let newState = {},
 			gallery = this.state.gallery.clone();
 		
-		// if the current user created the shape
+		// if local user created the shape
 		if (createdBy === this._sessionId()){
 			let newItemObj = {
 				iBoard : iBoard,
@@ -555,7 +555,6 @@ export default class App extends TrackerReact(React.Component) {
 	}
 
 	render(){
-		let sessionId = this._sessionId();
 		if (!this.state.gallery){
 			return (<div className="spinner"></div>);
 		}
@@ -584,7 +583,7 @@ export default class App extends TrackerReact(React.Component) {
 						activeUsers = {this.state.activeUsers}
 						selectedShape = {this.state.selectedShape}
 						selectedColor = {this.state.selectedColor}
-						handleDrawStart = {this._handleAlertFinish }
+						handleDrawStart = {this._closeAlert}
 						handleDrawFinish = {this._handleNewShape }
 						handleBoardChange = {this._handleBoardChange}
 						handleBoardAdd = {this._handleBoardAdd}
@@ -593,7 +592,7 @@ export default class App extends TrackerReact(React.Component) {
 				<Alert
 					visible = {this.state.alert.visible}
 					text = {this.state.alert.text}
-					handleFinish = {this._handleAlertFinish}
+					handleFinish = {this._closeAlert}
 				/>
 				<ReactTooltip 
 					place="bottom"
