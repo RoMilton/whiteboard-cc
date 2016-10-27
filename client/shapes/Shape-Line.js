@@ -1,7 +1,7 @@
 import Shape from './Shape.js';
 
 /**
-* The line shape is a bunch of smaller line segments that connect with each other.
+* The Line shape is a bunch of smaller line segments that connect with each other.
 * Together, they appear as one long line. The line shape can be infitely long.
 *
 * @class Shape.Line

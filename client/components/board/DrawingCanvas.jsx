@@ -180,7 +180,7 @@ export default class DrawingCanvas extends CanvasBase {
 		let canvas = this.refs.canvas;
 		// create a new shape
 		this._currShape = new ShapeMap[this.props.selectedShape].class({
-			shapeName : this.props.selectedShape,
+			shapeType : this.props.selectedShape,
 			canvas : canvas,
 			color : this.props.color,
 			onShapeSubmit : this.props.handleDrawFinish
