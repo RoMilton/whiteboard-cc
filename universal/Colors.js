@@ -1,3 +1,5 @@
+// Default colors used by whiteboard app
+
 const Colors = [
 	'#1846ec',
 	'#F5A623',
