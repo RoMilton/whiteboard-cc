@@ -1,7 +1,10 @@
 import Galleries from './collections/Galleries.js';
 import ActiveUsers from './collections/ActiveUsers.js';
+/**
+* Meteor's Publish informs clients when DB collections have been updated
+*/
 
-
+// Galleries collection
 Meteor.publish('galleries',function([galleryId]){
 	return Galleries.find(
 		{galleryId: galleryId},
@@ -9,6 +12,7 @@ Meteor.publish('galleries',function([galleryId]){
 	);
 });
 
+// ActiveUsers collection
 Meteor.publish('activeUsers',function([galleryId]){
 	return ActiveUsers.find({galleryId: galleryId});
 });

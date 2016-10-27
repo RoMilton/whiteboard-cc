@@ -2,7 +2,19 @@ import Gallery from '../universal/Gallery.js';
 import Galleries from './collections/Galleries.js';
 import ActiveUsers from './collections/ActiveUsers.js';
 
+// methods that can be called from client.
 Meteor.methods({
+	/**
+	* Initialises a new user by adding them to a gallery
+	*
+	* Checks to see if a gallery with given gallery name exists. If so it will be 
+	* retrieved. If doesn't exist, a new gallery will be created with given name.
+	*
+	* @method insertShape
+	* @param {Object} args - object with two properties
+	* 				galleryId {String} - unique galleryId
+	* 				iBoard {Number} - index of board to select
+	*/
 	initialiseSession(galleryName){
 		let sessionId = this.connection.id,
 			galleryModel;
@@ -14,13 +26,23 @@ Meteor.methods({
 			galleryModel = Galleries.createGallery(galleryName);
 		} 
 
+		// add an active user
 		let user = ActiveUsers.addUser(galleryModel.galleryId,sessionId);
 
+		// return user and gallery details
 		return {
 			user : user,
 			gallery : galleryModel
 		};
 	},
+	/**
+	* Sets the selected board of a gallery
+	*
+	* @method insertShape
+	* @param {Object} args - object with two properties
+	* 				galleryId {String} - unique galleryId
+	* 				iBoard {Number} - index of board to select
+	*/
 	changeBoard(args){
 		let sessionId = this.connection.id,
 			{ galleryId, iBoard } = args;
@@ -35,6 +57,14 @@ Meteor.methods({
 			}
 		);
 	},
+	/**
+	* Updates the a gallery's name
+	*
+	* @method insertShape
+	* @param {Object} names - object with two properties
+	* 				currentName {String} - current name of gallery 
+	* 				newName {String} - name to set gallery to
+	*/
 	updateGalleryName(names){
 		let sessionId = this.connection.id
 
@@ -57,11 +87,16 @@ Meteor.methods({
 			);
 		}
 	},
+	/**
+	* Updates the nickname of the user
+	*
+	* @method insertShape
+	* @param {String} nickname - new nickname of user
+	*/
 	updateNickname(nickname){
 		let sessionId = this.connection.id;
 
 		nickname = nickname.trim(); 
-		//console.log('nickname',nickname);
 		if (!nickname){
 			throw new Meteor.Error(500, "You must provide a name", '');	
 		}
@@ -74,11 +109,23 @@ Meteor.methods({
 			}
 		);
 	},
+	/**
+	* Inserts a new shape into a gallery
+	*
+	* @method insertShape
+	* @param {Object} args - object with following properties:
+	*			activeUsers {Array[Object]} - array of all active users in session to stream to
+	*			galleryId {String} - unique galleryId of current gallery,
+	*			iBoard {Number} - index of whiteboard to insert into
+	*			shape {Object} - serialized shape to insert
+	*/
 	insertShape(args){
 		let sessionId = this.connection.id,
 			{activeUsers, galleryId, iBoard, shape } = args;
 
+		// for each active user
 		activeUsers.forEach((sid)=>{
+			// stream
 			Streamy.sessions(sid).emit(
 				'insert-shape',
 				{
@@ -97,6 +144,7 @@ Meteor.methods({
 			// insert shape
 			gallery.boards[iBoard].addShape(shape);
 			
+			// update DB
 			Galleries.updateBoards(
 				galleryId,
 				gallery.serialize().boards,
@@ -105,10 +153,23 @@ Meteor.methods({
 		}
 
 	},
+	/**
+	* Removes shapes from a whiteboard. For performance reasons, all users are informed
+	* via a stream, which is faster than relying only on MongoDB transactions.
+	*
+	* @method removeShapes
+	* @param {Object} args - object with following properties:
+	*			activeUsers {Array[Object]} - array of all active users in session to stream to
+	*			galleryId {String} - unique galleryId of current gallery,
+	*			items {Array[Object]} - array of objects to remove. Each object must have a shapeId and iBoard proeprty
+	*/
 	removeShapes(args){
 		let sessionId = this.connection.id,
 			{activeUsers, galleryId, items } = args;
+
+		// for each active user
 		activeUsers.forEach((sid)=>{
+			// stream
 			Streamy.sessions(sid).emit(
 				'remove-shapes',
 				{
@@ -124,7 +185,7 @@ Meteor.methods({
 			items.forEach((item)=>{
 				gallery.boards[item.iBoard].removeShape(item.shapeId);
 			});
-			
+			// update DB
 			Galleries.updateBoards(
 				galleryId,
 				gallery.serialize().boards,
@@ -133,11 +194,22 @@ Meteor.methods({
 		}
 
 	},
+	/**
+	* Clears all whiteboards. For performance reasons, all users are informed
+	* via a stream, which is faster than relying only on MongoDB transactions.
+	*
+	* @method clearAll
+	* @param {Object} args - object with following properties:
+	*			activeUsers {Array[Object]} - array of all active users in session to stream to
+	*			galleryId {String} - unique galleryId of current gallery,
+	*/
 	clearAll(args){
 		let sessionId = this.connection.id,
 			{activeUsers, galleryId} = args;
 
+		// for each active user
 		activeUsers.forEach((sid)=>{
+			// stream to other users
 			Streamy.sessions(sid).emit('clear-all',{
 				__from: sessionId
 			});
@@ -149,6 +221,7 @@ Meteor.methods({
 			gallery.boards.forEach(board=>{
 				board.clear();
 			});
+			// update DB
 			Galleries.updateBoards(
 				galleryId,
 				gallery.serialize().boards,
@@ -156,6 +229,12 @@ Meteor.methods({
 			);
 		}
 	},
+	/**
+	* Updates a user's color.
+	*
+	* @method updateColor
+	* @param {String} color - new color in hex format
+	*/
 	updateColor(color){
 		let sessionId = this.connection.id;
 
@@ -163,6 +242,7 @@ Meteor.methods({
 		if (!color){
 			throw new Meteor.Error(500, "You must provide a color", '');	
 		}
+		//update DB
 		ActiveUsers.update(
 			{ sessionId : sessionId},
 			{
