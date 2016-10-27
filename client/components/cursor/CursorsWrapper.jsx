@@ -32,7 +32,6 @@ export default class CursorsWrapper extends React.Component {
 	// after component mounts
 	componentDidMount(){
 		document.addEventListener('mousemove',this._handleMouseMove);
-		console.log('this.props.activeUsers',this.props.activeUsers);
 	}
 
 

@@ -71,19 +71,19 @@ export default class Toolbar extends React.Component {
 }
 
 Toolbar.propTypes = {
-	colors : PropTypes.array.isRequired, // array of all possible colors in hex format
-	shapes : PropTypes.object.isRequired, // object with shape types (such as 'pen','line') as properties
-	selectedShape : PropTypes.string.isRequired, // selected shape, must be property of prop shapes
-	selectedColor : PropTypes.string.isRequired, // selected color in hex format
-	galleryName : PropTypes.string, // current gallery name
-	nickname : PropTypes.string, // current user's nickname
-	handleShapeChange : PropTypes.func, // fired when new shape is clicked
-	handleUndoClick : PropTypes.func, // fired when undo is clicked
-	handleColorClick: PropTypes.func, //fired when new color is clicked
-	handleNicknameChange: PropTypes.func, //fired when new nickname is submitted
-	handleUrlChange : PropTypes.func, //fired when new gallery name is submitted
-	handleClearMyClick : PropTypes.func, // fired when Clear My sketches is clicked
-	handleClearAllClick : PropTypes.func // fired when Clear Everything is clicked
+	colors : PropTypes.array.isRequired, 		// array of all possible colors in hex format
+	shapes : PropTypes.object.isRequired, 		// object with shape types (such as 'pen','line') as properties
+	selectedShape : PropTypes.string.isRequired, 	// selected shape, must be property of prop shapes
+	selectedColor : PropTypes.string.isRequired, 	// selected color in hex format
+	galleryName : PropTypes.string, 			// current gallery name
+	nickname : PropTypes.string, 				// current user's nickname
+	handleShapeChange : PropTypes.func, 		// fired when new shape is clicked
+	handleUndoClick : PropTypes.func, 			// fired when undo is clicked
+	handleColorClick: PropTypes.func, 			//fired when new color is clicked
+	handleNicknameChange: PropTypes.func, 		//fired when new nickname is submitted
+	handleUrlChange : PropTypes.func,			//fired when new gallery name is submitted
+	handleClearMyClick : PropTypes.func,		// fired when Clear My sketches is clicked
+	handleClearAllClick : PropTypes.func		// fired when Clear Everything is clicked
 };
 
 Toolbar.defaultProps = {

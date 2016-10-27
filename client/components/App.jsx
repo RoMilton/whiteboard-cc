@@ -37,14 +37,14 @@ export default class App extends TrackerReact(React.Component) {
 		// default state
 		this.state = {
 			selectedShape : this._getDefaultTool(), // currently selected shape, must be property in ShapeMap object
-			selectedColor : '', // currently selected color in hex format
-			history : [], // array of actions performed by local user
-			activeUsers : [], // array of all users currently active in this gallery
+			selectedColor : '', 	// currently selected color in hex format
+			history : [], 			// array of actions performed by local user
+			activeUsers : [], 		// array of all users currently active in this gallery
 			alert : {  
-				visible : false, // whether to show alert 
-				text : '' // alert text
+				visible : false, 	// whether to show alert 
+				text : ''			// alert text
 			},
-			gallery : null // gallery object, contains all whiteboard shapes. Must be instance of Gallery.js
+			gallery : null 			// gallery object, contains all whiteboard shapes. Must be instance of Gallery.js
 		};
 
 		// store default gallery name as instance property because will never change
@@ -433,7 +433,6 @@ export default class App extends TrackerReact(React.Component) {
 			itemsToRemove.forEach((historyItem)=>{			
 				// remove shape from board
 				boards[historyItem.iBoard].removeShape(historyItem.shapeId);
-				console.log('shape removed');
 			});
 
 			// remove item from history

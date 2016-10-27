@@ -1,11 +1,13 @@
 import React from 'react';
 
 /**
- * The Whiteboard Canvas has one purpose - to allow the drawing of new shapes.
- * After the new shape is created, the insertNewShape() callback is fired and 
- * the canvas is cleared
+ * Parent class for the Canvas component.
  *
- * @class Canvas
+ * This component is not meant to be implemented directly but instead extended by a child component.
+ *
+ * This class sets some default properties that should be applied to all canvases.
+ *
+ * @class Toolbar
  * @extends React.Component
  */
 export default class DrawingCanvas extends React.Component {

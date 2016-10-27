@@ -1,34 +1,42 @@
 import React, {PropTypes} from 'react';
 
 /**
- * Toolbar allows users to perform actions (undo, share, change color) on the
- * main whiteboard.
+ * Banner Alert that displays across centre of screen.
  *
  * @class Toolbar
  * @extends React.Component
  */
 export default class Alert extends React.Component {
 
-	constructor(props){
-		super(props);
-	}
-
+	// after component mounts
 	componentDidMount(){
 		if (this.props.visible){
 			this._startTimer();
 		}
 	}
 
+
+	// after component updates
 	componentDidUpdate(){
 		if (this.props.visible){
 			this._startTimer();
 		}
 	}
 
+
+	/**
+	* Starts a timer, and upon it's completion, calls the handleFinish callback.
+	* This method should be called every time the alert is made visible.
+	*
+	* @memberOf Alert
+	* @method _startTimer
+	*/
 	_startTimer(){
 		if (!this.props.visible){return;}
 		if (this.props.handleFinish){
-			if (this.timer){ clearTimeout(this.timer); }
+			// clear timer if exists
+			if (this.timer){ clearTimeout(this.timer); } 
+			// create new timer
 			this.timer = setTimeout(()=>{
 				if (this.props.visible){ this.props.handleFinish(); }
 			},this.props.duration);
@@ -49,10 +57,10 @@ export default class Alert extends React.Component {
 
 
 Alert.PropTypes = {
-	handleFinish : PropTypes.func.isRequired,
-	visible : PropTypes.bool,
-	text : PropTypes.string,
-	duration : PropTypes.number
+	handleFinish : PropTypes.func.isRequired, // callback fired after timer has completed
+	visible : PropTypes.bool, // whether alert is visible
+	text : PropTypes.string, // text to display inside alert
+	duration : PropTypes.number // duration in milliseconds that alert is visible before firing handleFinish callback
 };
 
 Alert.defaultProps = {

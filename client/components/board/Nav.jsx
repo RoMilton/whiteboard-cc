@@ -1,26 +1,18 @@
 import React, {PropTypes} from 'react';
 import classNames from 'classnames';
 import DisplayCanvas from './DisplayCanvas.jsx';
+import Gallery from '../../../universal/Gallery.js';
 
 /**
- * Board Navigation. Since Whiteboard app uses multiple boards, this component allows users
- * to toggle between them. This is done by clicking on a thumbnail image. User can add new board
- * until the maximum number is reached.
+ * Board Navigation. Allows users to navigate between multiple multiple boards.
+ * 
+ * Each navigation item is a thumbnail image. User can add a new board until the
+ * max number of boards are reached
  *
  * @class Nav
  * @extends React.Component
  */
 export default class NavBoards extends React.Component {
-
-	/**
-	 * The maximum number of boards in a gallery
-	 *
-	 * @property MAX_BOARD_COUNT
-	 * @static
-	 */
-	static get MAX_BOARD_COUNT(){
-		return 6;
-	}
 
 	render(){
 		let getCSSClass = (iBoard) => {
@@ -50,7 +42,7 @@ export default class NavBoards extends React.Component {
 						})
 					}
 					{
-						(this.props.boards.length < NavBoards.MAX_BOARD_COUNT) &&
+						(this.props.boards.length < Gallery.maxBoards) &&
 						<div 
 							className="nav__item nav__item--add"
 							onClick={ this.props.handleNewClick }
@@ -64,8 +56,8 @@ export default class NavBoards extends React.Component {
 }
 
 NavBoards.propTypes = {
-	iSelectedBoard : PropTypes.number.isRequired,
-	boards : PropTypes.array.isRequired,
-	handleItemClick : PropTypes.func,
-	handleNewClick : PropTypes.func
+	boards : PropTypes.array.isRequired,	// array of whiteboard instances
+	iSelectedBoard : PropTypes.number.isRequired, // index of currently selected whiteboard
+	handleItemClick : PropTypes.func,		// fired when local user clicks on existing board in navigation
+	handleNewClick : PropTypes.func			// fired when local user clicks on 'add new board' button in navigation
 }
