@@ -1,7 +1,23 @@
 import Shape from './Shape.js';
 
+/**
+* The line shape is a bunch of smaller line segments that connect with each other.
+* Together, they appear as one long line. The line shape can be infitely long.
+*
+* @class Shape.Line
+* @extends Shape
+*/
 export default Shape.Line = class extends Shape{
 
+	/**
+	* Draws a Line onto a canvas from a serialized Line
+	*
+	* @memberOf Shape.Line
+	* @method drawFromModel
+	* @param {Object} Serialized Shape Model
+	* @param {HTMLElement} Canvas node to draw shape on
+	* @static
+	*/
 	static drawFromModel(shapeModel,canvas){
 		let ctx = canvas.getContext('2d');
 		ctx.strokeStyle = shapeModel.col;
@@ -18,16 +34,21 @@ export default Shape.Line = class extends Shape{
 		});
 	}
 
+
+	/**
+	* Draws a segment of the line. The segment will start at where the previous segment ended.
+	* The segment will end at the latest click position.
+	*
+	* @memberOf Shape.Line
+	* @method draw
+	*/
 	draw(){
 		if (this.status === Shape.STATUS.idle){ return; }
 		let ctx = this.ctx;
 		let clickPos = this.clickPos;
 		let prevClickPos = this.prevClickPos;
-		//if (!this._paint){return;}
-		//ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height); // Clears the canvas
 		ctx.strokeStyle = this.color;
 		ctx.lineWidth = 5;
-		//if (this.props.tool === 'pen'){
 		ctx.beginPath();
 		ctx.lineJoin = "round";
 		ctx.lineCap="round";
