@@ -56,6 +56,43 @@ input{
 	margin: 0 auto;
 }
 
+// wrapper element for regular text content
+.content{
+    position: absolute;
+    top: calc(50% - 50px);
+    left: 50%;
+    transform: translate(-50%,-50%);
+    text-align:center;
+}
+
+//headings
+h1,h2,h3,h4{
+	font-weight:700;
+	color:$lunar-green;
+}
+
+h1{
+	font-size:2.2em;
+}
+
+h2{
+	font-size:1.9em;
+}
+
+h2{
+	font-size:1.6em;
+}
+
+h3{
+	font-size:1.4em;
+}
+
+// regular paragraph text
+p{
+	color:$grey;
+	font-size:1.05em;
+}
+
 // container of boards and cursors
 .main-board{
 	position:relative;
@@ -131,6 +168,121 @@ input{
 	&--link{
 		padding-right:20px;
 		margin-bottom:15px;
+	}
+
+}
+
+
+// generic traditional-looking button
+.button{
+	display:inline-block;
+	height: 36px;
+	border: 1px solid darken($ebb,3%);
+	vertical-align: top;
+	margin-right: 7px;
+	min-width:58px;
+	padding: 8px 30px 9px 35px;
+	box-sizing:border-box;
+	position:relative;
+	text-transform:uppercase;
+	font-size:12px;
+	color: $grey;
+	@include button;
+	@include bord_rad;
+	box-sizing: border-box;
+	span{
+		display:none;
+	}
+
+	// background image is assigned to pseudo element to its opacity can be controlled
+	&:before{
+		@include icon-image;
+	}
+
+	// undo button
+	&--undo:before{
+		background-image: url('images/icon-arrow-round.png');
+	}
+
+	// select list button
+	&--select{
+		padding-top: 0;
+		//padding-right: 45px;
+		padding-right: 78px;
+		padding-left:0;
+
+		// text span inside select list
+		&__text{
+			padding: 8px 0 9px 33px;
+			display:block;
+			&:before{
+				@include icon-image;
+			}
+
+			//clear my sketches button
+			&--clear{
+				&:before{
+					background-image: url('images/icon-cross.png');
+				}
+				&:hover:before{
+					@extend .button:hover:before
+				}
+			}
+		}
+
+		// expand button on right of select list
+		&__arrow,
+		&__toggle{
+			width: 44px;
+			height: 100%;
+		}
+		&__arrow{
+			position: absolute;
+			top: 0;
+			right: 0;
+			background-color:$ebb;
+		}
+		&__toggle{
+			position: relative;
+			top: 50%;
+			transform: translate(0, -50%);
+			height: 100%;
+			display: inline-block;
+			opacity: 0.63;
+			background: url('images/icon-arrow-down.png') 50% 50% no-repeat;
+			&:hover{
+				background-color:darken($ebb,7%);
+				opacity:1;
+			}
+		}
+	}
+
+	&--full,&--full:visited{
+		width:100%;
+		margin-top: 6px;
+		&:before{
+			display:none;
+		}
+		background-color:darken($bright,10%);
+		border:none;
+		text-transform:none;
+		color:#fff;
+		padding-left:0;
+		font-size:18px;
+		height:auto;
+		&:hover{
+			color:#fff;
+			background-color:$bright;
+		}
+	}
+	
+	// hover on generic button
+	&:hover{
+		border-color: $grey;
+		color: darken($grey,25%);
+		&:before {
+			opacity:0.7;
+		}
 	}
 
 }

@@ -8,6 +8,7 @@ import Alert from './alert/Alert.jsx';
 import ShapeMap from '../shapes/ShapeMap.js';
 import Colors from '../../universal/Colors.js';
 import Gallery from '../../universal/Gallery.js';
+import Reconnect from './Reconnect.jsx';
 
 // Mongo collections
 Galleries = new Mongo.Collection("galleries");
@@ -17,13 +18,8 @@ ActiveUsers = new Mongo.Collection("activeUsers");
  * Whiteboard App
  *
  * App that displays a gallery of whiteboards on which local and remote users can draw
- * on in real time.
- *
- * Up to 6 boards can be added per gallery. When one user switches to a new board,
- * remote users will switch to the new board as well.
- *
- * If a default URL link is not provided as @prop defGalleryName, a suitable defalt link will
- * be retrieved from the server.
+ * on in real time. Up to 6 boards can be added per gallery. When one user switches to a new board,
+ * remote users will switch to the new board too.
  *
  * @class App
  * @extends React.Component
@@ -44,7 +40,8 @@ export default class App extends TrackerReact(React.Component) {
 				visible : false, 	// whether to show alert 
 				text : ''			// alert text
 			},
-			gallery : null 			// gallery object, contains all whiteboard shapes. Must be instance of Gallery.js
+			gallery : null,			// gallery object, contains all whiteboard shapes. Must be instance of Gallery.js
+			disconnected : false	// if local user has been disonnected from stream
 		};
 
 		// store default gallery name as instance property because will never change
@@ -72,6 +69,12 @@ export default class App extends TrackerReact(React.Component) {
 		document.body.addEventListener('touchmove', this._preventDefault);
 
 		let newState = {};
+
+		Streamy.onDisconnect(()=>{
+			this.setState({
+				disconnected : true
+			});
+		});
 		
 		// retrieve gallery and user data for this session, providing the default defGalleryName
 		Meteor.call('initialiseSession',this.defGalleryName,(err,res)=>{
@@ -556,6 +559,9 @@ export default class App extends TrackerReact(React.Component) {
 	render(){
 		if (!this.state.gallery){
 			return (<div className="spinner"></div>);
+		}
+		if (this.state.disconnected){
+			return (<Reconnect />);
 		}
 		return (
 			<div id="container" className="container">
