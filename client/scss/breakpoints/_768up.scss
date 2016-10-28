@@ -142,18 +142,19 @@ $toolbar-height : 50px;
 	// n people button
 	&--users{
 		&__count{
-			@include icon-image;	
-			background-color:darken($grey,18%);//#BDB9B7;
-			border-radius:50%;
-			color:#fff;
-			padding:0 6px;
-			font-weight:700;
-			left:22px;
+			@include icon-image;
+			background-color:darken($grey,18%);
+			left:19px;
 			top:14px;
-			line-height:21px;
-			font-size:16px;
-			height:auto;
+			border-radius: 50%;
+			color: white;
+			font: 15px/13px Arial;
+			height: 22px; 
+			min-width: 22px;
 			width:auto;
+			padding: 4px 3px 0 3px;
+			text-align: center;
+			
 		}
 		&:hover{
 			.tool-link--users__count{
