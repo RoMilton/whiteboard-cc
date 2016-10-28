@@ -18,9 +18,7 @@ export default class RemoteMousePointer extends MousePointerBase {
 		super(props);
 
 		// initial state
-		this.state = {
-			pos : [] // position of pointer,
-		}
+		this.state.pos = [] // position of pointer,
 
 		this.receivedCount = 0; // number of times new co-ords have been received
 		this.updatedCount = 0 // number of times component has updated
