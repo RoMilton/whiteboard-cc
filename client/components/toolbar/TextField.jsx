@@ -20,6 +20,7 @@ export default class TextField extends React.Component{
 		this._handleTextChange = this._handleTextChange.bind(this);
 		this._handleKeyUp = this._handleKeyUp.bind(this);
 		this._handleInputClick = this._handleInputClick.bind(this);
+		this._handleSubmit = this._handleSubmit.bind(this);
 	}
 
 
