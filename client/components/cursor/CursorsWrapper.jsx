@@ -26,6 +26,13 @@ export default class CursorsWrapper extends React.Component {
 
 		//bind mouse move callback so 'this' can be used inside it
 		this._handleMouseMove = this._handleMouseMove.bind(this);
+
+		this.moveCount = 0;
+
+
+		this.prevMouseX=-1; 
+		this.prevMouseY=-1;
+		this.prevMouseTime;
 	}
 
 
@@ -80,6 +87,7 @@ export default class CursorsWrapper extends React.Component {
 	_handleMouseMove(e){
 		// if this is a touchscreen swipe, ignore
 		if (e.changedTouches){ return; }
+		this.moveCount++;
 		let wrapper = this.refs.wrapper,
 			rect = wrapper.getBoundingClientRect();
 
@@ -87,18 +95,33 @@ export default class CursorsWrapper extends React.Component {
 		let xPos = e.clientX - rect.left;
 		let yPos = e.clientY - rect.top;
 
-		// stream mouse position to remote users after applying scale
-		Streamy.sessions(this.allSessionIds).emit(
-			'pointer-pos-'+this.props.sessionId, 
-			{ 
-				x : xPos / this.props.scale,
-				y : yPos / this.props.scale
-			}
-		);
+		// calculate distance that mouse has moved
+		let mousetravel = Math.max( Math.abs(xPos-this.prevMouseX), Math.abs(yPos-this.prevMouseY) );
+		let timeNow = new Date().getTime();
+		if (this.prevMouseTime && this.prevMouseTime!=timeNow) {
+			// get mouse speed 
+			var pps = Math.round(mousetravel / (timeNow - this.prevMouseTime) * 1000); // pixels per second by dividing the distance by time
+		}
+		this.prevMouseTime = timeNow; 
+
+		// if mouse speed is less than 1500 pixels per second
+		if (pps < 1500) {
+			// stream mouse position to remote users after applying scale
+			Streamy.sessions(this.allSessionIds).emit(
+				'pointer-pos-'+this.props.sessionId, 
+				{ 
+					x : xPos / this.props.scale,
+					y : yPos / this.props.scale
+				}
+			);
+		}
 
 		this.setState({
 			ownPointerPos : [xPos,yPos]
 		});
+
+		this.prevMouseX = xPos;
+		this.prevMouseY = yPos;
 	}
 
 

@@ -41,7 +41,8 @@ export default class App extends TrackerReact(React.Component) {
 				text : ''			// alert text
 			},
 			gallery : null,			// gallery object, contains all whiteboard shapes. Must be instance of Gallery.js
-			disconnected : false	// if local user has been disonnected from stream
+			disconnected : false,	// if local user has been disonnected from stream
+			isDrawing : false
 		};
 
 		// store default gallery name as instance property because will never change
@@ -592,6 +593,7 @@ export default class App extends TrackerReact(React.Component) {
 						handleDrawFinish = {this._handleNewShape }
 						handleBoardChange = {this._handleBoardChange}
 						handleBoardAdd = {this._handleBoardAdd}
+						isDrawing = {this.state.isDrawing}
 					/>
 				</main>
 				<Alert

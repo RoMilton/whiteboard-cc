@@ -11,7 +11,7 @@ export default class Reconnect extends React.Component {
 		return(
 			<div className="content">
 				<h2>We've lost you!</h2>
-				<p>You've been disconnected for being idle a long time.</p>
+				<p>You've no longer connected with the server.</p>
 				<a 
 					href={window.location.href}
 					onClick={()=>{window.location.href=window.location.href}}

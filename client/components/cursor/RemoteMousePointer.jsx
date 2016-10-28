@@ -19,9 +19,6 @@ export default class RemoteMousePointer extends MousePointerBase {
 
 		// initial state
 		this.state.pos = [] // position of pointer,
-
-		this.receivedCount = 0; // number of times new co-ords have been received
-		this.updatedCount = 0 // number of times component has updated
 	}
 
 
@@ -43,15 +40,6 @@ export default class RemoteMousePointer extends MousePointerBase {
 		}
 	}
 
-	// whether component should update
-	shouldComponentUpdate(nextProps,nextState){
-		// An influx of received co-ordinates happens when a remote user's connection
-		// goes back to normal after experiencing some temporary lag or disconnection.
-		// To deal with this, we skip re-render until the last 4 received co-ordinates,
-		// allowing this component to catch up with the remote user.
-		return (this.receivedCount > this.updatedCount - 5);
-	}
-
 
 	/**
 	* Sets up event handler, to listen to remote user's update of mouse position co-ordinates
@@ -65,7 +53,6 @@ export default class RemoteMousePointer extends MousePointerBase {
 		if (!sessionId) {return;}
 		Streamy.on('pointer-pos-'+sessionId, (pos)=>{
 			if (pos){
-				this.receivedCount++;
 				this.setState({
 					// update position after multiplying by scale
 					pos : [
@@ -102,5 +89,6 @@ RemoteMousePointer.propTypes = {
 }
 
 RemoteMousePointer.defaultProps = {
-	scale : 1
+	scale : 1,
+	update : true
 }
