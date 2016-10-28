@@ -19,7 +19,8 @@ html, body {
 
 body{
 	background-color: $ebb;
-	position: relative
+	position: relative;
+	-webkit-transform: translate3d(0,0,0);
 }
 
 html,body,.app,.container{
@@ -46,6 +47,7 @@ input{
 // main div
 .main{
 	padding-top:2px;
+	overflow-y:auto;
 }
 
 // wrap div to center content
