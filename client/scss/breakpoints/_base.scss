@@ -162,7 +162,7 @@ p{
 	text-align: left;
 	color:$grey;
 	display:block;
-	font-size:15px;
+	font-size:14px;
 
 	// hyperlink label
 	&--link{
@@ -355,6 +355,35 @@ $text-submit-width: 60px;
 		&:active{
 			background-color:lighten($bright,5%);
 		}
+	}
+}
+
+/**
+* Color List Block
+*
+* A vertically stacked unordered list. Each value is prefixed by a solid square color
+*/
+.color-list{
+	li{
+		padding: 6px 0 6px 20px;
+		height:32px;
+		text-align:left;
+		position:relative;
+		font-size:14px;
+		margin-bottom:2px;
+		color:$lunar-green;
+		&.is-active{
+			background-color:darken($ebb,5%);
+		}
+	}
+	&__col{
+		display:inline-block;
+		width:10px;
+		height:100%;
+		position:absolute;
+		left:0;
+		top:0;
+		border:1px solid $opaque-black;
 	}
 }
 

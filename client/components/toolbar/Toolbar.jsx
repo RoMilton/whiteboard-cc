@@ -64,6 +64,7 @@ export default class Toolbar extends React.Component {
 					galleryName = {this.props.galleryName}
 					handleNicknameChange = {this.props.handleNicknameChange}
 					handleUrlChange = {this.props.handleUrlChange}
+					activeUsers = {this.props.activeUsers}
 				/>
 			</header>
 		)
@@ -83,7 +84,8 @@ Toolbar.propTypes = {
 	handleNicknameChange: PropTypes.func, 		//fired when new nickname is submitted
 	handleUrlChange : PropTypes.func,			//fired when new gallery name is submitted
 	handleClearMyClick : PropTypes.func,		// fired when Clear My sketches is clicked
-	handleClearAllClick : PropTypes.func		// fired when Clear Everything is clicked
+	handleClearAllClick : PropTypes.func,		// fired when Clear Everything is clicked
+	activeUsers : PropTypes.arrayOf(PropTypes.object), // array containing objects representing remote users. Each object must have sessionId property
 };
 
 Toolbar.defaultProps = {

@@ -69,12 +69,6 @@ export default class App extends TrackerReact(React.Component) {
 		document.body.addEventListener('touchmove', this._preventDefault);
 
 		let newState = {};
-
-		Streamy.onDisconnect(()=>{
-			this.setState({
-				disconnected : true
-			});
-		});
 		
 		// retrieve gallery and user data for this session, providing the default defGalleryName
 		Meteor.call('initialiseSession',this.defGalleryName,(err,res)=>{
@@ -96,6 +90,11 @@ export default class App extends TrackerReact(React.Component) {
 			};
 			this._setUpTracker();
 			this.setState(newState);
+
+			//when user is disconnected from stream
+			Streamy.onDisconnect(()=>{
+				this.setState({ disconnected : true });
+			});
 		
 			// when remote user inserts shape
 			Streamy.on('insert-shape',(data)=>{
@@ -579,6 +578,7 @@ export default class App extends TrackerReact(React.Component) {
 					handleClearAllClick = {this._handleClearAll}
 					handleNicknameChange = {this._handleNicknameChange}
 					handleUrlChange = {this._handleUrlChange}
+					activeUsers = {this.state.activeUsers}
 				/>
 				<main className="main">
 					<BoardsWrapper

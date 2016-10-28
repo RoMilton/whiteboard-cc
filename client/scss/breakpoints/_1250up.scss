@@ -12,6 +12,7 @@ These Styles should be applied to screens 1250px and above only
 .tool-link{
 	padding-right: 14px;
 	padding-left: 39px;
+	border-left:none;
 	span{display:block;}
 
 	&:before{
@@ -22,6 +23,11 @@ These Styles should be applied to screens 1250px and above only
 		padding-left:42px;
 		&:before{
 			left: 10px;
+		}
+	}
+	&--users{
+		&__count{
+			left:12px;
 		}
 	}
 }

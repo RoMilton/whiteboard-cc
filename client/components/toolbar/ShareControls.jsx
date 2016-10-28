@@ -3,6 +3,7 @@ import DropDown from './DropDown.jsx';
 import TextField from './TextField.jsx';
 import TextControl from './TextControl.jsx';
 import eventService from '../../eventService.js';
+import ActiveUsers from './ActiveUsers.jsx';
 
 
 /**
@@ -118,13 +119,18 @@ export default class ShareControls extends React.Component {
 					buttonClassName="tool-link tool-link--name"
 					buttonText="Change Name"
 					defaultValue={this.props.nickname}
-					inputDescription="Enter Your Name:"
+					inputDescription="Enter Your Nickname:"
 					handleSubmit= {this._handleNicknameChange}
 					submitText="Save"
 					width={270}
 					successMsg={this.state.nameSuccessMsg}
 					errorMsg={this.state.nameErrorMsg}
 				/>
+				<ActiveUsers
+					nickname = {this.props.nickname}
+					activeUsers = {this.props.activeUsers}
+				/>
+				
 				<TextControl
 					buttonClassName="tool-link tool-link--share"
 					buttonText="Invite"
@@ -143,5 +149,6 @@ export default class ShareControls extends React.Component {
 ShareControls.propTypes = {
 	nickname : PropTypes.string,  // current user's nickname
 	galleryName :  PropTypes.string, // current gallery name
-	handleUrlChange : PropTypes.func // fired when gallery name is changed
+	handleUrlChange : PropTypes.func, // fired when gallery name is changed
+	activeUsers : PropTypes.arrayOf(PropTypes.object) // array containing objects representing remote users. Each object must have sessionId property
 }
