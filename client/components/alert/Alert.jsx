@@ -3,7 +3,7 @@ import React, {PropTypes} from 'react';
 /**
  * Banner Alert that displays across centre of screen.
  *
- * @class Toolbar
+ * @class Alert
  * @extends React.Component
  */
 export default class Alert extends React.Component {

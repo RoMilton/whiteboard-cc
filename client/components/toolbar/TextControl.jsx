@@ -10,7 +10,7 @@ import TextField from './TextField.jsx';
  *
  * Also displays success/error notifications provided in the props.
  *
- * @class ShareControls
+ * @class TextControl
  * @extends React.Component
  */
 export default class TextControl extends React.Component{

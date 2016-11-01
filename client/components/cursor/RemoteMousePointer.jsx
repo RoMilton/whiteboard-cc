@@ -9,7 +9,7 @@ import MousePointerBase from './MousePointerBase.jsx';
  *
  * The label's background and content are provided via props.
  *
- * @class OwnMousePointer
+ * @class RemoteMousePointer
  * @extends React.Component
  */
 export default class RemoteMousePointer extends MousePointerBase {

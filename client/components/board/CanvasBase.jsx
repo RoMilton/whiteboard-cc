@@ -7,7 +7,7 @@ import React from 'react';
  *
  * This class sets some default properties that should be applied to all canvases.
  *
- * @class Toolbar
+ * @class CanvasBase
  * @extends React.Component
  */
 export default class DrawingCanvas extends React.Component {

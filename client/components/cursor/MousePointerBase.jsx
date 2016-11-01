@@ -13,7 +13,7 @@ import Utils from '../../../universal/Utils.js';
  *
  * This class contains methods that calculate common styling that apply to all mouse pointers.
  *
- * @class Toolbar
+ * @class MousePointer
  * @extends React.Component
  */
 export default class MousePointer extends React.Component {

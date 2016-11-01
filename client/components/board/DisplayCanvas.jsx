@@ -10,7 +10,7 @@ import CanvasBase from './CanvasBase.jsx';
  * Each shape provided in the prop arrays must be a serialized form of a shape
  * in the ShapeMap.
  * 
- * @class Display Canvas
+ * @class DisplayCanvas
  * @extends React.Component
  */
 export default class DisplayCanvas extends CanvasBase {

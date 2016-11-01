@@ -5,7 +5,7 @@ import classNames from 'classnames';
  * Displays a palette of colors. When a user clicks on a color, a 
  * callback can be fired passing the clicked color that was clicked on.
  *
- * @class Toolbar
+ * @class ColorSelect
  * @extends React.Component
  */
 export default class ColorSelect extends React.Component {

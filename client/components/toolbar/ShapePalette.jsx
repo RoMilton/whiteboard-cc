@@ -5,7 +5,7 @@ import classNames from 'classnames';
  * List of Shape (such as 'Pen', 'Rect'), presented side by side. When clicked on, fires 
  * a callback provided by prop handleShapeChange.
  *
- * @class App
+ * @class ShapePalette
  * @extends React.Component
  */
 export default ShapePalette = class extends React.Component {
