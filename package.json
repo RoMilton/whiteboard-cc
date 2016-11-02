@@ -1,7 +1,7 @@
 {
   "name": "whiteboard-cc",
   "version": "1.0.0",
-  "description": "",
+  "description": "Real time collaborative whiteboard web app"
   "scripts": {
     "start": "meteor run"
   },
