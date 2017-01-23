@@ -15,61 +15,61 @@ import ToolSelectList from './ToolSelectList.jsx';
  * @class Toolbar
  * @extends React.Component
  */
-export default class Toolbar extends React.Component {
 
-	render(){
-		let colorStyles = {
-			backgroundColor : this.props.selectedColor
-		};
-		return (
-			<header className="toolbar">
-				<div className="toolbar__controls">
-					<DropDown 
-						anchor="left"
-						closeButton={false}
-						closeOnContentClick={true}
-						width = {267}
+const Toolbar = ( props ) => {
+	let colorStyles = {
+		backgroundColor : props.selectedColor
+	};
+	return (
+		<header className="toolbar">
+			<div className="toolbar__controls">
+				<DropDown 
+					anchor="left"
+					closeButton={false}
+					closeOnContentClick={true}
+					width = {267}
+				>
+					<ToolButton
+						className="button button--filled" 
+						style={colorStyles}
 					>
-						<ToolButton
-							className="button button--filled" 
-							style={colorStyles}
-						>
-						</ToolButton>
-						<ColorSelect
-							colors={this.props.colors} 
-							selectedColor = {this.props.selectedColor}
-							handleColorClick = {this.props.handleColorClick}
-						/>
-					</DropDown>
-					<ToolButton 
-						className="button button--undo" 
-						handleClick={ this.props.handleUndoClick }
-						text="Undo"
+					</ToolButton>
+					<ColorSelect
+						colors={props.colors} 
+						selectedColor = {props.selectedColor}
+						handleColorClick = {props.handleColorClick}
 					/>
-					<ToolSelectList
-						buttonClassName="button button--clear"
-						text="Clear My Sketches"
-						handleClick={ this.props.handleClearMyClick }
-						optionNames={['Clear My Sketches','Clear Everything']}
-						optionClicks={[this.props.handleClearMyClick,this.props.handleClearAllClick]}
-					/>
-				</div>
-				<ShapePalette
-					shapes={this.props.shapes}
-					selectedShape = {this.props.selectedShape}
-					handleShapeChange = {this.props.handleShapeChange}
+				</DropDown>
+				<ToolButton 
+					className="button button--undo" 
+					handleClick={ props.handleUndoClick }
+					text="Undo"
 				/>
-				<ShareControls 
-					nickname = {this.props.nickname}
-					galleryName = {this.props.galleryName}
-					handleNicknameChange = {this.props.handleNicknameChange}
-					handleUrlChange = {this.props.handleUrlChange}
-					activeUsers = {this.props.activeUsers}
+				<ToolSelectList
+					buttonClassName="button button--clear"
+					text="Clear My Sketches"
+					handleClick={ props.handleClearMyClick }
+					optionNames={['Clear My Sketches','Clear Everything']}
+					optionClicks={[props.handleClearMyClick,props.handleClearAllClick]}
 				/>
-			</header>
-		)
-	}
+			</div>
+			<ShapePalette
+				shapes={props.shapes}
+				selectedShape = {props.selectedShape}
+				handleShapeChange = {props.handleShapeChange}
+			/>
+			<ShareControls 
+				nickname = {props.nickname}
+				galleryName = {props.galleryName}
+				handleNicknameChange = {props.handleNicknameChange}
+				handleUrlChange = {props.handleUrlChange}
+				activeUsers = {props.activeUsers}
+			/>
+		</header>
+	)
 }
+
+export default Toolbar;
 
 Toolbar.propTypes = {
 	colors : PropTypes.array.isRequired, 		// array of all possible colors in hex format

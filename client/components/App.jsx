@@ -18,7 +18,7 @@ ActiveUsers = new Mongo.Collection("activeUsers");
  * Whiteboard App
  *
  * App that displays a gallery of whiteboards on which local and remote users can draw
- * on in real time. Up to 6 boards can be added per gallery. When one user switches to a new board,
+ * in real time. Up to 6 boards can be added per gallery. When one user switches to a new board,
  * remote users will switch to the new board too.
  *
  * @class App

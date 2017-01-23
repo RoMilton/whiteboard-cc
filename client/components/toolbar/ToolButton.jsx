@@ -7,21 +7,20 @@ import ReactTooltip from 'react-tooltip';
  * @class ToolButton
  * @extends React.Component
  */
-export default class ToolButton extends React.Component {
-	render(){
-		return (
-			<div 
-				data-tip={this.props.text}
-				data-class="no-1030"
-				className={this.props.className} 
-				onClick={this.props.handleClick}
-				style = {this.props.style || null}
-			>
-				<span>{this.props.text}</span>
-			</div>
-		);
-	}
-}
+
+const ToolButton = ( props ) => (
+	<div 
+		data-tip={props.text}
+		data-class="no-1030"
+		className={props.className} 
+		onClick={props.handleClick}
+		style = {props.style || null}
+	>
+		<span>{props.text}</span>
+	</div>
+)
+
+export default ToolButton;
 
 ToolButton.PropTypes = {
 	text: PropTypes.string, // text to display in button

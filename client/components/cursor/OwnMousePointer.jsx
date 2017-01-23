@@ -21,7 +21,6 @@ export default class OwnMousePointer extends MousePointerBase {
 			</div>
 		)
 	}
-
 }
 
 OwnMousePointer.propTypes = {

@@ -13,59 +13,58 @@ import TextField from './TextField.jsx';
  * @class TextControl
  * @extends React.Component
  */
-export default class TextControl extends React.Component{
 
-	render(){ 
-		// strip button text if it's too long
-		let text = this.props.buttonText.length > this.props.buttonTextLimit ? 
-			(this.props.buttonText.substr(0,this.props.buttonTextLimit) + '...') :
-			this.props.buttonText;
+const TextControl = ( props ) => {
+	// strip button text if it's too long
+	let text = props.buttonText.length > props.buttonTextLimit ? 
+		(props.buttonText.substr(0,props.buttonTextLimit) + '...') :
+		props.buttonText;
 
-		return (
-			<DropDown width={this.props.width} >
-				<div 
-					data-tip={text}
-					data-class="no-1250"
-					className={this.props.buttonClassName}>
-					<span>
-						{ text }
+	return (
+		<DropDown width={props.width} >
+			<div 
+				data-tip={text}
+				data-class="no-1250"
+				className={props.buttonClassName}>
+				<span>
+					{ text }
+				</span>
+				{
+					props.successMsg &&
+					<div className="msg-box msg-box--notif">	
+						<span className="msg-box__text msg-box__text--success">{props.successMsg}</span>
+					</div>
+				}
+			</div>
+			<div className="text-ctrl">
+				{ props.inputDescription && 
+					<span className="label label--link">
+						{ props.inputDescriptionLink ?
+							<a href={props.inputDescriptionLink} target="_blank">
+								{props.inputDescription}	
+							</a>
+						 : props.inputDescription
+						}
 					</span>
+				}
+				<TextField 
+					defaultValue = {props.defaultValue}
+					handleSubmit = {props.handleSubmit}
+					submitText = {props.submitText}
+					readOnly = {props.readOnly}
+				/>
 					{
-						this.props.successMsg &&
-						<div className="msg-box msg-box--notif">	
-							<span className="msg-box__text msg-box__text--success">{this.props.successMsg}</span>
+						props.errorMsg &&
+						<div className="msg-box">
+							<span className="msg-box__text msg-box__text--error">{props.errorMsg}</span>
 						</div>
 					}
-				</div>
-				<div className="text-ctrl">
-					{ this.props.inputDescription && 
-						<span className="label label--link">
-							{ this.props.inputDescriptionLink ?
-								<a href={this.props.inputDescriptionLink} target="_blank">
-									{this.props.inputDescription}	
-								</a>
-							 : this.props.inputDescription
-							}
-						</span>
-					}
-					<TextField 
-						defaultValue = {this.props.defaultValue}
-						handleSubmit = {this.props.handleSubmit}
-						submitText = {this.props.submitText}
-						readOnly = {this.props.readOnly}
-					/>
-						{
-							this.props.errorMsg &&
-							<div className="msg-box">
-								<span className="msg-box__text msg-box__text--error">{this.props.errorMsg}</span>
-							</div>
-						}
-				</div>
-			</DropDown>
-		);
-	}
-
+			</div>
+		</DropDown>
+	);
 }
+
+export default TextControl;
 
 TextControl.propTypes = {
 	buttonClassName : PropTypes.string, // css class name added to button
