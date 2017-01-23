@@ -6,20 +6,19 @@ import React, {PropTypes} from 'react';
 * @class Reconnect
 * @extends React.Component
 */
-export default class Reconnect extends React.Component {
-	render(){
-		return(
-			<div className="content">
-				<h2>We've lost you!</h2>
-				<p>You've no longer connected with the server.</p>
-				<a 
-					href={window.location.href}
-					onClick={()=>{window.location.href=window.location.href}}
-					className='button button--full'
-				>
-					Join Again
-				</a>
-			</div>
-		);
-	}
-}
+
+const Reconnect = ( props ) => (
+	<div className="content">
+		<h2>We've lost you!</h2>
+		<p>This usually means you've were disconnected from the internet.</p>
+		<a 
+			href={window.location.href}
+			onClick={()=>{window.location.href=window.location.href}}
+			className='button button--full'
+		>
+			Join Again
+		</a>
+	</div>
+);
+
+export default Reconnect;
