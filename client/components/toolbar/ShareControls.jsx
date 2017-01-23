@@ -7,7 +7,7 @@ import ActiveUsers from './ActiveUsers.jsx';
 
 
 /**
- * Colletion of buttons dedicated to social actions such as inviting other people and changing own name
+ * List of buttons dedicated to social actions such as inviting other people and changing own name
  *
  * @class ShareControls
  * @extends React.Component

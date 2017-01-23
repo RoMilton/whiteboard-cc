@@ -5,7 +5,7 @@ import MousePointerBase from './MousePointerBase.jsx';
 /**
  * A label that floats around the screen that indicates where the user's own cursor is. 
  *
- * The labels background and content are provided via props.
+ * Background and content of the label are provided via props.
  *
  * @class OwnMousePointer
  * @extends React.Component

@@ -3,7 +3,7 @@ import DropDown from './DropDown.jsx';
 
 /**
 * Displays the current number of active users. When the user clicks this number, 
-* a dropdown apperas that displays an unordered list with each user's name and 
+* a dropdown appears that displays an unordered list with each user's name and 
 * assigned color.
 *
 * @class ActiveUsers

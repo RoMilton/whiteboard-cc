@@ -8,7 +8,7 @@ import Nav from './Nav.jsx';
 /**
  * Container for the Drawing Canvas, Display Canvas, Navigation and Cursors components.
  *
- * The only state of this object is the scale. This measure the ratio that the container
+ * This state contains a scale property which is the ratio that the container
  * div has been resized.
  *
  * @class BoardsWrapper

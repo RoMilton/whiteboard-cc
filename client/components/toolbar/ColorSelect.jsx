@@ -3,7 +3,7 @@ import classNames from 'classnames';
 
 /**
  * Displays a palette of colors. When a user clicks on a color, a 
- * callback can be fired passing the clicked color.
+ * callback can be fired passing the clicked color as an argument.
  *
  * @class ColorSelect
  * @extends React.Component

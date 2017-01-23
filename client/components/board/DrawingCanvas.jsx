@@ -6,7 +6,7 @@ import ShapeMap from '../../shapes/ShapeMap.js';
 /**
  * The Drawing Canvas is used to draw a new shape. When mouse presses down on the
  * the canvas, a new shape is created. When user moves the mouse while mouse
- * is down, the co-ordinates are sent to the shape so it can manipulate accordinly. 
+ * is down, the co-ordinates are sent to the shape so it can manipulate accordingly. 
  * When user mouses up, the shape is finished and a callback is fired to handle it.
  *
  * The canvas is cleared after each shape that is drawn. This component is not meant

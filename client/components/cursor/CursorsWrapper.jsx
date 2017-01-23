@@ -28,8 +28,6 @@ export default class CursorsWrapper extends React.Component {
 		this._handleMouseMove = this._handleMouseMove.bind(this);
 
 		this.moveCount = 0;
-
-
 		this.prevMouseX=-1; 
 		this.prevMouseY=-1;
 		this.prevMouseTime;
