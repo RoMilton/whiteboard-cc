@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import eventService from '../../eventService.js';
 
 /**
- * Generic dropdown card. First child element of this component will be the trigger,
+ * Generic dropdown card. First child element of this component will be the trigger
  * that toggles the dropdown card when clicked.
  *
  * The second child element will be nested inside the dropdown card itself.

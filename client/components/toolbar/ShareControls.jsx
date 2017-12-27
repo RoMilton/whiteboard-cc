@@ -133,7 +133,7 @@ export default class ShareControls extends React.Component {
 				
 				<TextControl
 					buttonClassName="tool-link tool-link--share"
-					buttonText="Invite"
+					buttonText="Invite / Share"
 					submitText="Copy"
 					width={320}
 					defaultValue={currentURL}

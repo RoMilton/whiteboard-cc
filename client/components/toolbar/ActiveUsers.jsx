@@ -24,11 +24,8 @@ const ActiveUsers = ( props ) => {
 				data-tip={ props.activeUsers.length + ' ' + personOrPeople }
 				className="tool-link tool-link--users"
 			>
-				<div className="tool-link--users__count">
-					{props.activeUsers.length}
-				</div>
 				<span>
-					{personOrPeople}
+					{ props.activeUsers.length }
 				</span>
 			</div>
 				<div className="active-users">

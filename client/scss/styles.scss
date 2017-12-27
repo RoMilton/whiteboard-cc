@@ -63,6 +63,6 @@ Uses BEM (Block Element Modifier) code conventions. See http://getbem.com/
 * This is the average viewing window. So Desktops, Laptops, and
 * in general anyone not viewing on a mobile device.
 */
-@media only screen and (min-width: 1250px) {
-	@import "breakpoints/1250up";
+@media only screen and (min-width: 1200px) {
+	@import "breakpoints/1200up";
 }

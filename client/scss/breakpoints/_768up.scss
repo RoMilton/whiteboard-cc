@@ -119,11 +119,15 @@ $toolbar-height : 50px;
 		background-image: url('images/icon-person.png');
 	}
 
+	// n people button
+	&--users:before {
+		background-image: url('images/icon-user.png');
+	}
+
 	// invite/share toolbar item
 	&--share{
 		background-color:lighten($bright,10%);
 		color:#fff;
-		padding-left:47px;
 		border-left:none;
 		&:hover{
 			background-color:darken($bright,5%);
@@ -131,38 +135,9 @@ $toolbar-height : 50px;
 		}
 		&:before{
 			background-image: url('images/icon-share.png');
-			opacity: 0.9;
-			height:27px;
-			//left: 10px;
-			width: 29px;
-			top: 11px;
+			opacity: 1;
 		}
 	}
-
-	// n people button
-	&--users{
-		&__count{
-			@include icon-image;
-			background-color:darken($grey,18%);
-			left:19px;
-			top:14px;
-			border-radius: 50%;
-			color: white;
-			font: 15px/13px Arial;
-			height: 22px; 
-			min-width: 22px;
-			width:auto;
-			padding: 4px 3px 0 3px;
-			text-align: center;
-			
-		}
-		&:hover{
-			.tool-link--users__count{
-				opacity:0.9;
-			}
-		}
-	}
-
 }
 
 
