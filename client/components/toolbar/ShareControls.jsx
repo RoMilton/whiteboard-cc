@@ -84,7 +84,6 @@ export default class ShareControls extends React.Component {
 	_handleNicknameChange(nickname){
 		this.props.handleNicknameChange(nickname).then(()=>{
 			this.setState({
-				nameSuccessMsg : null,
 				nameSuccessMsg : 'Name changed to '+nickname,
 				urlSuccessMsg : null,
 				nameErrorMsg : null
@@ -93,7 +92,6 @@ export default class ShareControls extends React.Component {
 			this._clearAfterTimer();
 		},(err)=>{
 			this.setState({
-				nameSuccessMsg : null,
 				nameSuccessMsg : null,
 				nameErrorMsg : err
 			});
