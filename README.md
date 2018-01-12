@@ -1,7 +1,7 @@
 # whiteboard-cc
 Real Time collaborative whiteboard made using Meteor and ReactJS.
 
-See live example at http://whiteboards.cc 
+See live example at https://whiteboardscc-3980.nodechef.com/
 
 ## Develop
 
